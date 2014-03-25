@@ -39,22 +39,22 @@
 #define TRUE      (!FALSE)
 
 //! Port pin connected to phase U, low side enable switch.
-#define UL    PB5
+#define UL    PINB5
 
 //! Port pin connected to phase U, high side enable switch.
-#define UH    PB4
+#define UH    PINB4
 
 //! Port pin connected to phase V, low side enable switch.
-#define VL    PB3
+#define VL    PINB3
 
 //! Port pin connected to phase V, high side enable switch.
-#define VH    PB2
+#define VH    PINB2
 
 //! Port pin connected to phase W, low side enable switch.
-#define WL    PB1
+#define WL    PINB1
 
 //! Port pin connected to phase W, high side enable switch.
-#define WH    PB0
+#define WH    PINB0
 
 //! Clockwise rotation flag. Used only in macros.
 #define CW    0
@@ -157,9 +157,6 @@
 
 //! ADMUX register value for channel W sampling.
 #define ADMUX_W             (ADC_REF_CHANNEL | ADC_RES_ALIGNMENT_BEMF | ADC_MUX_W)
-
-//! ADMUX register value for speed reference sampling.
-#define ADMUX_SPEED_REF     (ADC_REF_CHANNEL | ADC_RES_ALIGNMENT_SPEED_REF | ADC_MUX_SPEED_REF)
 
 //! ADMUX register value for current sampling.
 #define ADMUX_CURRENT       (ADC_REF_CHANNEL | ADC_RES_ALIGNMENT_CURRENT | ADC_MUX_CURRENT)

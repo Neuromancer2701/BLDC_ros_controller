@@ -22,8 +22,6 @@
 
 #include "BLDC.h"
 
-#include <ioavr.h>
-#include <inavr.h>
 
 //! Array of power stage enable signals for each commutation step.
 unsigned char driveTable[6];
