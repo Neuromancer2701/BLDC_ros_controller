@@ -39,7 +39,7 @@ unsigned int startupDelays[STARTUP_NUM_COMMUTATIONS];
  *  through an IIR filter, so the value stored is not the most recent measuremnt.
  *  The variable is stored in registers R14-R15 for quicker access.
  */
-__regvar __no_init volatile unsigned int filteredTimeSinceCommutation @14;
+volatile unsigned int filteredTimeSinceCommutation;
 
 /*! \brief The power stage enable signals that will be output to the motor drivers
  *  at next commutation.
@@ -47,14 +47,14 @@ __regvar __no_init volatile unsigned int filteredTimeSinceCommutation @14;
  *  This variable holds the pattern of enable signals that will be output to the
  *  power stage at next commutation. It is stored in register R13 for quick access.
  */
-__regvar __no_init volatile unsigned char nextDrivePattern @13;
+volatile unsigned char nextDrivePattern;
 
 /*! \brief Polarity of the expected zero crossing.
  *
  *  The polarity of the expected zero crossing.
  *  Could be eiter \ref EDGE_FALLING or \ref EDGE_RISING.
  */
-__regvar __no_init volatile unsigned char zcPolarity @ 12;
+volatile unsigned char zcPolarity;
 
 /*! \brief The commutation step that starts at next commutation.
  *
@@ -62,10 +62,10 @@ __regvar __no_init volatile unsigned char zcPolarity @ 12;
  *  track on where in the commutation cycle we are. Stored in register R11 for
  *  quick access
  */
-__regvar __no_init volatile unsigned char nextCommutationStep @11;
+volatile unsigned char nextCommutationStep;
 
 //! ADC reading of external analog speed reference.
-volatile unsigned char speedReferenceADC;
+volatile unsigned char set_speed;
 
 //! ADC reading of shunt voltage.
 volatile unsigned char shuntVoltageADC = 0;
@@ -360,8 +360,8 @@ static void StartMotor(void)
  *  and Timer/counter1 compare A is set up to trigger at the next commutation
  *  instant.
  */
-#pragma vector=TIMER0_OVF_vect
-__interrupt void MotorPWMBottom()
+ 
+void MotorPWMBottom()
 {
   unsigned char temp;
 
@@ -395,26 +395,6 @@ __interrupt void MotorPWMBottom()
 
     // Disable Timer/Counter0 overflow ISR.
     DISABLE_ALL_TIMER0_INTS;
-
-    // Read speed reference.
-
-    // Make sure that a sample is not in progress.
-    while (ADCSRA & (1 << ADSC))
-    {
-
-    }
-    // Change channel
-    ADMUX = ADMUX_SPEED_REF;
-
-    // Start conversion manually.
-    ADCSRA |= (1 << ADSC);
-
-    // Wait for conversion to complete.
-    while((ADCSRA & (1 << ADSC)))
-    {
-
-    }
-    speedReferenceADC = ADCH;
 
     // Read voltage reference.
     // Change ADC channel.
@@ -479,7 +459,7 @@ __interrupt void MotorPWMBottom()
  *  Timer/counter1 compare B interrupt handler then enables the zero-cross detection.
  */
 #pragma vector=TIMER1_COMPA_vect
-__interrupt void Commutate()
+void Commutate()
 {
   // Commutate and clear commutation timer.
   DRIVE_PORT = nextDrivePattern;
@@ -541,7 +521,7 @@ __interrupt void EnableZCDetection()
  *  Timer0 (PWM timer) interrupt flags are cleared.
  */
 #pragma vector=ADC_vect
-__interrupt void CurrentMeasurementComplete()
+void CurrentMeasurementComplete()
 {
   shuntVoltageADC = ADCH;
   currentUpdated = TRUE;
@@ -695,21 +675,6 @@ static unsigned long CalculateSpeed()
 }
 
 
-/*! \brief Calculates the speed set-point in electrical RPM.
- *
- *  This function calculates the speed set-point from the global variable
- *  speedReferenceADC.
- *
- *  In this implementation, the speed reference values from 0x00 to 0xff are
- *  linearly mapped into the allowable speed range, set by \ref MIN_SPEED and
- *  \ref MAX_SPEED.
- */
-static unsigned long CalculateSpeedSetpoint()
-{
-  return (MIN_SPEED + ((MAX_SPEED - MIN_SPEED) * (unsigned int)speedReferenceADC) / ADC_RESOLUTION);
-}
-
-
 /*! \brief Calculates current consumption.
  *
  *  This function calculates the current consumption in milliAmperes from the
@@ -741,14 +706,10 @@ static unsigned int CalculateCurrent()
  */
 static signed int SpeedControl(void)
 {
-  unsigned long speedSetpoint;
   unsigned long currentSpeed;
   signed long speedError;
   signed long dutyChange;
 
-
-
-  speedSetpoint = CalculateSpeedSetpoint();
   currentSpeed = CalculateSpeed();
   speedError = (speedSetpoint - currentSpeed);
   dutyChange = speedError * P_REG_K_P / P_REG_SCALING;

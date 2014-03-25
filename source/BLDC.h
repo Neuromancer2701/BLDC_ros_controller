@@ -15,7 +15,7 @@
 *
 * - Description       : Example of how to use the ATmega48 for sensorless
 *                       control of a three phase brushless DC motor.
-*
+*SS
 * $Revision: 1.1 $
 * $Date: Monday, October 10, 2005 11:15:46 UTC $
 *****************************************************************************/
@@ -24,7 +24,7 @@
 #define __BLDC_H__
 
 //! System clock frequecy. Used to calculate PWM TOP value.
-#define SYSTEM_FREQUENCY        8000000
+#define SYSTEM_FREQUENCY        16000000
 
 //! PWM base frequency. Used to calculate PWM TOP value.
 #define PWM_BASE_FREQUENCY      20000
@@ -324,7 +324,6 @@ static void StartMotor(void);
 static void PWMControl(void);
 static void StartupDelay(unsigned int delay);
 static unsigned long CalculateSpeed();
-static unsigned long CalculateSpeedSetpoint();
 static unsigned int CalculateCurrent();
 static signed int SpeedControl(void);
 static unsigned char CurrentControl(void);
