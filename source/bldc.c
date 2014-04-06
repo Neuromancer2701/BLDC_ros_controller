@@ -20,7 +20,7 @@
 * $Date: Monday, October 10, 2005 11:15:46 UTC $
 *****************************************************************************/
 
-#include "BLDC.h"
+#include "bldc.h"
 
 
 //! Array of power stage enable signals for each commutation step.
@@ -63,7 +63,7 @@ volatile unsigned char zcPolarity;
 volatile unsigned char nextCommutationStep;
 
 //! ADC reading of external analog speed reference.
-volatile unsigned char set_speed;
+volatile unsigned long speedSetpoint = 0;
 
 //! ADC reading of shunt voltage.
 volatile unsigned char shuntVoltageADC = 0;
@@ -83,7 +83,7 @@ volatile unsigned char currentUpdated = FALSE;
  *  Main initializes all peripheral units used and calls the startup procedure.
  *  All commutation control from that point is done in interrupt routines.
  */
-void main(void)
+int main(void)
 {
   // Initialize all sub-systems.
   ResetHandler();
@@ -93,17 +93,21 @@ void main(void)
   MakeTables();
   InitAnalogComparator();
 
+
+  SetSpeed( 50 );
   // Run startup procedure.
   StartMotor();
 
   // Turn on watchdog for stall-detection.
   WatchdogTimerEnable();
-  __enable_interrupt();
+  sei();
 
   for(;;)
   {
     PWMControl();
   }
+
+  return 0;
 }
 
 
@@ -121,7 +125,7 @@ void main(void)
  */
 static void ResetHandler(void)
 {
-  __eeprom unsigned static int restartAttempts;
+  unsigned static int restartAttempts;
   // Temporary variable to avoid unnecessary reading of volatile register MCUSR.
   unsigned char tempMCUSR;
 
@@ -129,8 +133,8 @@ static void ResetHandler(void)
   MCUSR = tempMCUSR & ~((1 << WDRF) | (1 << BORF) | (1 << EXTRF) | (1 << PORF));
 
   // Reset watchdog to avoid false stall detection before the motor has started.
-  __disable_interrupt();
-  __watchdog_reset();
+  cli();
+  wdt_reset();
   WDTCSR |= (1 << WDCE) | (1 << WDE);
   WDTCSR = 0x00;
 
@@ -242,13 +246,13 @@ static void InitAnalogComparator(void)
  */
 static void WatchdogTimerEnable(void)
 {
-  __disable_interrupt();
-  __watchdog_reset();
+  cli();
+  wdt_reset();
 
   WDTCSR |= (1 << WDCE) | (1 << WDE);
 
   WDTCSR = (1 << WDIF) | (1 << WDIE) | (1 << WDE) | (1 << WDP2);
-  __enable_interrupt();
+  sei();
 }
 
 
@@ -358,8 +362,7 @@ static void StartMotor(void)
  *  and Timer/counter1 compare A is set up to trigger at the next commutation
  *  instant.
  */
- 
-void MotorPWMBottom()
+ ISR( TIMER0_OVF_vect ) //MotorPWMBottom()
 {
   unsigned char temp;
 
@@ -456,8 +459,7 @@ void MotorPWMBottom()
  *  compare B. The compare is set to happen after the specified hold-off period.
  *  Timer/counter1 compare B interrupt handler then enables the zero-cross detection.
  */
-#pragma vector=TIMER1_COMPA_vect
-void Commutate()
+ISR( TIMER1_COMPA_vect) //Commutate()
 {
   // Commutate and clear commutation timer.
   DRIVE_PORT = nextDrivePattern;
@@ -470,7 +472,7 @@ void Commutate()
   OCR1B = ZC_DETECTION_HOLDOFF_TIME_US;
   SET_TIMER1_INT_HOLDOFF;
 
-  __watchdog_reset();
+  wdt_reset();
 }
 
 
@@ -481,8 +483,7 @@ void Commutate()
  *  disabled and Timer/counter0 (PWM) overflow interrupt is enabled to allow
  *  the ADC readings to be used for zero-cross detection.
  */
-#pragma vector=TIMER1_COMPB_vect
-__interrupt void EnableZCDetection()
+ISR( TIMER1_COMPB_vect ) //EnableZCDetection()
 {
   // Enable TCNT0 overflow ISR.
   CLEAR_ALL_TIMER0_INT_FLAGS;
@@ -518,8 +519,7 @@ __interrupt void EnableZCDetection()
  *  copied to \ref shuntVoltageADC, the \ref currentUpdated flag is set and
  *  Timer0 (PWM timer) interrupt flags are cleared.
  */
-#pragma vector=ADC_vect
-void CurrentMeasurementComplete()
+ISR( ADC_vect ) //void CurrentMeasurementComplete()
 {
   shuntVoltageADC = ADCH;
   currentUpdated = TRUE;
@@ -533,8 +533,7 @@ void CurrentMeasurementComplete()
  *  It simply disables driving, but other tasks that must be done before a watchdog reset,
  *  such as storage of variables in non-volatile memory can be done here.
  */
-#pragma vector=WDT_vect
-__interrupt void WatchdogISR()
+ISR( WDT_vect) //void WatchdogISR()
 {
   DISABLE_DRIVING;
   for(;;)
@@ -549,8 +548,7 @@ __interrupt void WatchdogISR()
  *  is detected.
  */
 #ifdef ANALOG_COMPARATOR_ENABLE
-#pragma vector=ANA_COMP_vect
-__interrupt void OverCurrentISR()
+ISR( ANA_COMP_vect) //void OverCurrentISR()
 {
   DISABLE_DRIVING;
   for(;;)
@@ -587,7 +585,6 @@ void StartupDelay(unsigned int delay)
 
 
 
-#ifdef SPEED_CONTROL_CLOSED_LOOP
 /*! \brief Controls the PWM duty cycle based on speed set-point and current consumption.
  *
  *  This function controls the PWM duty cycle by calling a speed controller and a
@@ -627,19 +624,7 @@ static void PWMControl(void)
 
   SET_PWM_COMPARE_VALUE((unsigned char)duty);
 }
-#endif
 
-#ifdef SPEED_CONTROL_OPEN_LOOP
-static void PWMControl(void)
-{
-  // Only update duty cycle if a new speed reference measurement has been made. (Done right after speed measurement is ready)
-  if (speedUpdated)
-  {
-    // Calculate duty cycle from speed reference value.
-    SET_PWM_COMPARE_VALUE(MIN_PWM_COMPARE_VALUE + speedReferenceADC * (MAX_PWM_COMPARE_VALUE - MIN_PWM_COMPARE_VALUE) / ADC_RESOLUTION);
-  }
-}
-#endif
 
 
 /*! \brief Calculates the current speed in electrical RPM.
@@ -658,9 +643,9 @@ static unsigned long CalculateSpeed()
   Disable interrupts to ensure that \ref filteredTimeSinceCommutation is accessed in
   an atomic operation.
   */
-  __disable_interrupt();
+  cli();
   filteredTimeSinceCommutationCopy = filteredTimeSinceCommutation;
-  __enable_interrupt();
+  sei();
 
   /*
   filteredTimeSinceCommutation is one half commutation time. Must be multiplied by 12 to get
@@ -715,6 +700,10 @@ static signed int SpeedControl(void)
   return dutyChange;
 }
 
+static void SetSpeed(unsigned long _speed )
+{
+	speedSetpoint = _speed;
+}
 
 /*! \brief Current control loop
  *
