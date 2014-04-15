@@ -22,6 +22,36 @@
 
 #include "bldc.h"
 
+BLDC::BLDC()
+{
+	speed = 0;
+}
+
+BLDC::~BLDC()
+{
+
+}
+
+void BLDC::init()
+{
+  ResetHandler();
+  InitPorts();
+  InitTimers();
+  InitADC();
+  MakeTables();
+  InitAnalogComparator();
+
+}
+void BLDC::setSpeed(int _speed)
+{
+
+}
+
+void BLDC::Control()
+{
+
+
+}
 
 //! Array of power stage enable signals for each commutation step.
 unsigned char driveTable[6];
@@ -85,13 +115,8 @@ volatile unsigned char currentUpdated = FALSE;
  */
 int main(void)
 {
-  // Initialize all sub-systems.
-  ResetHandler();
-  InitPorts();
-  InitTimers();
-  InitADC();
-  MakeTables();
-  InitAnalogComparator();
+  
+
 
 
   SetSpeed( 50 );
@@ -698,11 +723,6 @@ static signed int SpeedControl(void)
   dutyChange = speedError * P_REG_K_P / P_REG_SCALING;
 
   return dutyChange;
-}
-
-static void SetSpeed(unsigned long _speed )
-{
-	speedSetpoint = _speed;
 }
 
 /*! \brief Current control loop

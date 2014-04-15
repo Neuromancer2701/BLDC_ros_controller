@@ -310,6 +310,20 @@
 //! P-regulator scaling factor. The result is divided by this number.
 #define P_REG_SCALING 65536
 
+class BLDC
+{
+public:
+BLDC();
+virtual ~BLDC();
+
+void init();
+void setSpeed(int _speed);
+void Control();
+
+private:
+int speed;
+}
+
 static void ResetHandler(void);
 static void InitPorts(void);
 static void InitTimers(void);
