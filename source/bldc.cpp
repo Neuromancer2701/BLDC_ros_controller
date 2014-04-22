@@ -34,12 +34,14 @@
 #define TRUE      (!FALSE)	//! Boolean TRUE expression. Can be used both for test and assignment.
 
 
-#define UL    PINB5	//! Port pin connected to phase U, low side enable switch.
-#define UH    PINB4	//! Port pin connected to phase U, high side enable switch.
-#define VL    PINB3	//! Port pin connected to phase U, high side enable switch.
-#define VH    PINB2	//! Port pin connected to phase V, high side enable switch
-#define WL    PINB1	//! Port pin connected to phase W, low side enable switch.
-#define WH    PINB0	//! Port pin connected to phase W, high side enable switch.
+#define UL    PINB5	//! Port pin connected to phase U, low side enable switch.  Arduino Pin 13
+#define UH    PINB4	//! Port pin connected to phase U, high side enable switch. Arduino Pin 12 
+
+#define VL    PINB3	//! Port pin connected to phase V, high side enable switch. Arduino Pin 11
+#define VH    PINB2	//! Port pin connected to phase V, high side enable switch. Arduino Pin 10
+
+#define WL    PINB1	//! Port pin connected to phase W, low side enable switch.	Arduino Pin 9
+#define WH    PINB0	//! Port pin connected to phase W, high side enable switch. Arduino Pin 8
 
 #define CW    0	//! Clockwise rotation flag. Used only in macros.
 #define CCW   1	//! Counterclockwise rotation flag. Used only in macros.
@@ -77,12 +79,11 @@
 #define DRIVE_DDR   DDRB	//! Data direction register for drive pattern output.
 
 
-#define ADC_MUX_U           0x0	//! ADC multiplexer selection for channel U sampling.
-#define ADC_MUX_V           0x1	//! ADC multiplexer selection for channel V sampling.
-#define ADC_MUX_W           0x2	//! ADC multiplexer selection for channel W sampling.
-#define ADC_MUX_SPEED_REF   0x4	//! ADC multiplexer selection for speed reference sampling.
-#define ADC_MUX_CURRENT     0x3	//! ADC multiplexer selection for current sampling.
-#define ADC_MUX_REF_VOLTAGE 0x5	//! ADC multiplexer selection for reference voltage sampling.
+#define ADC_MUX_U           0x3	//! ADC multiplexer selection for channel U sampling.
+#define ADC_MUX_V           0x2	//! ADC multiplexer selection for channel V sampling.
+#define ADC_MUX_W           0x1	//! ADC multiplexer selection for channel W sampling.
+#define ADC_MUX_CURRENT     0x0	//! ADC multiplexer selection for current sampling.
+#define ADC_MUX_REF_VOLTAGE 0x4	//! ADC multiplexer selection for reference voltage sampling.
 
 
 #define ADC_REF_CHANNEL                 ((0 << REFS1) | (0 << REFS0))	//! ADC reference channel selection.
@@ -127,7 +128,7 @@
 #define SET_TIMER1_INT_HOLDOFF        	(TIMSK1 = (1 << OCIE1B))	//! Macro that enables Timer/Counter1 interrupt responsible for enabling ADC sampling after ADC holdoff period.
 
 #define EXTERNAL_REF_VOLTAGE      	  	((4930UL * 10) / 43)	//! External reference voltage in milliVolts.
-#define SHUNT_RESISTANCE          		220	//! Current measurement shunt value in milliOhm.
+#define SHUNT_RESISTANCE          		1	//! Current measurement shunt value in milliOhm.
 #define ADC_RESOLUTION   				256	//! The ADC resolution used.
 
 
@@ -160,14 +161,14 @@
  *  Uncomment the following line if the analog comparator should be used to
  *  detect overcurrent.
  */
-#define ANALOG_COMPARATOR_ENABLE
+//#define ANALOG_COMPARATOR_ENABLE
 
 /*!
  *  The maximum duty cycles is decreased by this number of PWM duty cycle steps
  *  per milliAmpere current consumption over \ref CURRENT_LIMITER_START.
  */
 #define CURRENT_LIMITER_FACTOR   (1 / 5)
-#define DISABLE_DRIVING               (DRIVE_PORT = 0x00)	//! Macro that cuts all power to the motor.
+#define DISABLE_DRIVING          (DRIVE_PORT = 0x00)	//! Macro that cuts all power to the motor.
 #define STARTUP_PWM_COMPARE_VALUE  130	//! PWM compare value used during startup.
 #define ADC_ZC_THRESHOLD 0x98	//! Zero-cross threshold.
 
@@ -897,7 +898,7 @@ static unsigned char CurrentControl(void)
   // Cut power to motor if current is critically high.
   if (current > CURRENT_LIMITER_CRITICAL)
   {
-    DRIVE_PORT = 0x00;
+    DISABLE_DRIVING;
     for (;;)
     {
       // Stop and let watchdog timer reset part.
