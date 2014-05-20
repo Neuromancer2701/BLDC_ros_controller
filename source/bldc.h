@@ -1,28 +1,28 @@
 // This file has been prepared for Doxygen automatic documentation generation.
-/*! \file ********************************************************************
-*
-* Atmel Corporation
-*
-* - File              : BLDC.h
-* - Compiler          : IAR EWAAVR 2.28a/3.10c
-*
-* - Support mail      : avr@atmel.com
-*
-* - Supported devices : ATmega48/88/168
-*
-* - AppNote           : AVR444 - Sensorless control of three-phase brushless
-'                       DC motors with ATmega48.
-*
-* - Description       : Example of how to use the ATmega48 for sensorless
-*                       control of a three phase brushless DC motor.
-*SS
-* $Revision: 1.1 $
-* $Date: Monday, October 10, 2005 11:15:46 UTC $
-*****************************************************************************/
+//Seth M King
 
 #ifndef __BLDC_H__
 #define __BLDC_H__
 
+//Profiles will use C++11 enum class so I clased it in #ifdef block for the time being
+#ifdef profiles
+
+class enum MotorType			//class for different motor profiles
+{
+	Default = 0,
+	Apex    = 1,
+	E-FliteOutrunner = 2,
+	MAX_TYPE = E-FliteOutrunner + 1
+};
+
+
+class Motor
+{
+	double nominalVoltage;
+	double maxCurrent;
+}
+
+#endif
 class BLDC
 {
 public:
@@ -39,4 +39,4 @@ private:
 
 
 
-#endif  // File guard
+#endif 
