@@ -183,6 +183,11 @@
 #define MAX_SPEED 8000UL	//! The maximum allowed speed. (Only has effect when closed loop speed control is used)
 #define P_REG_K_P 64	//! P-regulator proportional gain.
 #define P_REG_SCALING 65536	//! P-regulator scaling factor. The result is divided by this number.
+#define MAX_COMMUTATION_STEPS 6
+#define MIN_COMMUTATION_STEPS 0
+
+#define MAX_ADC_DATA 5
+#define MIN_ADC_DATA 0
 
 static void ResetHandler(void);
 static void InitPorts(void);
@@ -201,6 +206,9 @@ static unsigned char CurrentControl(void);
 
 
 volatile unsigned long speedSetpoint = 0;
+unsigned char driveTable[MAX_COMMUTATION_STEPS];			//! Array of power stage enable signals for each commutation step.
+unsigned char AdcData[MAX_ADC_DATA];
+
 
 BLDC::BLDC()
 {
@@ -240,10 +248,26 @@ void BLDC::Control()
     PWMControl();
 }
 
+void BLDC::SetCommutationState(unsigned char state)
+{
+	if( (state >= MIN_COMMUTATION_STEPS) && (state < MAX_COMMUTATION_STEPS)
+	{
+		DRIVE_PORT = driveTable[state];
+	}
+}
+unsigned char BLDC::AnalogData(unsigned char mux)
+{
+	unsigned char data = 0x00;
+	if( (mux >= MIN_ADC_DATA) && (mux < MAX_ADC_DATA)
+	{
+		data = AdcData[mux];
+	}
+	
+	return data;
+}
 
 
-//! Array of power stage enable signals for each commutation step.
-unsigned char driveTable[6];
+
 
 //! Array of ADC channel selections for each commutation step.
 unsigned char ADMUXTable[6];
@@ -402,6 +426,7 @@ static void InitADC(void)
 
   }
   referenceVoltageADC = ADCH;
+  AdcData[0] = referenceVoltageADC;
 
   // Initialize the ADC for autotriggered operation on PWM timer overflow.
   ADCSRA = (1 << ADEN) | (0 << ADSC) | (1 << ADATE) | (1 << ADIF) | (0 << ADIE) | ADC_PRESCALER_8;
@@ -533,7 +558,7 @@ static void StartMotor(void)
 }
 
 
-/*! \brief Timer/counter0 bottom overflow. Used for zero-cross detection.
+/*! \brief Timer/counter2 bottom overflow. Used for zero-cross detection.
  *
  *  This interrupt service routine is called every time the up/down counting
  *  PWM counter reaches bottom. An ADC reading on the active channel is
@@ -547,6 +572,7 @@ static void StartMotor(void)
  ISR( TIMER2_OVF_vect ) //MotorPWMBottom()
 {
   unsigned char temp;
+  unsigned char mux = 0;
 
   // Disable ADC auto-triggering. This must be done here to avoid wrong channel being sampled on manual samples later.
   ADCSRA &= ~((1 << ADATE) | (1 << ADIE));
@@ -557,6 +583,16 @@ static void StartMotor(void)
 
   }
   temp = ADCH;
+  
+  mux = nextCommutationStep - 1;
+  if(mux == 0 || mux == 3)
+	AdcData[1] = temp;
+  else if(mux == 1 || mux == 4)
+	AdcData[2] = temp;
+  else if(mux == 2 || mux == 5)
+	AdcData[3] = temp;
+	
+	
   if (((zcPolarity == EDGE_RISING) && (temp > ADC_ZC_THRESHOLD)) || ((zcPolarity == EDGE_FALLING) && (temp < ADC_ZC_THRESHOLD)))
   {
     unsigned int timeSinceCommutation;
@@ -590,7 +626,8 @@ static void StartMotor(void)
 
     }
     referenceVoltageADC = ADCH;
-
+	AdcData[0] = referenceVoltageADC;
+	
     // Enable current measurements in ADC ISR.
     ADMUX = ADMUX_CURRENT;
     ADCSRA |= (1 << ADATE) | (1 << ADIE) | ADC_PRESCALER;
@@ -620,6 +657,7 @@ static void StartMotor(void)
     }
 
     shuntVoltageADC = ADCH;
+	AdcData[4] = shuntVoltageADC;
     currentUpdated = TRUE;
 
     // Restore ADC channel.
@@ -703,6 +741,7 @@ ISR( TIMER1_COMPB_vect ) //EnableZCDetection()
 ISR( ADC_vect ) //void CurrentMeasurementComplete()
 {
   shuntVoltageADC = ADCH;
+  AdcData[4] = shuntVoltageADC;
   currentUpdated = TRUE;
   CLEAR_ALL_TIMER2_INT_FLAGS;
 }
@@ -917,6 +956,7 @@ static unsigned char CurrentControl(void)
 
   return overCurrentCorrection;
 }
+
 
 /*! \mainpage
  * \section Intro Introduction

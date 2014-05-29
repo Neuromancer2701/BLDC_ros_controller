@@ -23,6 +23,7 @@ class Motor
 }
 
 #endif
+
 class BLDC
 {
 public:
@@ -32,6 +33,8 @@ public:
 	void init();
 	void setSpeed(unsigned long _speed);
 	void Control();
+	void SetCommutationState(unsigned char state);
+	unsigned char AnalogData(unsigned char mux);
 
 private:
 	unsigned long speed;
