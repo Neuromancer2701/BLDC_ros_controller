@@ -137,10 +137,16 @@
 </layers>
 <board>
 <plain>
-<wire x1="0" y1="0" x2="160" y2="0" width="0" layer="20"/>
-<wire x1="160" y1="0" x2="160" y2="100" width="0" layer="20"/>
-<wire x1="160" y1="100" x2="0" y2="100" width="0" layer="20"/>
-<wire x1="0" y1="100" x2="0" y2="0" width="0" layer="20"/>
+<wire x1="27.94" y1="26.67" x2="115.57" y2="26.67" width="0" layer="20"/>
+<wire x1="115.57" y1="26.67" x2="115.57" y2="29.21" width="0" layer="20"/>
+<wire x1="115.57" y1="29.21" x2="118.11" y2="31.75" width="0" layer="20"/>
+<wire x1="118.11" y1="31.75" x2="118.11" y2="64.516" width="0" layer="20"/>
+<wire x1="118.11" y1="64.516" x2="115.57" y2="67.056" width="0" layer="20"/>
+<wire x1="115.57" y1="67.056" x2="115.57" y2="78.486" width="0" layer="20"/>
+<wire x1="115.57" y1="78.486" x2="114.046" y2="80.01" width="0" layer="20"/>
+<wire x1="114.046" y1="80.01" x2="103.866" y2="79.934" width="0" layer="20"/>
+<wire x1="103.866" y1="79.934" x2="27.94" y2="80.01" width="0" layer="20"/>
+<wire x1="27.94" y1="80.01" x2="27.94" y2="26.67" width="0" layer="20"/>
 <text x="36.322" y="28.194" size="1.778" layer="21">Open BLDC 0.1</text>
 <text x="116.332" y="60.706" size="1.778" layer="22" rot="MR270">www.OpenRover.com</text>
 <text x="31.75" y="62.738" size="1.778" layer="22" rot="MR270">www.OpenRover.com</text>

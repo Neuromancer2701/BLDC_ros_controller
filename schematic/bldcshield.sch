@@ -10862,7 +10862,7 @@ type 0309, grid 2.5 mm</description>
 <pinref part="Q3" gate="G$1" pin="A4/SDA"/>
 </segment>
 </net>
-<net name="LO_1" class="0">
+<net name="HI_1" class="0">
 <segment>
 <label x="-81.28" y="114.3" size="1.778" layer="95"/>
 <pinref part="IC1" gate="G$1" pin="HIN"/>
@@ -10874,7 +10874,7 @@ type 0309, grid 2.5 mm</description>
 <pinref part="Q3" gate="G$1" pin="D13"/>
 </segment>
 </net>
-<net name="HI_1" class="0">
+<net name="LO_1" class="0">
 <segment>
 <label x="-81.28" y="111.76" size="1.778" layer="95"/>
 <pinref part="R5" gate="G$1" pin="2"/>
@@ -10886,7 +10886,7 @@ type 0309, grid 2.5 mm</description>
 <pinref part="Q3" gate="G$1" pin="D12"/>
 </segment>
 </net>
-<net name="LO_2" class="0">
+<net name="HI_2" class="0">
 <segment>
 <label x="-81.28" y="58.42" size="1.778" layer="95"/>
 <pinref part="IC2" gate="G$1" pin="HIN"/>
@@ -10900,7 +10900,7 @@ type 0309, grid 2.5 mm</description>
 <pinref part="Q3" gate="G$1" pin="D11"/>
 </segment>
 </net>
-<net name="HI_2" class="0">
+<net name="LO_2" class="0">
 <segment>
 <label x="-81.28" y="55.88" size="1.778" layer="95"/>
 <pinref part="R13" gate="G$1" pin="2"/>
@@ -10914,7 +10914,7 @@ type 0309, grid 2.5 mm</description>
 <pinref part="Q3" gate="G$1" pin="D10"/>
 </segment>
 </net>
-<net name="LO_3" class="0">
+<net name="HI_3" class="0">
 <segment>
 <label x="-83.82" y="2.54" size="1.778" layer="95"/>
 <pinref part="IC3" gate="G$1" pin="HIN"/>
@@ -10930,7 +10930,7 @@ type 0309, grid 2.5 mm</description>
 <pinref part="Q3" gate="G$1" pin="D9"/>
 </segment>
 </net>
-<net name="HI_3" class="0">
+<net name="LO_3" class="0">
 <segment>
 <label x="-83.82" y="0" size="1.778" layer="95"/>
 <pinref part="R21" gate="G$1" pin="2"/>
