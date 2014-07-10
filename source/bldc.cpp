@@ -20,7 +20,7 @@
 * $Date: Monday, October 10, 2005 11:15:46 UTC $
 *****************************************************************************/
 #include "Arduino.h"
-#include "BLDC.h"
+#include "bldc.h"
 #include <avr/wdt.h>
 
 #define SYSTEM_FREQUENCY        16000000	//! System clock frequecy. Used to calculate PWM TOP value.
@@ -51,15 +51,12 @@
  */
 #define DIRECTION_OF_ROTATION     CCW
 
-
 #define DRIVE_PATTERN_STEP1_CCW      ((1 << UL) | (1 << VH))	//! Drive pattern for commutation step 1, CCW rotation.
 #define DRIVE_PATTERN_STEP2_CCW      ((1 << UL) | (1 << WH))	//! Drive pattern for commutation step 2, CCW rotation.
 #define DRIVE_PATTERN_STEP3_CCW      ((1 << VL) | (1 << WH))	//! Drive pattern for commutation step 3, CCW rotation.
 #define DRIVE_PATTERN_STEP4_CCW      ((1 << VL) | (1 << UH))	//! Drive pattern for commutation step 4, CCW rotation.
 #define DRIVE_PATTERN_STEP5_CCW      ((1 << WL) | (1 << UH))	//! Drive pattern for commutation step 5, CCW rotation.
 #define DRIVE_PATTERN_STEP6_CCW      ((1 << WL) | (1 << VH))	//! Drive pattern for commutation step 6, CCW rotation.
-
-
 
 #define DRIVE_PATTERN_STEP1_CW      ((1 << VH) | (1 << WL))		//! Drive pattern for commutation step 1, CW rotation.
 #define DRIVE_PATTERN_STEP2_CW      ((1 << UH) | (1 << WL))		//! Drive pattern for commutation step 2, CW rotation.
@@ -68,16 +65,12 @@
 #define DRIVE_PATTERN_STEP5_CW      ((1 << WH) | (1 << UL))		//! Drive pattern for commutation step 5, CW rotation.
 #define DRIVE_PATTERN_STEP6_CW      ((1 << VH) | (1 << UL))		//! Drive pattern for commutation step 6, CW rotation.
 
-
 #define EDGE_FALLING          1	//! Zero crossing polarity flag value for falling zero crossing.
 #define EDGE_RISING           0	//! Zero crossing polarity flag value for rinsing zero crossing.
 
-
 #define DRIVE_PORT  PORTB	//! PORT register for drive pattern output.
 
-
 #define DRIVE_DDR   DDRB	//! Data direction register for drive pattern output.
-
 
 #define ADC_MUX_U           0x3	//! ADC multiplexer selection for channel U sampling.
 #define ADC_MUX_V           0x2	//! ADC multiplexer selection for channel V sampling.
@@ -85,15 +78,12 @@
 #define ADC_MUX_CURRENT     0x0	//! ADC multiplexer selection for current sampling.
 #define ADC_MUX_REF_VOLTAGE 0x4	//! ADC multiplexer selection for reference voltage sampling.
 
-
 #define ADC_REF_CHANNEL                 ((0 << REFS1) | (0 << REFS0))	//! ADC reference channel selection.
 #define ADC_RES_ALIGNMENT_BEMF          (1 << ADLAR)	//! ADC result alignment for BEMF measurement.
 #define ADC_RES_ALIGNMENT_SPEED_REF     (1 << ADLAR)	//! ADC result alignment for speed reference measurement.
 
-
 #define ADC_RES_ALIGNMENT_CURRENT       (1 << ADLAR)	//! ADC result alignment for CURRENT measurement.
 #define ADC_RES_ALIGNMENT_REF_VOLTAGE   (1 << ADLAR)	//! ADC result alignment for reference voltage measurement.
-
 
 #define ADMUX_U             (ADC_REF_CHANNEL | ADC_RES_ALIGNMENT_BEMF | ADC_MUX_U)	//! ADMUX register value for channel U sampling.
 #define ADMUX_V             (ADC_REF_CHANNEL | ADC_RES_ALIGNMENT_BEMF | ADC_MUX_V)	//! ADMUX register value for channel V sampling.
@@ -222,20 +212,20 @@ BLDC::~BLDC()
 
 void BLDC::init()
 {
-  ResetHandler();
+  //ResetHandler();
   InitPorts();
-  InitTimers();
-  InitADC();
+  //InitTimers();
+  //InitADC();
   MakeTables();
-  InitAnalogComparator();
+  //InitAnalogComparator();
   
-  setSpeed( 50 );
+  //setSpeed( 50 );
   // Run startup procedure.
-  StartMotor();
+  //StartMotor();
 
   // Turn on watchdog for stall-detection.
-  WatchdogTimerEnable();
-  sei();
+  //WatchdogTimerEnable();
+  //sei();
 
 }
 void BLDC::setSpeed(unsigned long _speed)
@@ -250,7 +240,7 @@ void BLDC::Control()
 
 void BLDC::SetCommutationState(unsigned char state)
 {
-	if( (state >= MIN_COMMUTATION_STEPS) && (state < MAX_COMMUTATION_STEPS)
+	if( (state >= MIN_COMMUTATION_STEPS) && (state < MAX_COMMUTATION_STEPS))
 	{
 		DRIVE_PORT = driveTable[state];
 	}
@@ -258,7 +248,7 @@ void BLDC::SetCommutationState(unsigned char state)
 unsigned char BLDC::AnalogData(unsigned char mux)
 {
 	unsigned char data = 0x00;
-	if( (mux >= MIN_ADC_DATA) && (mux < MAX_ADC_DATA)
+	if( (mux >= MIN_ADC_DATA) && (mux < MAX_ADC_DATA))
 	{
 		data = AdcData[mux];
 	}
