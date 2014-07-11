@@ -33,15 +33,34 @@
 
 #define TRUE      (!FALSE)	//! Boolean TRUE expression. Can be used both for test and assignment.
 
+#if defined (__AVR_ATmega2560__)
 
-#define UL    PINB5	//! Port pin connected to phase U, low side enable switch.  Arduino Pin 13
-#define UH    PINB4	//! Port pin connected to phase U, high side enable switch. Arduino Pin 12 
+	#define UL    PINB7	//! Port pin connected to phase U, low side enable switch.  Arduino Pin 13
+	#define UH    PINB6	//! Port pin connected to phase U, high side enable switch. Arduino Pin 12 
 
-#define VL    PINB3	//! Port pin connected to phase V, high side enable switch. Arduino Pin 11
-#define VH    PINB2	//! Port pin connected to phase V, high side enable switch. Arduino Pin 10
+	#define VL    PINB5	//! Port pin connected to phase V, high side enable switch. Arduino Pin 11
+	#define VH    PINB4	//! Port pin connected to phase V, high side enable switch. Arduino Pin 10
 
-#define WL    PINB1	//! Port pin connected to phase W, low side enable switch.	Arduino Pin 9
-#define WH    PINB0	//! Port pin connected to phase W, high side enable switch. Arduino Pin 8
+	#define WL    PINH6	//! Port pin connected to phase W, low side enable switch.	Arduino Pin 9
+	#define WH    PINH5	//! Port pin connected to phase W, high side enable switch. Arduino Pin 8
+	
+	#define DRIVE_PORT( io )  PORTB = (io & 0xF0) \	//! PORT register for drive pattern output.
+							  PORTH = (io & 0x6)
+	#define DRIVE_DDR( io )   DDRB	//! Data direction register for drive pattern output.
+#else
+	#define UL    PINB5	//! Port pin connected to phase U, low side enable switch.  Arduino Pin 13
+	#define UH    PINB4	//! Port pin connected to phase U, high side enable switch. Arduino Pin 12 
+
+	#define VL    PINB3	//! Port pin connected to phase V, high side enable switch. Arduino Pin 11
+	#define VH    PINB2	//! Port pin connected to phase V, high side enable switch. Arduino Pin 10
+
+	#define WL    PINB1	//! Port pin connected to phase W, low side enable switch.	Arduino Pin 9
+	#define WH    PINB0	//! Port pin connected to phase W, high side enable switch. Arduino Pin 8
+	
+	#define DRIVE_PORT( io )  PORTB = io	//! PORT register for drive pattern output.
+	#define DRIVE_DDR( io )   DDRB = io	//! Data direction register for drive pattern output.	
+	
+#endif
 
 #define CW    0	//! Clockwise rotation flag. Used only in macros.
 #define CCW   1	//! Counterclockwise rotation flag. Used only in macros.
@@ -68,9 +87,7 @@
 #define EDGE_FALLING          1	//! Zero crossing polarity flag value for falling zero crossing.
 #define EDGE_RISING           0	//! Zero crossing polarity flag value for rinsing zero crossing.
 
-#define DRIVE_PORT  PORTB	//! PORT register for drive pattern output.
 
-#define DRIVE_DDR   DDRB	//! Data direction register for drive pattern output.
 
 #define ADC_MUX_U           0x3	//! ADC multiplexer selection for channel U sampling.
 #define ADC_MUX_V           0x2	//! ADC multiplexer selection for channel V sampling.
