@@ -147,9 +147,9 @@
 <wire x1="114.046" y1="80.01" x2="103.866" y2="79.934" width="0" layer="20"/>
 <wire x1="103.866" y1="79.934" x2="27.94" y2="80.01" width="0" layer="20"/>
 <wire x1="27.94" y1="80.01" x2="27.94" y2="26.67" width="0" layer="20"/>
-<text x="36.322" y="28.194" size="1.778" layer="21">Open BLDC 0.1</text>
-<text x="116.332" y="60.706" size="1.778" layer="22" rot="MR270">www.OpenRover.com</text>
-<text x="31.75" y="62.738" size="1.778" layer="22" rot="MR270">www.OpenRover.com</text>
+<text x="36.322" y="28.194" size="1.778" layer="1">Open BLDC 0.1</text>
+<text x="117.602" y="62.484" size="1.778" layer="16" rot="MR270">www.OpenRover.com</text>
+<text x="31.75" y="62.738" size="1.778" layer="16" rot="MR270">www.OpenRover.com</text>
 </plain>
 <libraries>
 <library name="SparkFun">
@@ -1996,8 +1996,6 @@ chip</description>
 <contactref element="R1" pad="2"/>
 <contactref element="X1" pad="1"/>
 <contactref element="Q3" pad="AREF"/>
-<wire x1="108.875" y1="73.3811" x2="108.875" y2="73.497" width="0.4064" layer="16"/>
-<wire x1="69.596" y1="69.434" x2="69.342" y2="69.18" width="0.4064" layer="16"/>
 <via x="69.342" y="35.052" extent="1-16" drill="0.7"/>
 <wire x1="69.342" y1="35.052" x2="95.504" y2="35.052" width="0.4064" layer="16"/>
 <via x="95.504" y="35.052" extent="1-16" drill="0.7"/>
@@ -2008,18 +2006,14 @@ chip</description>
 <wire x1="67.056" y1="74.168" x2="67.31" y2="73.914" width="0.4064" layer="1"/>
 <polygon width="0.4064" layer="1">
 <vertex x="112.522" y="75.438"/>
-<vertex x="65.532" y="75.438"/>
-<vertex x="65.532" y="34.29"/>
-<vertex x="70.612" y="34.29"/>
-<vertex x="70.612" y="34.036"/>
+<vertex x="63.754" y="75.438"/>
+<vertex x="63.754" y="34.036"/>
 <vertex x="70.866" y="34.036"/>
 <vertex x="70.866" y="73.152"/>
-<vertex x="106.426" y="73.152"/>
 <vertex x="106.68" y="73.152"/>
 <vertex x="106.68" y="70.866"/>
 <vertex x="112.522" y="70.866"/>
 </polygon>
-<wire x1="67.064" y1="69.18" x2="69.342" y2="69.18" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$13">
 <contactref element="IC3" pad="7"/>
@@ -2179,9 +2173,9 @@ chip</description>
 <wire x1="75.444" y1="71.628" x2="75.444" y2="71.7" width="1.016" layer="16"/>
 <wire x1="101.282" y1="53.34" x2="107.188" y2="53.34" width="0.4064" layer="1"/>
 <wire x1="107.188" y1="53.34" x2="107.188" y2="54.864" width="0.4064" layer="1"/>
-<polygon width="0.4064" layer="1">
-<vertex x="71.882" y="72.39"/>
-<vertex x="77.216" y="72.39"/>
+<polygon width="0.4064" layer="1" rank="2">
+<vertex x="71.882" y="73.914"/>
+<vertex x="77.47" y="74.168"/>
 <vertex x="77.216" y="34.544"/>
 <vertex x="71.882" y="34.544"/>
 </polygon>
@@ -2210,8 +2204,7 @@ chip</description>
 <contactref element="Q3" pad="D13"/>
 <wire x1="45.41" y1="66.595" x2="41.609" y2="66.595" width="0.4064" layer="1"/>
 <wire x1="41.609" y1="66.595" x2="39.878" y2="68.326" width="0.4064" layer="1"/>
-<wire x1="39.878" y1="68.326" x2="39.116" y2="68.326" width="0.4064" layer="1"/>
-<wire x1="39.116" y1="68.326" x2="37.2716" y2="68.326" width="0.4064" layer="1"/>
+<wire x1="39.878" y1="68.326" x2="37.2716" y2="68.326" width="0.4064" layer="1"/>
 <wire x1="37.2716" y1="68.326" x2="37.2574" y2="68.3402" width="0.4064" layer="1"/>
 <wire x1="56.896" y1="77.47" x2="56.896" y2="76.708" width="0.4064" layer="16"/>
 <wire x1="56.896" y1="76.708" x2="54.61" y2="74.422" width="0.4064" layer="16"/>
@@ -2219,8 +2212,10 @@ chip</description>
 <wire x1="39.878" y1="74.422" x2="38.862" y2="73.406" width="0.4064" layer="16"/>
 <wire x1="38.862" y1="73.406" x2="38.862" y2="72.644" width="0.4064" layer="16"/>
 <via x="38.862" y="72.644" extent="1-16" drill="0.7"/>
-<wire x1="38.862" y1="68.58" x2="39.116" y2="68.326" width="0.4064" layer="1"/>
-<wire x1="38.862" y1="68.58" x2="38.862" y2="72.644" width="0" layer="19" extent="1-16"/>
+<wire x1="38.862" y1="72.644" x2="37.846" y2="72.644" width="0.4064" layer="1"/>
+<wire x1="37.846" y1="72.644" x2="37.338" y2="72.136" width="0.4064" layer="1"/>
+<wire x1="37.338" y1="72.136" x2="37.338" y2="68.4208" width="0.4064" layer="1"/>
+<wire x1="37.338" y1="68.4208" x2="37.2574" y2="68.3402" width="0.4064" layer="1"/>
 </signal>
 <signal name="HI_1">
 <contactref element="R5" pad="2"/>
@@ -2435,7 +2430,6 @@ chip</description>
 <wire x1="82.212" y1="51.15" x2="82.14" y2="51.078" width="0.4064" layer="1"/>
 <wire x1="86.08" y1="51.15" x2="86.08" y2="51.536" width="0.4064" layer="1"/>
 <wire x1="86.08" y1="51.536" x2="86.106" y2="51.562" width="0.4064" layer="1"/>
-<wire x1="82.04" y1="36.118" x2="86.08" y2="36.118" width="0.4064" layer="1"/>
 <wire x1="86.08" y1="36.118" x2="86.08" y2="36.03" width="0.4064" layer="1"/>
 <wire x1="101.028" y1="62.484" x2="101.11" y2="62.82" width="0.4064" layer="1"/>
 <wire x1="101.11" y1="62.82" x2="107.03" y2="62.82" width="0.4064" layer="1"/>
@@ -2470,10 +2464,6 @@ chip</description>
 <wire x1="68.58" y1="29.21" x2="68.58" y2="29.464" width="0.4064" layer="16"/>
 <via x="35.052" y="31.75" extent="1-16" drill="0.7"/>
 <wire x1="35.052" y1="33.528" x2="35.433" y2="33.909" width="0.4064" layer="1"/>
-<wire x1="76.708" y1="33.528" x2="76.708" y2="35.306" width="0.4064" layer="1"/>
-<wire x1="76.708" y1="35.306" x2="77.47" y2="36.068" width="0.4064" layer="1"/>
-<wire x1="77.47" y1="36.068" x2="81.99" y2="36.068" width="0.4064" layer="1"/>
-<wire x1="81.99" y1="36.068" x2="82.04" y2="36.118" width="0.4064" layer="1"/>
 <polygon width="0.4064" layer="1" rank="2">
 <vertex x="28.194" y="79.756"/>
 <vertex x="27.94" y="26.67"/>
@@ -2491,7 +2481,6 @@ chip</description>
 </polygon>
 <via x="56.896" y="45.974" extent="1-16" drill="0.7"/>
 <via x="57.15" y="59.69" extent="1-16" drill="0.7"/>
-<wire x1="76.708" y1="33.528" x2="71.12" y2="29.21" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="+3V3">
 <contactref element="Q3" pad="3V"/>

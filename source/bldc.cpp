@@ -19,8 +19,10 @@
 * $Revision: 1.1 $
 * $Date: Monday, October 10, 2005 11:15:46 UTC $
 *****************************************************************************/
+
 #include "Arduino.h"
 #include "bldc.h"
+#include "SoftPWM.h"
 #include <avr/wdt.h>
 
 #define SYSTEM_FREQUENCY        16000000	//! System clock frequecy. Used to calculate PWM TOP value.
@@ -48,27 +50,35 @@
 							  PORTH = (io & 0x6)
 	#define DRIVE_DDR( io )   DDRB	//! Data direction register for drive pattern output.
 #else
-	#define UL    PINB5	//! Port pin connected to phase U, low side enable switch.  Arduino Pin 13
-	#define UH    PINB4	//! Port pin connected to phase U, high side enable switch. Arduino Pin 12 
-
-	#define VL    PINB3	//! Port pin connected to phase V, high side enable switch. Arduino Pin 11
-	#define VH    PINB2	//! Port pin connected to phase V, high side enable switch. Arduino Pin 10
-
-	#define WL    PINB1	//! Port pin connected to phase W, low side enable switch.	Arduino Pin 9
-	#define WH    PINB0	//! Port pin connected to phase W, high side enable switch. Arduino Pin 8
+	#define UL    	PINB5	//! Port pin connected to phase U, low side enable switch.  Arduino Pin 13
+	#define UL_Pin  13
+	#define UH      PINB4	//! Port pin connected to phase U, high side enable switch. Arduino Pin 12 
+	#define UH_Pin  12
 	
-	#define DRIVE_PORT( io )  PORTB = io	//! PORT register for drive pattern output.
-	#define DRIVE_DDR( io )   DDRB = io	//! Data direction register for drive pattern output.	
+	#define VL      PINB3	//! Port pin connected to phase V, high side enable switch. Arduino Pin 11
+	#define VL_Pin  11
+	#define VH      PINB2	//! Port pin connected to phase V, high side enable switch. Arduino Pin 10
+	#define VH_Pin  10
+	
+	#define WL    PINB1	//! Port pin connected to phase W, low side enable switch.	Arduino Pin 9
+	#define WL_Pin  9
+	#define WH    PINB0	//! Port pin connected to phase W, high side enable switch. Arduino Pin 8
+	#define WH_Pin  8
+	
+	#define DRIVE_PORT	PORTB	//! PORT register for drive pattern output.
+	#define DRIVE_DDR 	DDRB	//! Data direction register for drive pattern output.	
 	
 #endif
 
 #define CW    0	//! Clockwise rotation flag. Used only in macros.
 #define CCW   1	//! Counterclockwise rotation flag. Used only in macros.
 
+
 /*! Direction of rotation. Set to either CW or CCW for
  * clockwise and counterclockwise respectively.
  */
 #define DIRECTION_OF_ROTATION     CCW
+#define useIO 0
 
 #define DRIVE_PATTERN_STEP1_CCW      ((1 << UL) | (1 << VH))	//! Drive pattern for commutation step 1, CCW rotation.
 #define DRIVE_PATTERN_STEP2_CCW      ((1 << UL) | (1 << WH))	//! Drive pattern for commutation step 2, CCW rotation.
@@ -234,6 +244,7 @@ void BLDC::init()
   //InitTimers();
   //InitADC();
   MakeTables();
+  InitHalls();
   //InitAnalogComparator();
   
   //setSpeed( 50 );
@@ -245,6 +256,43 @@ void BLDC::init()
   //sei();
 
 }
+
+static volatile bool HallA;
+static volatile bool HallB;
+static volatile bool HallC;
+static volatile unsigned char Halls = 0x01;
+
+#define HALL_A_mask 0x08
+#define HALL_B_mask 0x04
+#define HALL_C_mask 0x01
+
+void Hall_handler()
+{
+	HallA = (bool) (HALL_A_mask & PORTD);
+    HallB = (bool) (HALL_B_mask & PORTD);
+    HallC = (bool) (HALL_C_mask & PORTD);
+	
+	Halls = PORTD;
+}
+
+void BLDC::InitHalls()
+{
+	attachInterrupt(0, Hall_handler, CHANGE);
+	attachInterrupt(1, Hall_handler, CHANGE);
+	attachInterrupt(2, Hall_handler, CHANGE);
+}
+
+
+void BLDC::GetHallData(bool &A, bool &B, bool &C, unsigned char &_Halls)
+{
+	A = HallA;
+	B = HallB;
+	C = HallC;
+	_Halls = Halls;
+}
+
+
+
 void BLDC::setSpeed(unsigned long _speed)
 {
  speedSetpoint = speed = _speed;
@@ -257,10 +305,60 @@ void BLDC::Control()
 
 void BLDC::SetCommutationState(unsigned char state)
 {
+	#if useIO
 	if( (state >= MIN_COMMUTATION_STEPS) && (state < MAX_COMMUTATION_STEPS))
 	{
 		DRIVE_PORT = driveTable[state];
 	}
+	#else
+	char UL_duty = 0;
+	char UH_duty = 0;
+	char VL_duty = 0;
+	char VH_duty = 0;
+	char WL_duty = 0;
+	char WH_duty = 0;
+	
+	if( (state >= MIN_COMMUTATION_STEPS) && (state < MAX_COMMUTATION_STEPS))
+	{
+		switch(driveTable[state])
+		{
+			case DRIVE_PATTERN_STEP1_CCW:
+				 UL_duty = 75;
+				 VH_duty = 75;
+				 break;
+			case DRIVE_PATTERN_STEP2_CCW:
+				 UL_duty = 75;
+				 WH_duty = 75;
+				 break;
+			case DRIVE_PATTERN_STEP3_CCW:
+				 VL_duty = 75;
+				 WH_duty = 75;
+				 break;
+			case DRIVE_PATTERN_STEP4_CCW:
+				 VL_duty = 75;
+				 UH_duty = 75;
+				 break;
+			case DRIVE_PATTERN_STEP5_CCW:
+				 WL_duty = 75;
+				 UH_duty = 75;
+				 break;
+			case DRIVE_PATTERN_STEP6_CCW:
+				 WL_duty = 75;
+				 VH_duty = 75;
+				 break;
+		
+		}
+	}
+
+	SoftPWMSetPercent(UL_Pin, UL_duty);
+	SoftPWMSetPercent(UH_Pin, UH_duty);
+	SoftPWMSetPercent(VL_Pin, VL_duty);
+	SoftPWMSetPercent(VH_Pin, VH_duty);
+	SoftPWMSetPercent(WL_Pin, WL_duty);
+	SoftPWMSetPercent(WH_Pin, WH_duty);
+
+
+	#endif
 }
 unsigned char BLDC::AnalogData(unsigned char mux)
 {
@@ -388,12 +486,23 @@ static void ResetHandler(void)
  */
 static void InitPorts(void)
 {
+  	#if useIO
   // Init DRIVE_DDR for motor driving.
   DRIVE_DDR = (1 << UL) | (1 << UH) | (1 << VL) | (1 << VH) | (1 << WL) | (1 << WH);
 
   // Init PORTD for PWM on PD3.
   DDRD = (1 << PIND3);
-
+	#else
+	SoftPWMBegin();
+	SoftPWMSetPercent(UL_Pin,0);
+	SoftPWMSetPercent(UH_Pin,0);
+	SoftPWMSetPercent(VL_Pin,0);
+	SoftPWMSetPercent(VH_Pin,0);
+	SoftPWMSetPercent(WL_Pin,0);
+	SoftPWMSetPercent(WH_Pin,0);
+	#endif
+  
+  
   // Disable digital input buffers on ADC channels.
   DIDR0 = (1 << ADC4D) | (1 << ADC3D) | (1 << ADC2D) | (1 << ADC1D) | (1 << ADC0D);
 }

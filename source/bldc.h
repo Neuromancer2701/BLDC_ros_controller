@@ -35,9 +35,12 @@ public:
 	void Control();
 	void SetCommutationState(unsigned char state);
 	unsigned char AnalogData(unsigned char mux);
+	void GetHallData(bool &A, bool &B, bool &C, unsigned char &_Halls);
 
 private:
 	unsigned long speed;
+	
+	void InitHalls();
 };
 
 
