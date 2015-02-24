@@ -33,7 +33,7 @@ public:
 	void init();
 	void setSpeed(unsigned long _speed);
 	void Control();
-	void SetCommutationState(unsigned char state);
+	void SetCommutationState(char state);
 	unsigned char AnalogData(unsigned char mux);
 	void GetHallData(bool &A, bool &B, bool &C, unsigned char &_Halls);
 
