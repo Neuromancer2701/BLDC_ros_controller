@@ -303,7 +303,7 @@ void BLDC::Control()
     PWMControl();
 }
 
-void BLDC::SetCommutationState(unsigned char state)
+void BLDC::SetCommutationState(char state)
 {
 	#if useIO
 	if( (state >= MIN_COMMUTATION_STEPS) && (state < MAX_COMMUTATION_STEPS))
