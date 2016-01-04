@@ -243,8 +243,8 @@ void BLDC::init()
   InitPorts();
   //InitTimers();
   //InitADC();
-  MakeTables();
-  InitHalls();
+  //MakeTables();
+  //InitHalls();
   //InitAnalogComparator();
   
   //setSpeed( 50 );
@@ -262,6 +262,8 @@ static volatile bool HallB;
 static volatile bool HallC;
 static volatile unsigned char Halls = 0x01;
 
+static volatile int RawHallData[3];
+
 #define HALL_A_mask 0x08
 #define HALL_B_mask 0x04
 #define HALL_C_mask 0x01
@@ -277,9 +279,14 @@ void Hall_handler()
 
 void BLDC::InitHalls()
 {
-	attachInterrupt(0, Hall_handler, CHANGE);
-	attachInterrupt(1, Hall_handler, CHANGE);
-	attachInterrupt(2, Hall_handler, CHANGE);
+    attachInterrupt(0, Hall_handler, CHANGE);
+    attachInterrupt(1, Hall_handler, CHANGE);
+    attachInterrupt(2, Hall_handler, CHANGE);
+}
+
+void BLDC::InitADCHalls()
+{
+
 }
 
 

@@ -4,7 +4,7 @@
 #ifndef __BLDC_H__
 #define __BLDC_H__
 
-//Profiles will use C++11 enum class so I clased it in #ifdef block for the time being
+//Profiles will use C++11 enum class so I put it in #ifdef block for the time being
 #ifdef profiles
 
 class enum MotorType			//class for different motor profiles
@@ -41,6 +41,7 @@ private:
 	unsigned long speed;
 	
 	void InitHalls();
+	void InitADCHalls();
 };
 
 
