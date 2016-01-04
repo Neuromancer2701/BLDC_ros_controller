@@ -104,6 +104,9 @@
 #define ADC_MUX_W           0x1	//! ADC multiplexer selection for channel W sampling.
 #define ADC_MUX_CURRENT     0x0	//! ADC multiplexer selection for current sampling.
 #define ADC_MUX_REF_VOLTAGE 0x4	//! ADC multiplexer selection for reference voltage sampling.
+#define ADC_HALL_1           0x1
+#define ADC_HALL_2           0x2
+#define ADC_HALL_3           0x3
 
 #define ADC_REF_CHANNEL                 ((0 << REFS1) | (0 << REFS0))	//! ADC reference channel selection.
 #define ADC_RES_ALIGNMENT_BEMF          (1 << ADLAR)	//! ADC result alignment for BEMF measurement.
@@ -284,9 +287,11 @@ void BLDC::InitHalls()
     attachInterrupt(2, Hall_handler, CHANGE);
 }
 
-void BLDC::InitADCHalls()
+void BLDC::ReadADCHalls()
 {
-
+  RawHallData[0] = analogRead(ADC_HALL_1);    // read the input pin
+  RawHallData[1] = analogRead(ADC_HALL_2);    // read the input pin
+  RawHallData[2] = analogRead(ADC_HALL_3);    // read the input pin
 }
 
 

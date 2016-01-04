@@ -41,7 +41,7 @@ private:
 	unsigned long speed;
 	
 	void InitHalls();
-	void InitADCHalls();
+	void ReadADCHalls();
 };
 
 
