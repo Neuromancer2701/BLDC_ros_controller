@@ -10384,7 +10384,6 @@ type 0309, grid 2.5 mm</description>
 <part name="SUPPLY4" library="supply2" deviceset="VCC" device="" value="+24V"/>
 <part name="SUPPLY5" library="supply2" deviceset="VCC" device="" value="+24V"/>
 <part name="SUPPLY6" library="supply2" deviceset="VCC" device="" value="+24V"/>
-<part name="SUPPLY1" library="supply2" deviceset="VCC" device="" value="+24V"/>
 <part name="X1" library="con-phoenix-508" deviceset="MKDSN1,5/2-5,08" device="" value=""/>
 <part name="GND38" library="supply1" deviceset="GND" device=""/>
 <part name="SUPPLY7" library="supply2" deviceset="VCC" device="" value="+24V"/>
@@ -10473,7 +10472,6 @@ type 0309, grid 2.5 mm</description>
 <instance part="SUPPLY4" gate="G$1" x="25.4" y="22.86"/>
 <instance part="SUPPLY5" gate="G$1" x="25.4" y="76.2"/>
 <instance part="SUPPLY6" gate="G$1" x="25.4" y="132.08"/>
-<instance part="SUPPLY1" gate="G$1" x="-170.18" y="124.46"/>
 <instance part="X1" gate="-1" x="-198.12" y="170.18"/>
 <instance part="X1" gate="-2" x="-198.12" y="165.1"/>
 <instance part="GND38" gate="1" x="-203.2" y="160.02"/>
@@ -10659,12 +10657,6 @@ type 0309, grid 2.5 mm</description>
 <wire x1="-203.2" y1="175.26" x2="-203.2" y2="170.18" width="0.1524" layer="91"/>
 <pinref part="X1" gate="-1" pin="KL"/>
 <wire x1="-203.2" y1="170.18" x2="-200.66" y2="170.18" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<wire x1="-175.26" y1="119.38" x2="-170.18" y2="119.38" width="0.1524" layer="91"/>
-<pinref part="SUPPLY1" gate="G$1" pin="VCC"/>
-<wire x1="-170.18" y1="119.38" x2="-170.18" y2="121.92" width="0.1524" layer="91"/>
-<pinref part="Q3" gate="G$1" pin="AREF"/>
 </segment>
 </net>
 <net name="N$13" class="0">
