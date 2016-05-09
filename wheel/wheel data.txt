@@ -1,0 +1,9 @@
+Specifications
+
+tyre:13*5.00-6,tubeless tyre 
+rim size:13 inch 
+voltage:DC 24/36/48v 
+power:180-500w 
+no-load speed:300-1200rpm 
+diameter with tyre:330mm
+new weight:6.5kg with tire
