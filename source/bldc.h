@@ -4,26 +4,6 @@
 #ifndef __BLDC_H__
 #define __BLDC_H__
 
-//Profiles will use C++11 enum class so I put it in #ifdef block for the time being
-#ifdef profiles
-
-class enum MotorType			//class for different motor profiles
-{
-	Default = 0,
-	Apex    = 1,
-	E-FliteOutrunner = 2,
-	MAX_TYPE = E-FliteOutrunner + 1
-};
-
-
-class Motor
-{
-	double nominalVoltage;
-	double maxCurrent;
-}
-
-#endif
-
 class BLDC
 {
 public:
@@ -33,16 +13,39 @@ public:
 	void init();
 	void setSpeed(unsigned long _speed);
 	void Control();
-	void SetCommutationState(char state);
-	unsigned char AnalogData(unsigned char mux);
-	void GetHallData(bool &A, bool &B, bool &C, unsigned char &_Halls);
+	void SetCommutationState(unsigned short state);
+
+    volatile unsigned short getCommunationState() { return CommunationState; }
+    volatile unsigned short getHallIndex() { return HallIndex; }
+
+    void Reverse(){forward = false;}
+    void Forward(){forward = true;}
+    unsigned short LookupIndex();
+
+    enum constants
+    {
+        HALL_THRESHOLD = 1000,
+        NUMBER_HALLS = 3,
+        HALL_STATES = 8
+    };
 
 private:
 	unsigned long speed;
-	
-	void InitHalls();
+	bool forward;
+    volatile bool HallStates[NUMBER_HALLS];
+    volatile unsigned short RawHallData[NUMBER_HALLS];
+
+    volatile unsigned short HallIndex;
+    volatile unsigned short CommunationState;
+
 	void ReadADCHalls();
 };
+
+static const unsigned short LookupTable[2][BLDC::HALL_STATES] = {
+        {1, 6, 0, 5, 2, 0, 3, 4},
+        {4, 3, 0, 2, 5, 0, 6, 1}
+};
+
 
 
 
