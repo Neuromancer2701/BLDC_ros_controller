@@ -256,19 +256,24 @@ void BLDC::ReadADCHalls()
     RawHallData[0] = analogRead(ADC_HALL_1);
     RawHallData[1] = analogRead(ADC_HALL_2);
     RawHallData[2] = analogRead(ADC_HALL_3);
-    for(int i = 0; i < NUMBER_HALLS; i++) {
+    for(int i = 0; i < NUMBER_HALLS; i++)
+	{
         HallStates[i] = (RawHallData[i] > HALL_THRESHOLD);
+        Serial.print("Hall States: ");
+        Serial.println(HallStates[i]);
     }
 }
 
 unsigned short BLDC::LookupIndex()
 {
+    unsigned short index = 0;
     for(int i = 0; i < NUMBER_HALLS; i++)
     {
-        HallIndex |= ((unsigned short)HallStates[i]) << i;
+        index |= ((unsigned short)HallStates[i]) << i;
     }
+    HallIndex = index;
 
-    return LookupTable[HallIndex][(unsigned)forward];
+    return LookupTable[(unsigned int)forward][HallIndex];
 }
 
 void BLDC::setSpeed(unsigned long _speed)
