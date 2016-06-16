@@ -42,8 +42,8 @@ private:
 };
 
 static const unsigned short LookupTable[2][BLDC::HALL_STATES] = {
-        {0, 2, 4, 3, 6, 1, 5, 0},
-        {0, 2, 1, 6, 3, 4, 5, 0}
+        {0, 5, 1, 6, 3, 4, 2, 0},
+        {0, 2, 4, 3, 6, 1, 5, 0}
 };
 
 
