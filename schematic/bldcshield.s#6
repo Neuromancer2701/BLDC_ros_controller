@@ -10476,7 +10476,6 @@ at 30/07/2012 17:45:58</description>
 <part name="R6" library="SmartPrj" deviceset="R-EU_" device="R1206" value="22"/>
 <part name="R3" library="SmartPrj" deviceset="R-EU_" device="R1206" value="22"/>
 <part name="C1" library="SmartPrj" deviceset="C-EU" device="C1206" value="100nf"/>
-<part name="U$3" library="MyPOW" deviceset="+5V" device=""/>
 <part name="D1" library="diode" deviceset="DIODE-" device="SOD123" value="MMSD914"/>
 <part name="R1" library="SmartPrj" deviceset="R-EU_" device="R1206" value="200K"/>
 <part name="C2" library="SmartPrj" deviceset="C-EU" device="C1206" value="22p"/>
@@ -10528,6 +10527,7 @@ at 30/07/2012 17:45:58</description>
 <part name="C24" library="SmartPrj" deviceset="C-EU" device="C1206" value="1uF"/>
 <part name="C25" library="SmartPrj" deviceset="C-EU" device="C1206" value="0.1u"/>
 <part name="R33" library="SmartPrj" deviceset="R-EU_" device="R1206" value="2.2k"/>
+<part name="SUPPLY1" library="supply2" deviceset="+12V" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -10569,7 +10569,6 @@ at 30/07/2012 17:45:58</description>
 <instance part="R6" gate="G$1" x="0" y="104.14" rot="R180"/>
 <instance part="R3" gate="G$1" x="0" y="119.38" rot="R180"/>
 <instance part="C1" gate="G$1" x="-10.16" y="132.08" rot="R270"/>
-<instance part="U$3" gate="G$1" x="-40.64" y="134.62"/>
 <instance part="D1" gate="G$1" x="-27.94" y="132.08" smashed="yes">
 <attribute name="NAME" x="-30.48" y="136.6774" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-27.94" y="134.8486" size="1.778" layer="96"/>
@@ -10627,6 +10626,7 @@ at 30/07/2012 17:45:58</description>
 <instance part="C24" gate="G$1" x="12.7" y="172.72" rot="R180"/>
 <instance part="C25" gate="G$1" x="-55.88" y="177.8" rot="R180"/>
 <instance part="R33" gate="G$1" x="-45.72" y="177.8" rot="R180"/>
+<instance part="SUPPLY1" gate="+12V" x="-40.64" y="137.16"/>
 </instances>
 <busses>
 </busses>
@@ -10647,14 +10647,6 @@ at 30/07/2012 17:45:58</description>
 <wire x1="-30.48" y1="76.2" x2="-40.64" y2="76.2" width="0.1524" layer="91"/>
 <junction x="-40.64" y="76.2"/>
 <pinref part="D2" gate="G$1" pin="A"/>
-</segment>
-<segment>
-<pinref part="U$3" gate="G$1" pin="+5V"/>
-<pinref part="IC1" gate="G$1" pin="VCC"/>
-<wire x1="-40.64" y1="116.84" x2="-40.64" y2="132.08" width="0.1524" layer="91"/>
-<wire x1="-30.48" y1="132.08" x2="-40.64" y2="132.08" width="0.1524" layer="91"/>
-<junction x="-40.64" y="132.08"/>
-<pinref part="D1" gate="G$1" pin="A"/>
 </segment>
 <segment>
 <pinref part="U$4" gate="G$1" pin="+5V"/>
@@ -11272,6 +11264,15 @@ at 30/07/2012 17:45:58</description>
 <junction x="12.7" y="180.34"/>
 <pinref part="R32" gate="G$1" pin="1"/>
 <pinref part="C24" gate="G$1" pin="2"/>
+</segment>
+<segment>
+<pinref part="IC1" gate="G$1" pin="VCC"/>
+<wire x1="-40.64" y1="116.84" x2="-40.64" y2="132.08" width="0.1524" layer="91"/>
+<wire x1="-30.48" y1="132.08" x2="-40.64" y2="132.08" width="0.1524" layer="91"/>
+<pinref part="D1" gate="G$1" pin="A"/>
+<pinref part="SUPPLY1" gate="+12V" pin="+12V"/>
+<wire x1="-40.64" y1="134.62" x2="-40.64" y2="132.08" width="0.1524" layer="91"/>
+<junction x="-40.64" y="132.08"/>
 </segment>
 </net>
 </nets>
