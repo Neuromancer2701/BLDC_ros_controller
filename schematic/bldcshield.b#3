@@ -1958,7 +1958,21 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <vertex x="65.278" y="59.182"/>
 <vertex x="70.612" y="59.182"/>
 </polygon>
-<wire x1="73.73" y1="59.508" x2="66.834" y2="57.248" width="0" layer="19" extent="1-16"/>
+<via x="69.088" y="55.626" extent="1-16" drill="0.6"/>
+<via x="69.088" y="56.642" extent="1-16" drill="0.6"/>
+<via x="69.088" y="57.658" extent="1-16" drill="0.6"/>
+<via x="69.596" y="58.674" extent="1-16" drill="0.6"/>
+<via x="68.58" y="58.674" extent="1-16" drill="0.6"/>
+<via x="67.564" y="58.674" extent="1-16" drill="0.6"/>
+<via x="65.532" y="58.674" extent="1-16" drill="0.6"/>
+<via x="66.548" y="58.674" extent="1-16" drill="0.6"/>
+<polygon width="0.4064" layer="1">
+<vertex x="65.024" y="59.436"/>
+<vertex x="65.024" y="55.372"/>
+<vertex x="70.104" y="55.372"/>
+<vertex x="70.104" y="59.182"/>
+<vertex x="70.104" y="59.436"/>
+</polygon>
 </signal>
 <signal name="BLDC2">
 <contactref element="Q4" pad="3"/>
@@ -2152,7 +2166,11 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <signal name="N$31">
 <contactref element="R6" pad="1"/>
 <contactref element="Q2" pad="1"/>
-<wire x1="66.832" y1="57.228" x2="60.942" y2="63.99" width="0" layer="19" extent="1-16"/>
+<wire x1="60.942" y1="63.99" x2="60.942" y2="58.946" width="0.4064" layer="1"/>
+<wire x1="60.942" y1="58.946" x2="62.738" y2="57.15" width="0.4064" layer="1"/>
+<wire x1="62.738" y1="57.15" x2="64.516" y2="57.15" width="0.4064" layer="16"/>
+<via x="62.738" y="57.15" extent="1-16" drill="0.6"/>
+<wire x1="64.516" y1="57.15" x2="66.832" y2="57.228" width="0.4064" layer="16"/>
 </signal>
 <signal name="N$32">
 <contactref element="R6" pad="2"/>

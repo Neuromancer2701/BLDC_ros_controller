@@ -1860,14 +1860,14 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </pass>
 </autorouter>
 <elements>
-<element name="Q1" library="SparkFun" package="DPAK" value="MOSFET-NCHANNELFDD8580" x="72.144" y="59.528" rot="R270"/>
-<element name="Q2" library="SparkFun" package="DPAK" value="MOSFET-NCHANNELFDD8580" x="72.142" y="59.508" rot="MR90"/>
-<element name="Q4" library="SparkFun" package="DPAK" value="MOSFET-NCHANNELFDD8580" x="72.164" y="49.73" rot="R270"/>
-<element name="Q5" library="SparkFun" package="DPAK" value="MOSFET-NCHANNELFDD8580" x="72.212" y="49.72" rot="MR90"/>
-<element name="Q6" library="SparkFun" package="DPAK" value="MOSFET-NCHANNELFDD8580" x="72.164" y="40.016" rot="R270"/>
-<element name="Q7" library="SparkFun" package="DPAK" value="MOSFET-NCHANNELFDD8580" x="72.162" y="40.016" rot="MR90"/>
-<element name="R27" library="SmartPrj" package="R1206" value="4.7k" x="66.67" y="70.696" rot="MR270"/>
-<element name="C8" library="SmartPrj" package="C1206" value="22p" x="71.072" y="72.118" rot="MR0"/>
+<element name="Q1" library="SparkFun" package="DPAK" value="MOSFET-NCHANNELFDD8580" x="88.808" y="70.366"/>
+<element name="Q2" library="SparkFun" package="DPAK" value="MOSFET-NCHANNELFDD8580" x="88.144" y="57.222" rot="MR90"/>
+<element name="Q4" library="SparkFun" package="DPAK" value="MOSFET-NCHANNELFDD8580" x="81.08" y="70.386"/>
+<element name="Q5" library="SparkFun" package="DPAK" value="MOSFET-NCHANNELFDD8580" x="88.214" y="49.212" rot="MR90"/>
+<element name="Q6" library="SparkFun" package="DPAK" value="MOSFET-NCHANNELFDD8580" x="73.522" y="70.386"/>
+<element name="Q7" library="SparkFun" package="DPAK" value="MOSFET-NCHANNELFDD8580" x="88.164" y="41.794" rot="MR90"/>
+<element name="R27" library="SmartPrj" package="R1206" value="4.7k" x="67.432" y="55.202" rot="MR270"/>
+<element name="C8" library="SmartPrj" package="C1206" value="22p" x="71.072" y="54.846" rot="MR0"/>
 <element name="IC3" library="IR" package="SO08" value="IR2101SMD" x="48" y="38" rot="R270"/>
 <element name="R22" library="SmartPrj" package="R1206" value="22" x="59.52" y="36.04" rot="R180"/>
 <element name="R19" library="SmartPrj" package="R1206" value="22" x="59.48" y="39.94" rot="R180"/>
@@ -1883,16 +1883,16 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <element name="R3" library="SmartPrj" package="R1206" value="22" x="59.58" y="67.99" rot="R180"/>
 <element name="C1" library="SmartPrj" package="C1206" value="100nf" x="51.48" y="72.12"/>
 <element name="D1" library="diode" package="SOD123" value="MMSD914" x="44.752" y="72.644" rot="R180"/>
-<element name="R1" library="SmartPrj" package="R1206" value="200K" x="81.55" y="36.094" rot="R180"/>
-<element name="C2" library="SmartPrj" package="C1206" value="22p" x="87.126" y="32.474" rot="R180"/>
-<element name="R2" library="SmartPrj" package="R1206" value="68k" x="87.286" y="36.094" rot="R180"/>
-<element name="X2" library="con-phoenix-508" package="MKDSN1,5/3-5,08" value="" x="97.674" y="49.822" rot="R270">
-<attribute name="OC_NEWARK" value="70R0299" x="37.984" y="1.562" size="1.778" layer="27" rot="R270" display="off"/>
-<attribute name="MPN" value="SMKDSN1,5/3-5,08" x="37.984" y="1.562" size="1.778" layer="27" rot="R270" display="off"/>
-<attribute name="MF" value="" x="37.984" y="1.562" size="1.778" layer="27" rot="R270" display="off"/>
-<attribute name="OC_FARNELL" value="1792904" x="37.984" y="1.562" size="1.778" layer="27" rot="R270" display="off"/>
+<element name="R1" library="SmartPrj" package="R1206" value="200K" x="74.184" y="36.348" rot="R180"/>
+<element name="C2" library="SmartPrj" package="C1206" value="22p" x="80.014" y="32.22" rot="R180"/>
+<element name="R2" library="SmartPrj" package="R1206" value="68k" x="80.174" y="36.348" rot="R180"/>
+<element name="X2" library="con-phoenix-508" package="MKDSN1,5/3-5,08" value="" x="97.928" y="48.298" rot="R270">
+<attribute name="OC_NEWARK" value="70R0299" x="38.238" y="0.038" size="1.778" layer="27" rot="R270" display="off"/>
+<attribute name="MPN" value="SMKDSN1,5/3-5,08" x="38.238" y="0.038" size="1.778" layer="27" rot="R270" display="off"/>
+<attribute name="MF" value="" x="38.238" y="0.038" size="1.778" layer="27" rot="R270" display="off"/>
+<attribute name="OC_FARNELL" value="1792904" x="38.238" y="0.038" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
-<element name="R28" library="resistor" package="R2512" value="0.001" x="69.562" y="66.088" rot="MR0"/>
+<element name="R28" library="resistor" package="R2512" value="0.001" x="70.07" y="49.832" rot="MR0"/>
 <element name="X1" library="con-phoenix-508" package="MKDSN1,5/2-5,08" value="" x="97.42" y="70.82" rot="R270">
 <attribute name="OC_NEWARK" value="30M2397" x="37.73" y="6.05" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="MPN" value="MKDSN 1,5/2-5.08" x="37.73" y="6.05" size="1.778" layer="27" rot="R270" display="off"/>
@@ -1911,10 +1911,10 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <element name="C24" library="SmartPrj" package="C1206" value="1uF" x="30.48" y="50.546" rot="R270"/>
 <element name="C25" library="SmartPrj" package="C1206" value="0.1u" x="33.02" y="30.734"/>
 <element name="R33" library="SmartPrj" package="R1206" value="2.2k" x="36.068" y="50.292" rot="R90"/>
-<element name="R4" library="SmartPrj" package="R1206" value="10k" x="93.98" y="39.116" rot="R180"/>
-<element name="R5" library="SmartPrj" package="R1206" value="10k" x="93.98" y="35.56" rot="R180"/>
-<element name="R7" library="SmartPrj" package="R1206" value="10k" x="93.98" y="31.75" rot="R180"/>
-<element name="JP1" library="SparkFun-Connectors" package="2X03" value="" x="101.346" y="34.544" rot="R90"/>
+<element name="R4" library="SmartPrj" package="R1206" value="10k" x="93.726" y="33.02"/>
+<element name="R5" library="SmartPrj" package="R1206" value="10k" x="87.122" y="36.322"/>
+<element name="R7" library="SmartPrj" package="R1206" value="10k" x="87.63" y="32.004" rot="R180"/>
+<element name="JP1" library="SparkFun-Connectors" package="2X03" value="" x="101.6" y="33.02" rot="R90"/>
 </elements>
 <signals>
 <signal name="+5V" class="3">
@@ -1928,10 +1928,10 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="66.04" y1="28.448" x2="66.548" y2="27.686" width="0.4064" layer="16"/>
 <wire x1="66.548" y1="27.686" x2="72.39" y2="27.686" width="0.4064" layer="16"/>
 <wire x1="72.39" y1="27.686" x2="73.66" y2="29.21" width="0.4064" layer="16"/>
-<wire x1="92.558" y1="31.75" x2="102.616" y2="32.004" width="0" layer="19" extent="1-1"/>
-<wire x1="92.558" y1="35.56" x2="92.558" y2="31.75" width="0" layer="19" extent="1-1"/>
-<wire x1="92.558" y1="39.116" x2="92.558" y2="35.56" width="0" layer="19" extent="1-1"/>
-<wire x1="73.66" y1="29.21" x2="92.558" y2="31.75" width="0" layer="19" extent="1-1"/>
+<wire x1="95.148" y1="33.02" x2="102.87" y2="30.48" width="0" layer="19" extent="1-1"/>
+<wire x1="88.544" y1="36.322" x2="95.148" y2="33.02" width="0" layer="19" extent="1-1"/>
+<wire x1="86.208" y1="32.004" x2="88.544" y2="36.322" width="0" layer="19" extent="1-1"/>
+<wire x1="73.66" y1="29.21" x2="86.208" y2="32.004" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="BLDC1">
 <contactref element="Q1" pad="3"/>
@@ -1947,32 +1947,9 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="56.388" y1="66.04" x2="62.484" y2="66.04" width="0.4064" layer="1"/>
 <wire x1="62.484" y1="66.04" x2="63.246" y2="65.278" width="0.4064" layer="1"/>
 <wire x1="63.246" y1="65.278" x2="63.246" y2="58.42" width="0.4064" layer="1"/>
-<wire x1="63.246" y1="58.42" x2="64.262" y2="57.404" width="0.4064" layer="1"/>
-<wire x1="64.262" y1="57.404" x2="66.678" y2="57.404" width="0.4064" layer="1"/>
-<wire x1="66.678" y1="57.404" x2="66.834" y2="57.248" width="0.4064" layer="1"/>
-<polygon width="0.4064" layer="16" isolate="0.254">
-<vertex x="70.612" y="61.976"/>
-<vertex x="100.584" y="61.976"/>
-<vertex x="100.584" y="55.372"/>
-<vertex x="65.278" y="55.372"/>
-<vertex x="65.278" y="59.182"/>
-<vertex x="70.612" y="59.182"/>
-</polygon>
-<via x="69.088" y="55.626" extent="1-16" drill="0.6"/>
-<via x="69.088" y="56.642" extent="1-16" drill="0.6"/>
-<via x="69.088" y="57.658" extent="1-16" drill="0.6"/>
-<via x="69.596" y="58.674" extent="1-16" drill="0.6"/>
-<via x="68.58" y="58.674" extent="1-16" drill="0.6"/>
-<via x="67.564" y="58.674" extent="1-16" drill="0.6"/>
-<via x="65.532" y="58.674" extent="1-16" drill="0.6"/>
-<via x="66.548" y="58.674" extent="1-16" drill="0.6"/>
-<polygon width="0.4064" layer="1">
-<vertex x="65.024" y="59.436"/>
-<vertex x="65.024" y="55.372"/>
-<vertex x="70.104" y="55.372"/>
-<vertex x="70.104" y="59.182"/>
-<vertex x="70.104" y="59.436"/>
-</polygon>
+<wire x1="89.732" y1="57.222" x2="91.088" y2="65.056" width="0" layer="19" extent="1-16"/>
+<wire x1="97.953" y1="55.9391" x2="89.732" y2="57.222" width="0" layer="19" extent="16-16"/>
+<wire x1="63.246" y1="58.42" x2="89.732" y2="57.222" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="BLDC2">
 <contactref element="Q4" pad="3"/>
@@ -1989,19 +1966,9 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="50.59" y1="51.435" x2="56.007" y2="51.435" width="0.4064" layer="1"/>
 <wire x1="56.007" y1="51.435" x2="56.642" y2="52.07" width="0.4064" layer="1"/>
 <wire x1="56.642" y1="52.07" x2="62.992" y2="52.07" width="0.4064" layer="1"/>
-<wire x1="62.992" y1="52.07" x2="67.31" y2="47.752" width="0.4064" layer="1"/>
-<polygon width="0.4064" layer="16" isolate="0.254">
-<vertex x="70.358" y="54.61"/>
-<vertex x="100.584" y="54.864"/>
-<vertex x="100.584" y="50.038"/>
-<vertex x="77.47" y="50.038"/>
-<vertex x="77.47" y="46.228"/>
-<vertex x="64.77" y="46.228"/>
-<vertex x="65.024" y="50.038"/>
-<vertex x="70.358" y="50.038"/>
-</polygon>
-<wire x1="67.31" y1="47.752" x2="66.854" y2="47.45" width="0" layer="19" extent="1-1"/>
-<wire x1="73.8" y1="49.72" x2="67.31" y2="47.752" width="0" layer="19" extent="1-16"/>
+<wire x1="89.802" y1="49.212" x2="97.953" y2="50.8591" width="0" layer="19" extent="16-16"/>
+<wire x1="83.36" y1="65.076" x2="89.802" y2="49.212" width="0" layer="19" extent="1-16"/>
+<wire x1="62.992" y1="52.07" x2="83.36" y2="65.076" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="BLDC3">
 <contactref element="Q6" pad="3"/>
@@ -2018,27 +1985,14 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="48.768" y1="37.338" x2="50.573" y2="37.338" width="0.4064" layer="1"/>
 <wire x1="50.573" y1="37.338" x2="50.6" y2="37.365" width="0.4064" layer="1"/>
 <wire x1="56.134" y1="38.1" x2="62.484" y2="38.1" width="0.4064" layer="1"/>
-<wire x1="62.484" y1="38.1" x2="62.992" y2="37.592" width="0.4064" layer="1"/>
-<wire x1="62.992" y1="37.592" x2="66.71" y2="37.592" width="0.4064" layer="1"/>
-<wire x1="66.71" y1="37.592" x2="66.854" y2="37.736" width="0.4064" layer="1"/>
-<polygon width="0.4064" layer="16" isolate="0.4064">
-<vertex x="70.358" y="45.466"/>
-<vertex x="77.978" y="45.466"/>
-<vertex x="77.978" y="49.53"/>
-<vertex x="100.584" y="49.53"/>
-<vertex x="100.33" y="42.164"/>
-<vertex x="78.74" y="42.164"/>
-<vertex x="78.74" y="36.322"/>
-<vertex x="65.024" y="36.322"/>
-<vertex x="65.024" y="40.132"/>
-<vertex x="70.358" y="40.132"/>
-</polygon>
-<wire x1="73.75" y1="40.016" x2="66.854" y2="37.736" width="0" layer="19" extent="1-16"/>
+<wire x1="89.752" y1="41.794" x2="97.953" y2="45.7791" width="0" layer="19" extent="16-16"/>
+<wire x1="75.802" y1="65.076" x2="89.752" y2="41.794" width="0" layer="19" extent="1-16"/>
+<wire x1="62.484" y1="38.1" x2="89.752" y2="41.794" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="N$9">
 <contactref element="C8" pad="2"/>
 <contactref element="R27" pad="1"/>
-<wire x1="66.67" y1="72.118" x2="69.672" y2="72.118" width="0" layer="19" extent="16-16"/>
+<wire x1="67.432" y1="56.624" x2="69.672" y2="54.846" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="VCC">
 <contactref element="Q6" pad="4"/>
@@ -2046,15 +2000,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <contactref element="Q1" pad="4"/>
 <contactref element="R1" pad="2"/>
 <contactref element="X1" pad="1"/>
-<polygon width="0.4064" layer="1" isolate="0.254">
-<vertex x="101.346" y="75.692"/>
-<vertex x="70.866" y="75.692"/>
-<vertex x="71.12" y="37.592"/>
-<vertex x="77.47" y="37.338"/>
-<vertex x="77.216" y="70.358"/>
-<vertex x="93.726" y="70.612"/>
-<vertex x="101.346" y="70.866"/>
-</polygon>
 <contactref element="U3" pad="3"/>
 <contactref element="C25" pad="2"/>
 <via x="38.1" y="31.75" extent="1-16" drill="0.7"/>
@@ -2066,8 +2011,11 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="30.226" y1="37.338" x2="34.29" y2="37.338" width="0.4064" layer="16"/>
 <wire x1="34.29" y1="37.338" x2="38.1" y2="33.528" width="0.4064" layer="16"/>
 <wire x1="38.1" y1="33.528" x2="38.1" y2="31.75" width="0.4064" layer="16"/>
-<wire x1="73.752" y1="40.016" x2="80.128" y2="36.094" width="0" layer="19" extent="1-1"/>
-<wire x1="38.1" y1="33.528" x2="73.752" y2="40.016" width="0" layer="19" extent="1-16"/>
+<wire x1="88.808" y1="71.954" x2="97.445" y2="73.3811" width="0" layer="19" extent="1-1"/>
+<wire x1="81.08" y1="71.974" x2="88.808" y2="71.954" width="0" layer="19" extent="1-1"/>
+<wire x1="73.522" y1="71.974" x2="81.08" y2="71.974" width="0" layer="19" extent="1-1"/>
+<wire x1="72.762" y1="36.348" x2="73.522" y2="71.974" width="0" layer="19" extent="1-1"/>
+<wire x1="38.1" y1="33.528" x2="72.762" y2="36.348" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="N$13">
 <contactref element="IC3" pad="7"/>
@@ -2081,15 +2029,12 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <signal name="N$14">
 <contactref element="R19" pad="1"/>
 <contactref element="Q6" pad="1"/>
-<wire x1="60.902" y1="39.94" x2="61.784" y2="39.94" width="0.4064" layer="1"/>
-<wire x1="61.784" y1="39.94" x2="64.262" y2="42.418" width="0.4064" layer="1"/>
-<wire x1="64.262" y1="42.418" x2="66.732" y2="42.418" width="0.4064" layer="1"/>
-<wire x1="66.732" y1="42.418" x2="66.854" y2="42.296" width="0.4064" layer="1"/>
+<wire x1="60.902" y1="39.94" x2="71.242" y2="65.076" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$15">
 <contactref element="Q7" pad="1"/>
 <contactref element="R22" pad="1"/>
-<wire x1="60.942" y1="36.04" x2="66.852" y2="37.736" width="0" layer="19" extent="1-16"/>
+<wire x1="60.942" y1="36.04" x2="82.854" y2="39.514" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="N$16">
 <contactref element="R22" pad="2"/>
@@ -2124,7 +2069,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <signal name="N$23">
 <contactref element="R14" pad="1"/>
 <contactref element="Q5" pad="1"/>
-<wire x1="60.882" y1="49.94" x2="66.902" y2="47.44" width="0" layer="19" extent="1-16"/>
+<wire x1="60.882" y1="49.94" x2="82.904" y2="46.932" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="N$24">
 <contactref element="R14" pad="2"/>
@@ -2159,18 +2104,12 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <contactref element="R3" pad="1"/>
 <contactref element="Q1" pad="1"/>
 <wire x1="61.002" y1="67.99" x2="62.82" y2="67.99" width="0.4064" layer="1"/>
-<wire x1="62.82" y1="67.99" x2="66.802" y2="64.008" width="0.4064" layer="1"/>
-<wire x1="66.802" y1="64.008" x2="66.802" y2="61.84" width="0.4064" layer="1"/>
-<wire x1="66.802" y1="61.84" x2="66.834" y2="61.808" width="0.4064" layer="1"/>
+<wire x1="62.82" y1="67.99" x2="86.528" y2="65.056" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$31">
 <contactref element="R6" pad="1"/>
 <contactref element="Q2" pad="1"/>
-<wire x1="60.942" y1="63.99" x2="60.942" y2="58.946" width="0.4064" layer="1"/>
-<wire x1="60.942" y1="58.946" x2="62.738" y2="57.15" width="0.4064" layer="1"/>
-<wire x1="62.738" y1="57.15" x2="64.516" y2="57.15" width="0.4064" layer="16"/>
-<via x="62.738" y="57.15" extent="1-16" drill="0.6"/>
-<wire x1="64.516" y1="57.15" x2="66.832" y2="57.228" width="0.4064" layer="16"/>
+<wire x1="60.942" y1="63.99" x2="82.834" y2="54.942" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="N$32">
 <contactref element="R6" pad="2"/>
@@ -2199,26 +2138,20 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <contactref element="Q2" pad="3"/>
 <contactref element="R28" pad="2"/>
 <contactref element="Q3" pad="A3"/>
-<polygon width="0.4064" layer="16" isolate="0.254" rank="6">
-<vertex x="63.246" y="69.596"/>
-<vertex x="70.866" y="69.596"/>
-<vertex x="71.12" y="36.322"/>
-<vertex x="62.738" y="36.322"/>
-</polygon>
-<wire x1="66.762" y1="66.088" x2="66.67" y2="69.274" width="0" layer="19" extent="16-16"/>
-<wire x1="66.832" y1="61.788" x2="66.762" y2="66.088" width="0" layer="19" extent="16-16"/>
-<wire x1="66.902" y1="52" x2="66.832" y2="61.788" width="0" layer="19" extent="16-16"/>
-<wire x1="66.852" y1="42.296" x2="66.902" y2="52" width="0" layer="19" extent="16-16"/>
-<wire x1="86.36" y1="29.21" x2="66.852" y2="42.296" width="0" layer="19" extent="16-16"/>
+<wire x1="82.904" y1="51.492" x2="82.834" y2="59.502" width="0" layer="19" extent="16-16"/>
+<wire x1="82.854" y1="44.074" x2="82.904" y2="51.492" width="0" layer="19" extent="16-16"/>
+<wire x1="86.36" y1="29.21" x2="82.854" y2="44.074" width="0" layer="19" extent="16-16"/>
+<wire x1="67.432" y1="53.78" x2="82.904" y2="51.492" width="0" layer="19" extent="16-16"/>
+<wire x1="67.27" y1="49.832" x2="67.432" y2="53.78" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="LOW_VOLTAGE">
 <contactref element="R1" pad="1"/>
 <contactref element="R2" pad="2"/>
 <contactref element="C2" pad="2"/>
 <contactref element="Q3" pad="A4"/>
-<wire x1="82.972" y1="36.094" x2="85.864" y2="36.094" width="0" layer="19" extent="1-1"/>
-<wire x1="85.726" y1="32.474" x2="85.864" y2="36.094" width="0" layer="19" extent="1-1"/>
-<wire x1="88.9" y1="29.21" x2="85.726" y2="32.474" width="0" layer="19" extent="1-1"/>
+<wire x1="78.614" y1="32.22" x2="88.9" y2="29.21" width="0" layer="19" extent="1-1"/>
+<wire x1="78.752" y1="36.348" x2="78.614" y2="32.22" width="0" layer="19" extent="1-1"/>
+<wire x1="75.606" y1="36.348" x2="78.752" y2="36.348" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="HI_1">
 <contactref element="IC1" pad="2"/>
@@ -2314,9 +2247,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <signal name="N$1">
 <contactref element="R11" pad="1"/>
 <contactref element="Q4" pad="1"/>
-<wire x1="61.358" y1="54.356" x2="60.942" y2="53.94" width="0.4064" layer="1"/>
-<wire x1="61.358" y1="54.356" x2="64.508" y2="54.356" width="0.4064" layer="1"/>
-<wire x1="64.508" y1="54.356" x2="66.854" y2="52.01" width="0.4064" layer="1"/>
+<wire x1="60.942" y1="53.94" x2="78.8" y2="65.076" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="GND" class="2">
 <contactref element="C8" pad="1"/>
@@ -2345,8 +2276,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <vertex x="105.156" y="26.67"/>
 <vertex x="27.94" y="26.67"/>
 </polygon>
-<via x="56.896" y="45.974" extent="1-16" drill="0.7"/>
-<via x="57.15" y="59.69" extent="1-16" drill="0.7"/>
 <contactref element="C25" pad="1"/>
 <contactref element="R33" pad="2"/>
 <contactref element="C24" pad="1"/>
@@ -2430,22 +2359,22 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <contactref element="JP1" pad="6"/>
 <contactref element="R4" pad="1"/>
 <contactref element="Q3" pad="A0"/>
-<wire x1="95.402" y1="39.116" x2="100.076" y2="37.084" width="0" layer="19" extent="1-1"/>
-<wire x1="78.74" y1="29.21" x2="95.402" y2="39.116" width="0" layer="19" extent="1-1"/>
+<wire x1="92.304" y1="33.02" x2="100.33" y2="35.56" width="0" layer="19" extent="1-1"/>
+<wire x1="78.74" y1="29.21" x2="92.304" y2="33.02" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$10" class="3">
 <contactref element="Q3" pad="A1"/>
 <contactref element="R5" pad="1"/>
 <contactref element="JP1" pad="4"/>
-<wire x1="95.402" y1="35.56" x2="100.076" y2="34.544" width="0" layer="19" extent="1-1"/>
-<wire x1="81.28" y1="29.21" x2="95.402" y2="35.56" width="0" layer="19" extent="1-1"/>
+<wire x1="85.7" y1="36.322" x2="100.33" y2="33.02" width="0" layer="19" extent="1-1"/>
+<wire x1="81.28" y1="29.21" x2="85.7" y2="36.322" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$4">
 <contactref element="R7" pad="1"/>
 <contactref element="JP1" pad="2"/>
 <contactref element="Q3" pad="A2"/>
-<wire x1="95.402" y1="31.75" x2="100.076" y2="32.004" width="0" layer="19" extent="1-1"/>
-<wire x1="83.82" y1="29.21" x2="95.402" y2="31.75" width="0" layer="19" extent="1-1"/>
+<wire x1="89.052" y1="32.004" x2="100.33" y2="30.48" width="0" layer="19" extent="1-1"/>
+<wire x1="83.82" y1="29.21" x2="89.052" y2="32.004" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>
 </board>
