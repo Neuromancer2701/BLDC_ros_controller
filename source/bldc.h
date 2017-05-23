@@ -4,6 +4,19 @@
 #ifndef __BLDC_H__
 #define __BLDC_H__
 
+enum commumationStates
+{
+    Invalid0 = 0,
+    State1   = 1,
+    State2   = 2,
+    State3   = 3,
+    State4   = 4,
+    State5   = 5,
+    State6   = 6,
+    Invalid1 = 7
+};
+
+
 class BLDC
 {
 public:

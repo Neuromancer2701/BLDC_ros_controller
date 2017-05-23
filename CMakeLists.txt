@@ -342,8 +342,12 @@ set(SOURCE_FILES
     lib/SoftPWM/SoftPWM_timer.h
     source/motorshield_test/motorshield_test.ino
     source/bldc.cpp
-    source/bldc.h)
+    source/bldc.h
+    /opt/arduino/hardware/arduino/avr/cores/arduino/Arduino.h
+    /opt/arduino/hardware/arduino/avr/variants/standard/pins_arduino.h
 
-include_directories(lib/SoftPWM)
+        )
+
+include_directories(lib/SoftPWM source /opt/arduino/hardware/arduino/avr/cores/arduino /opt/arduino/hardware/arduino/avr/variants/standard)
 
 add_executable(BLDC_ros_controller ${SOURCE_FILES})
