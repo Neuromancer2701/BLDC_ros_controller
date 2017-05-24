@@ -5,13 +5,12 @@
 
 BLDC Motor;
 
-char* format = "Hall State: %d Communation State: %d\n";
+char* format = "Communation State: %d\n";
 unsigned short state = 0;
 
 void setup() 
 {
   Serial.begin(57600);
-  Motor.init();
   Serial.println("After Motor init");
 
 }
@@ -19,9 +18,10 @@ void setup()
 void loop() 
 {
     char buffer[256];
+    Motor.Forward();
     Motor.Control();
 
-    snprintf(buffer,sizeof(buffer),format, Motor.getHallIndex(), Motor.getCommunationState());
+    snprintf(buffer,sizeof(buffer),format, Motor.getCommunationState());
     Serial.print(buffer);
 
     /*
@@ -29,5 +29,5 @@ void loop()
     Serial.println(state);
     Motor.SetCommutationState(state++);
     */
-    delay(1000);
+    delay(100);
 }
