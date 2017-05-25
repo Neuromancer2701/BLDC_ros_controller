@@ -38,6 +38,7 @@ void BLDC::ReadHalls()
     RawHallData[2] = digitalRead(HALL3);
 }
 
+
 void BLDC::Control()
 {
     setSpeed(50);
@@ -57,7 +58,7 @@ void BLDC::SetCommutationState()
 
 
     ReadHalls();
-    CommunationState = ((RawHallData[2] < 2) | (RawHallData[1] < 1) | RawHallData[1]);
+    CommunationState = ((RawHallData[2] << 2) | (RawHallData[1] << 1) | RawHallData[1]);
 		switch(CommunationState)
 		{
 
@@ -145,6 +146,10 @@ void BLDC::SetCommutationState()
     digitalWrite(AL, AL_duty);
     digitalWrite(BL, BL_duty);
     digitalWrite(CL, CL_duty);
+}
+
+unsigned short *BLDC::getRawHallData(){
+    return (unsigned short *)RawHallData;
 }
 
 
