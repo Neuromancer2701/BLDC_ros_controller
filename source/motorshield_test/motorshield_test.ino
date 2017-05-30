@@ -6,6 +6,8 @@
 BLDC Motor;
 
 char* format = "Communation State: %d\n";
+
+char* Halls_format = "Halls: %02x %02x %02x\n";
 unsigned short state = 0;
 
 void setup() 
@@ -21,8 +23,10 @@ void loop()
     Motor.Forward();
     Motor.Control();
 
-    snprintf(buffer,sizeof(buffer),format, Motor.getCommunationState());
-    Serial.print(buffer);
+
+    unsigned short* halls = Motor.getRawHallData();
+    snprintf(buffer,sizeof(buffer),Halls_format, halls[2], halls[1], halls[0]);
+    Serial.println(buffer);
 
     /*
     Serial.print("State: ");

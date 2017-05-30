@@ -49,6 +49,8 @@ public:
 
     volatile unsigned short getCommunationState() { return CommunationState; }
 
+    unsigned short* getRawHallData();
+
     void Reverse(){forward = false;}
     void Forward(){forward = true;}
 
@@ -62,6 +64,8 @@ private:
 	bool forward;
     volatile unsigned short RawHallData[NUMBER_HALLS];
     volatile unsigned short CommunationState;
+
+
 
 	void ReadHalls();
 };
