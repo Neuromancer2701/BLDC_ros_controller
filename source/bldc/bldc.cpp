@@ -6,8 +6,12 @@
 BLDC::BLDC()
 {
     speed = 0;
+    counter = 0;
     forward = true;
-    CommunationState = 0;
+    currentCommunationState = State6;
+    newCommunationState =  State6;
+    sprintf(data,"nothing \0");
+
 
     pinMode(HALL1, INPUT);
     pinMode(HALL2, INPUT);
@@ -33,19 +37,19 @@ BLDC::~BLDC()
 
 void BLDC::ReadHalls()
 {
-    RawHallData[0] = digitalRead(HALL1);
-    RawHallData[1] = digitalRead(HALL2);
-    RawHallData[2] = digitalRead(HALL3);
+    RawHallData[HALL1_INDEX] = digitalRead(HALL1);
+    RawHallData[HALL2_INDEX] = digitalRead(HALL2);
+    RawHallData[HALL3_INDEX] = digitalRead(HALL3);
 }
 
 
 void BLDC::Control()
 {
     setSpeed(50);
-    SetCommutationState();
+    CalculateCommutationState();
 }
 
-void BLDC::SetCommutationState()
+void BLDC::CalculateCommutationState()
 {
     uint8_t AH_duty = 0;
 	uint8_t AL_duty = 0;
@@ -58,8 +62,19 @@ void BLDC::SetCommutationState()
 
 
     ReadHalls();
-    CommunationState = ((RawHallData[2] << 2) | (RawHallData[1] << 1) | RawHallData[1]);
-		switch(CommunationState)
+    newCommunationState = (commumationStates)((RawHallData[HALL1_INDEX] << HALL1_SHIFT) | (RawHallData[HALL2_INDEX] << HALL2_SHIFT) | RawHallData[HALL3_INDEX]);
+
+    if(newCommunationState == currentCommunationState)
+    {
+        return;
+    }
+    else
+    {
+        currentCommunationState = newCommunationState;
+        counter;
+    }
+
+		switch(currentCommunationState)
 		{
 
 			case State1:
@@ -140,17 +155,33 @@ void BLDC::SetCommutationState()
 		
 		}
 
+
+    sprintf(data,"AH:%d BH:%d CH:%d AL:%d BL:%d Cl:%d Halls: %d %d %d",
+    AH_duty, BH_duty, CH_duty, AL_duty, BL_duty, CL_duty, RawHallData[HALL1_INDEX], RawHallData[HALL2_INDEX], RawHallData[HALL3_INDEX]);
+
+    digitalWrite(AL, 0);
+    digitalWrite(BL, 0);
+    digitalWrite(CL, 0);
+    SoftPWMSetPercent(AH, 0);
+    SoftPWMSetPercent(BH, 0);
+    SoftPWMSetPercent(CH, 0);
+
 	SoftPWMSetPercent(AH, AH_duty);
 	SoftPWMSetPercent(BH, BH_duty);
 	SoftPWMSetPercent(CH, CH_duty);
     digitalWrite(AL, AL_duty);
     digitalWrite(BL, BL_duty);
     digitalWrite(CL, CL_duty);
+
 }
 
-unsigned short *BLDC::getRawHallData(){
-    return (unsigned short *)RawHallData;
+int *BLDC::getRawHallData(){
+    return (int *)RawHallData;
 }
+
+
+
+
 
 
 
