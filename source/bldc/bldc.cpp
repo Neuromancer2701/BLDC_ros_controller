@@ -17,17 +17,24 @@ BLDC::BLDC()
     pinMode(HALL2, INPUT);
     pinMode(HALL3, INPUT);
 
+    pinMode(AH, OUTPUT);
+    pinMode(BH, OUTPUT);
+    pinMode(CH, OUTPUT);
     pinMode(AL, OUTPUT);
     pinMode(BL, OUTPUT);
     pinMode(CL, OUTPUT);
+    digitalWrite(AH, 0);
+    digitalWrite(BH, 0);
+    digitalWrite(CH, 0);
     digitalWrite(AL, 0);
     digitalWrite(BL, 0);
     digitalWrite(CL, 0);
 
-    SoftPWMBegin();
-    SoftPWMSetPercent(AH, 0);
-    SoftPWMSetPercent(BH, 0);
-    SoftPWMSetPercent(CH, 0);
+
+    //SoftPWMBegin();
+    //SoftPWMSetPercent(AH, 0);
+    //SoftPWMSetPercent(BH, 0);
+    //SoftPWMSetPercent(CH, 0);
 }
 
 BLDC::~BLDC()
@@ -80,82 +87,92 @@ void BLDC::CalculateCommutationState()
 			case State1:
                  if(forward)
                  {
-                    AH_duty = speed;
-                    CL_duty = 1;
+                     PORTD = 0x10;
+                     PORTB = 0x20;
+                    //AH_duty = speed;
+                    //CL_duty = 1;
                  }
                  else
                  {
-                     CH_duty = speed;
-                     AL_duty = 1;
+                     //CH_duty = speed;
+                     //AL_duty = 1;
                  }
 				 break;
 			case State2:
                  if(forward)
                  {
-                    BH_duty = speed;
-                    CL_duty = 1;
+                     PORTD = 0x00;
+                     PORTB = 0x22;
+                    //BH_duty = speed;
+                    //CL_duty = 1;
                  }
                  else
                  {
-                    CH_duty = speed;
-                    BL_duty = 1;
+                    //CH_duty = speed;
+                    //BL_duty = 1;
                  }
                  break;
 			case State3:
                  if(forward)
                  {
-                    BH_duty = speed;
-                    AL_duty = 1;
+                     PORTD = 0x00;
+                     PORTB = 0x12;
                  }
                  else
                  {
-                    AH_duty = speed;
-                    BL_duty = 1;
+                    //AH_duty = speed;
+                    //BL_duty = 1;
                  }
                  break;
 			case State4:
                  if(forward)
                  {
-                    CH_duty = speed;
-                    AL_duty = 1;
+                     PORTD = 0x20;
+                     PORTB = 0x10;
                  }
                  else
                  {
-                    AH_duty = speed;
-                    CL_duty = 1;
+                    //AH_duty = speed;
+                    //CL_duty = 1;
                  }
                  break;
 			case State5:
                  if(forward)
                  {
-                    CH_duty = speed;
-                    BL_duty = 1;
+                     PORTD = 0x20;
+                     PORTB = 0x01;
+                    //CH_duty = speed;
+                    //BL_duty = 1;
                  }
                  else
                  {
-                    BH_duty = speed;
-                    CL_duty = 1;
+                    //BH_duty = speed;
+                    //CL_duty = 1;
                  }
                  break;
 			case State6:
                 if(forward)
                 {
-                    AH_duty = speed;
-                    BL_duty = 1;
+                    PORTD = 0x10;
+                    PORTB = 0x01;
+                    //AH_duty = speed;
+                    //BL_duty = 1;
                 }
                 else
                 {
-                    BH_duty = speed;
-                    AL_duty = 1;
+                    //BH_duty = speed;
+                    //AL_duty = 1;
                 }
                 break;
 
             default:
+                PORTD = 0x00;
+                PORTB = 0x00;
                 break;
 		
 		}
 
-
+#if 0
     sprintf(data,"AH:%d BH:%d CH:%d AL:%d BL:%d Cl:%d Halls: %d %d %d",
     AH_duty, BH_duty, CH_duty, AL_duty, BL_duty, CL_duty, RawHallData[HALL1_INDEX], RawHallData[HALL2_INDEX], RawHallData[HALL3_INDEX]);
 
@@ -172,7 +189,7 @@ void BLDC::CalculateCommutationState()
     digitalWrite(AL, AL_duty);
     digitalWrite(BL, BL_duty);
     digitalWrite(CL, CL_duty);
-
+#endif
 }
 
 int *BLDC::getRawHallData(){

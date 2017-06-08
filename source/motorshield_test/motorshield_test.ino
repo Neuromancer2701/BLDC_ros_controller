@@ -1,5 +1,3 @@
-#include <SoftPWM.h>
-#include <SoftPWM_timer.h>
 
 #include <bldc.h>
 
