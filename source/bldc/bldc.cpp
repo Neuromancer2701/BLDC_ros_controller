@@ -172,6 +172,9 @@ void BLDC::CalculateCommutationState()
 		
 		}
 
+
+    sprintf(data,"PORTB: %02x PORTD: %02x Forward: %s", PORTB, PORTD, forward ? "true" : "false");
+
 #if 0
     sprintf(data,"AH:%d BH:%d CH:%d AL:%d BL:%d Cl:%d Halls: %d %d %d",
     AH_duty, BH_duty, CH_duty, AL_duty, BL_duty, CL_duty, RawHallData[HALL1_INDEX], RawHallData[HALL2_INDEX], RawHallData[HALL3_INDEX]);
