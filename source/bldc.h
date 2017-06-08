@@ -30,9 +30,15 @@ enum FET_PINS
 
 enum HALL_PINS
 {
-    HALL1 = 2,	 //! Port pin connected to phase A, high side enable switch. Arduino Pin 2
-    HALL2 = 1, //! Port pin connected to phase A, low side enable switch.  Arduino Pin 1
-    HALL3 = 0	 //! Port pin connected to phase B, high side enable switch. Arduino Pin 0
+    HALL1 = 3,	 //! Port pin connected to phase A, high side enable switch. Arduino Pin 2
+    HALL1_SHIFT = 2,
+    HALL1_INDEX = 0,
+
+    HALL2 = 6, //! Port pin connected to phase A, low side enable switch.  Arduino Pin 1
+    HALL2_SHIFT = 1,
+    HALL2_INDEX = 1,
+    HALL3 = 7,	 //! Port pin connected to phase B, high side enable switch. Arduino Pin 0
+    HALL3_INDEX = 2,
 };
 
 
@@ -45,14 +51,21 @@ public:
 
 	void setSpeed(uint8_t _speed) {speed = _speed;}
 	void Control();
-	void SetCommutationState();
+	void CalculateCommutationState();
 
-    volatile unsigned short getCommunationState() { return CommunationState; }
+    commumationStates getCommunationState() { return currentCommunationState; }
+    void setCurrentCommunationState(commumationStates CurrentCommunationState) {  currentCommunationState = CurrentCommunationState; }
 
-    unsigned short* getRawHallData();
+    void setNewCommunationState(commumationStates NewCommunationState) { newCommunationState = NewCommunationState;
+    }
+
+    int* getRawHallData();
+
+    char * stringData() {return &data[0];}
 
     void Reverse(){forward = false;}
     void Forward(){forward = true;}
+    void ReadHalls();
 
     enum constants
     {
@@ -62,12 +75,15 @@ public:
 private:
 	unsigned char speed;
 	bool forward;
-    volatile unsigned short RawHallData[NUMBER_HALLS];
-    volatile unsigned short CommunationState;
+    volatile int RawHallData[NUMBER_HALLS];
+    commumationStates currentCommunationState;
+    commumationStates newCommunationState;
+    char data[256];
+    int counter;
 
 
 
-	void ReadHalls();
+
 };
 
 
