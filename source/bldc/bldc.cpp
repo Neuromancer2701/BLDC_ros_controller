@@ -53,8 +53,39 @@ void BLDC::ReadHalls()
 void BLDC::Control()
 {
     setSpeed(50);
+    ReadHalls();
+    newCommunationState = (commumationStates)((RawHallData[HALL1_INDEX] << HALL1_SHIFT) | (RawHallData[HALL2_INDEX] << HALL2_SHIFT) | RawHallData[HALL3_INDEX]);
     CalculateCommutationState();
 }
+
+void BLDC::FullCycleTest()
+{
+    newCommunationState = State1;
+    CalculateCommutationState();
+    delay(1000);
+
+    newCommunationState = State2;
+    CalculateCommutationState();
+    delay(1000);
+
+    newCommunationState = State3;
+    CalculateCommutationState();
+    delay(1000);
+
+    newCommunationState = State4;
+    CalculateCommutationState();
+    delay(1000);
+
+    newCommunationState = State5;
+    CalculateCommutationState();
+    delay(1000);
+
+    newCommunationState = State6;
+    CalculateCommutationState();
+    delay(1000);
+
+}
+
 
 void BLDC::CalculateCommutationState()
 {
@@ -67,10 +98,6 @@ void BLDC::CalculateCommutationState()
     uint8_t CH_duty = 0;
     uint8_t CL_duty = 0;
 
-
-    ReadHalls();
-    newCommunationState = (commumationStates)((RawHallData[HALL1_INDEX] << HALL1_SHIFT) | (RawHallData[HALL2_INDEX] << HALL2_SHIFT) | RawHallData[HALL3_INDEX]);
-
     if(newCommunationState == currentCommunationState)
     {
         return;
@@ -78,7 +105,10 @@ void BLDC::CalculateCommutationState()
     else
     {
         currentCommunationState = newCommunationState;
-        counter;
+        counter++;
+
+        PORTD = 0x00; //clear io to give a bit of rest time between states. To prevent shoot through.
+        PORTB = 0x00;
     }
 
 		switch(currentCommunationState)
@@ -94,6 +124,8 @@ void BLDC::CalculateCommutationState()
                  }
                  else
                  {
+                     PORTD = 0x20;
+                     PORTB = 0x10;
                      //CH_duty = speed;
                      //AL_duty = 1;
                  }
@@ -108,7 +140,9 @@ void BLDC::CalculateCommutationState()
                  }
                  else
                  {
-                    //CH_duty = speed;
+                     PORTD = 0x20;
+                     PORTB = 0x01;
+                     //CH_duty = speed;
                     //BL_duty = 1;
                  }
                  break;
@@ -120,6 +154,8 @@ void BLDC::CalculateCommutationState()
                  }
                  else
                  {
+                     PORTD = 0x10;
+                     PORTB = 0x01;
                     //AH_duty = speed;
                     //BL_duty = 1;
                  }
@@ -132,6 +168,8 @@ void BLDC::CalculateCommutationState()
                  }
                  else
                  {
+                     PORTD = 0x10;
+                     PORTB = 0x20;
                     //AH_duty = speed;
                     //CL_duty = 1;
                  }
@@ -146,7 +184,10 @@ void BLDC::CalculateCommutationState()
                  }
                  else
                  {
-                    //BH_duty = speed;
+                     PORTD = 0x00;
+                     PORTB = 0x22;
+
+                     //BH_duty = speed;
                     //CL_duty = 1;
                  }
                  break;
@@ -160,6 +201,8 @@ void BLDC::CalculateCommutationState()
                 }
                 else
                 {
+                    PORTD = 0x00;
+                    PORTB = 0x12;
                     //BH_duty = speed;
                     //AL_duty = 1;
                 }

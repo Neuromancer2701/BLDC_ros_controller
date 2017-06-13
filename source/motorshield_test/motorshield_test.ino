@@ -14,7 +14,7 @@ void setup()
 {
   Serial.begin(57600);
   Serial.println("After Motor init");
-  Motor.Forward();
+  Motor.Forward();   ///Reverse
 
   delay(5000);
 
@@ -24,13 +24,10 @@ void loop()
 {
 
     Motor.Control();
-    Serial.println(Motor.stringData());
+    //Serial.println(Motor.stringData());
     delay(10);
 
-    /*
-    Serial.print("State: ");
-    Serial.println(state);
-    Motor.SetCommutationState(state++);
-    */
+    //Motor.FullCycleTest();
+
 
 }

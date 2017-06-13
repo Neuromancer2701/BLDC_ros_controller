@@ -63,6 +63,8 @@ public:
 
     char * stringData() {return &data[0];}
 
+	void FullCycleTest();
+
     void Reverse(){forward = false;}
     void Forward(){forward = true;}
     void ReadHalls();
