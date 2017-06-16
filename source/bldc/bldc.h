@@ -49,7 +49,7 @@ public:
 	BLDC();
 	virtual ~BLDC();
 
-	void setSpeed(uint8_t _speed) {speed = _speed;}
+	void setSpeed(uint8_t _speed) {targetSpeed = _speed;}
 	void Control();
 	void CalculateCommutationState();
 
@@ -72,16 +72,27 @@ public:
     enum constants
     {
         NUMBER_HALLS = 3,
+        PWN_FREQUENCY = 1000,
+        COMMUTATION_STATES = 6,
+        MIN_DUTY = 0
     };
 
 private:
-	unsigned char speed;
+	unsigned char targetSpeed;
+    unsigned char currentSpeed;
+    bool accelerate;
+
 	bool forward;
     volatile int RawHallData[NUMBER_HALLS];
     commumationStates currentCommunationState;
     commumationStates newCommunationState;
     char data[256];
-    int counter;
+    int cycleCounter;
+    bool started;
+
+    void StartMotor();
+    int  findIndex(commumationStates state);
+
 
 
 
