@@ -18,8 +18,8 @@ enum commumationStates
 
 enum FET_PINS
 {
-    AH = 4,	 //! Port pin connected to phase A, high side enable switch. Arduino Pin 12
-    AL = 12, //! Port pin connected to phase A, low side enable switch.  Arduino Pin 4
+    AH = 4,	 //! Port pin connected to phase A, high side enable switch. Arduino Pin 4
+    AL = 12, //! Port pin connected to phase A, low side enable switch.  Arduino Pin 12
 
     BH = 9,	 //! Port pin connected to phase B, high side enable switch. Arduino Pin 9
     BL = 8,	 //! Port pin connected to phase B, low side enable switch. Arduino Pin 8
