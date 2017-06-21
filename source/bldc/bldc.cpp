@@ -2,9 +2,10 @@
 #include "bldc.h"
 #include "SoftPWM.h"
 
-SOFTPWM_DEFINE_CHANNEL(AH, DDRD, PORTD, PORTD4);  //Arduino pin 4
-SOFTPWM_DEFINE_CHANNEL(BH, DDRB, PORTB, PORTB1);  //Arduino pin 9
-SOFTPWM_DEFINE_CHANNEL(CH, DDRD, PORTD, PORTD5);  //Arduino pin 5
+
+SOFTPWM_DEFINE_CHANNEL(AH_INDEX, DDRD, PORTD, PORTD4);  //Arduino pin 4
+SOFTPWM_DEFINE_CHANNEL(BH_INDEX, DDRB, PORTB, PORTB1);  //Arduino pin 9
+SOFTPWM_DEFINE_CHANNEL(CH_INDEX, DDRD, PORTD, PORTD5);  //Arduino pin 5
 
 SOFTPWM_DEFINE_OBJECT_WITH_PWM_LEVELS(3, 100);
 SOFTPWM_DEFINE_EXTERN_OBJECT_WITH_PWM_LEVELS(3, 100);
@@ -18,39 +19,42 @@ BLDC::BLDC()
     accelerate = true;
     cycleCounter = 0;
     forward = true;
-    started = false;
+    started = true;
     currentCommunationState = State6;
     newCommunationState =  State6;
+    velocity = 0.0;
+    previousTime = 0;
+    currentTime = 0;
+
     sprintf(data,"nothing \0");
 
     pinMode(HALL1, INPUT);
     pinMode(HALL2, INPUT);
     pinMode(HALL3, INPUT);
 
-    //pinMode(AH, OUTPUT);
-    //pinMode(BH, OUTPUT);
-    //pinMode(CH, OUTPUT);
     pinMode(AL, OUTPUT);
     pinMode(BL, OUTPUT);
     pinMode(CL, OUTPUT);
-    //digitalWrite(AH, 0);
-    //digitalWrite(BH, 0);
-    //digitalWrite(CH, 0);
     digitalWrite(AL, 0);
     digitalWrite(BL, 0);
     digitalWrite(CL, 0);
 
-
-    // begin with 60hz pwm frequency
-    Palatis::SoftPWM.begin(PWN_FREQUENCY);
-
-    // print interrupt load for diagnostic purposes
-    Palatis::SoftPWM.printInterruptLoad();
 }
 
 BLDC::~BLDC()
 {
 
+}
+
+void BLDC::initPWM()
+{
+    // begin with 500 pwm frequency
+    Palatis::SoftPWM.begin(500);
+
+    // print interrupt load for diagnostic purposes
+    Palatis::SoftPWM.printInterruptLoad();
+
+    Palatis::SoftPWM.allOff();
 }
 
 void BLDC::ReadHalls()
@@ -65,53 +69,64 @@ void BLDC::ReadHalls()
 void BLDC::Control()
 {
     setSpeed(50);
+
+    Palatis::SoftPWM.set(CH_INDEX, targetSpeed);
+    PORTB = AL_HIGH_PORTB;
+
+    return;
+
     StartMotor();
+
+    if(!started)
+        return;
+
     ReadHalls();
     CalculateCommutationState();
+
 }
 
 void BLDC::FullCycleTest()
 {
+    setSpeed(50);
+    int Delay = 1000;
+
     newCommunationState = State1;
     CalculateCommutationState();
-    delay(1000);
+    delay(Delay);
 
     newCommunationState = State2;
     CalculateCommutationState();
-    delay(1000);
+    delay(Delay);
 
     newCommunationState = State3;
     CalculateCommutationState();
-    delay(1000);
+    delay(Delay);
+
 
     newCommunationState = State4;
     CalculateCommutationState();
-    delay(1000);
+    delay(Delay);
 
     newCommunationState = State5;
     CalculateCommutationState();
-    delay(1000);
+    delay(Delay);
 
     newCommunationState = State6;
     CalculateCommutationState();
-    delay(1000);
+    delay(Delay);
+
+
 
 }
 
 
 void BLDC::CalculateCommutationState()
 {
-    uint8_t AH_duty = 0;
-	uint8_t AL_duty = 0;
 
-    uint8_t BH_duty = 0;
-    uint8_t BL_duty = 0;
+    int highSideIndex = 0;
+    unsigned short lowSide = 0;
 
-    uint8_t CH_duty = 0;
-    uint8_t CL_duty = 0;
 
-    if(!started)
-        return;
 
     if(newCommunationState == currentCommunationState)
     {
@@ -122,6 +137,14 @@ void BLDC::CalculateCommutationState()
         currentCommunationState = newCommunationState;
         cycleCounter++;
 
+        previousTime = currentTime;
+        currentTime = millis();
+        velocity = TWO_PI * (RADIUS/(double)1000) * ((1/(double)CYCLES_PER_REV)/((currentTime - previousTime)/(double)1000));
+
+        //Serial.print("velocity: ");
+        //Serial.println(velocity);
+
+#if 0
         if(accelerate)
         {
             if(currentSpeed < targetSpeed)
@@ -133,8 +156,9 @@ void BLDC::CalculateCommutationState()
                 currentSpeed--;
         }
 
-        PORTD = 0x00; //clear io to give a bit of rest time between states. To prevent shoot through.
-        PORTB = 0x00;
+#endif
+        PORTB = 0x00; //clear io to give a bit of rest time between states. To prevent shoot through.
+        Palatis::SoftPWM.allOff();
     }
 
 		switch(currentCommunationState)
@@ -143,125 +167,93 @@ void BLDC::CalculateCommutationState()
 			case State1:
                  if(forward)
                  {
-                     PORTD = 0x10;
-                     PORTB = 0x20;
-                    //AH_duty = speed;
-                    //CL_duty = 1;
+                     highSideIndex = AH_INDEX;
+                     lowSide = CL_HIGH_PORTB;
                  }
                  else
                  {
-                     PORTD = 0x20;
-                     PORTB = 0x10;
-                     //CH_duty = speed;
-                     //AL_duty = 1;
+                     highSideIndex = CH_INDEX;
+                     lowSide = AL_HIGH_PORTB;
                  }
 				 break;
+
 			case State2:
                  if(forward)
                  {
-                     PORTD = 0x00;
-                     PORTB = 0x22;
-                    //BH_duty = speed;
-                    //CL_duty = 1;
+                     highSideIndex = BH_INDEX;
+                     lowSide = CL_HIGH_PORTB;
                  }
                  else
                  {
-                     PORTD = 0x20;
-                     PORTB = 0x01;
-                     //CH_duty = speed;
-                    //BL_duty = 1;
+                     highSideIndex = CH_INDEX;
+                     lowSide = BL_HIGH_PORTB;
                  }
                  break;
+
 			case State3:
                  if(forward)
                  {
-                     PORTD = 0x00;
-                     PORTB = 0x12;
+                     highSideIndex = BH_INDEX;
+                     lowSide = AL_HIGH_PORTB;
                  }
                  else
                  {
-                     PORTD = 0x10;
-                     PORTB = 0x01;
-                    //AH_duty = speed;
-                    //BL_duty = 1;
+                     highSideIndex = AH_INDEX;
+                     lowSide = BL_HIGH_PORTB;
                  }
                  break;
 			case State4:
                  if(forward)
                  {
-                     PORTD = 0x20;
-                     PORTB = 0x10;
+                     highSideIndex = CH_INDEX;
+                     lowSide = AL_HIGH_PORTB;
                  }
                  else
                  {
-                     PORTD = 0x10;
-                     PORTB = 0x20;
-                    //AH_duty = speed;
-                    //CL_duty = 1;
+                     highSideIndex = AH_INDEX;
+                     lowSide = CL_HIGH_PORTB;
                  }
                  break;
 			case State5:
                  if(forward)
                  {
-                     PORTD = 0x20;
-                     PORTB = 0x01;
-                    //CH_duty = speed;
-                    //BL_duty = 1;
+                     highSideIndex = CH_INDEX;
+                     lowSide = BL_HIGH_PORTB;;
                  }
                  else
                  {
-                     PORTD = 0x00;
-                     PORTB = 0x22;
-
-                     //BH_duty = speed;
-                    //CL_duty = 1;
+                     highSideIndex = BH_INDEX;
+                     lowSide = CL_HIGH_PORTB;
                  }
                  break;
 			case State6:
                 if(forward)
                 {
-                    PORTD = 0x10;
-                    PORTB = 0x01;
-                    //AH_duty = speed;
-                    //BL_duty = 1;
+                    highSideIndex = AH_INDEX;
+                    lowSide = BL_HIGH_PORTB;
                 }
                 else
                 {
-                    PORTD = 0x00;
-                    PORTB = 0x12;
-                    //BH_duty = speed;
-                    //AL_duty = 1;
+                    highSideIndex = BH_INDEX;
+                    lowSide = AL_HIGH_PORTB;
                 }
                 break;
 
             default:
-                PORTD = 0x00;
                 PORTB = 0x00;
+                Palatis::SoftPWM.allOff();
                 break;
 		
 		}
 
+    //sprintf(data,"state: %d cycle count: %d velocity: %05d", currentCommunationState, cycleCounter,(int)(velocity * 1000));
+    sprintf(data,"hideIndex: %d PORTB: %02x Forward: %s", highSideIndex, lowSide, forward ? "true" : "false");
 
-    sprintf(data,"PORTB: %02x PORTD: %02x Forward: %s", PORTB, PORTD, forward ? "true" : "false");
+    Serial.println(data);
 
-#if 0
-    sprintf(data,"AH:%d BH:%d CH:%d AL:%d BL:%d Cl:%d Halls: %d %d %d",
-    AH_duty, BH_duty, CH_duty, AL_duty, BL_duty, CL_duty, RawHallData[HALL1_INDEX], RawHallData[HALL2_INDEX], RawHallData[HALL3_INDEX]);
+    Palatis::SoftPWM.set(highSideIndex, targetSpeed);
+    PORTB = lowSide;
 
-    digitalWrite(AL, 0);
-    digitalWrite(BL, 0);
-    digitalWrite(CL, 0);
-    SoftPWMSetPercent(AH, 0);
-    SoftPWMSetPercent(BH, 0);
-    SoftPWMSetPercent(CH, 0);
-
-	SoftPWMSetPercent(AH, AH_duty);
-	SoftPWMSetPercent(BH, BH_duty);
-	SoftPWMSetPercent(CH, CH_duty);
-    digitalWrite(AL, AL_duty);
-    digitalWrite(BL, BL_duty);
-    digitalWrite(CL, CL_duty);
-#endif
 }
 
 int *BLDC::getRawHallData()
@@ -279,7 +271,6 @@ void BLDC::StartMotor()
     CalculateCommutationState();
     delay(100);
     ReadHalls();
-
     if(newCommunationState != startState)
     {
         started = true;
@@ -290,7 +281,6 @@ void BLDC::StartMotor()
     CalculateCommutationState();
     delay(100);
     ReadHalls();
-
     if(newCommunationState != startState)
     {
         started = true;
@@ -301,7 +291,6 @@ void BLDC::StartMotor()
     CalculateCommutationState();
     delay(100);
     ReadHalls();
-
     if(newCommunationState != startState)
     {
         started = true;

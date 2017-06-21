@@ -25,7 +25,11 @@ enum FET_PINS
     BL = 8,	 //! Port pin connected to phase B, low side enable switch. Arduino Pin 8
 
     CH = 5,	 //! Port pin connected to phase C, high side enable switch. Arduino Pin 5
-    CL = 13	 //! Port pin connected to phase C, low side enable switch.	Arduino Pin 13
+    CL = 13, //! Port pin connected to phase C, low side enable switch.	Arduino Pin 13
+
+    AH_INDEX = 0x00,
+    BH_INDEX = 0x01,
+    CH_INDEX = 0x02
 };
 
 enum HALL_PINS
@@ -49,9 +53,14 @@ public:
 	BLDC();
 	virtual ~BLDC();
 
-	void setSpeed(uint8_t _speed) {targetSpeed = _speed;}
+	void setSpeed(uint8_t _speed)
+    {
+        targetSpeed = _speed;
+        currentSpeed = 10;
+    }
 	void Control();
 	void CalculateCommutationState();
+    void initPWM();
 
     commumationStates getCommunationState() { return currentCommunationState; }
     void setCurrentCommunationState(commumationStates CurrentCommunationState) {  currentCommunationState = CurrentCommunationState; }
@@ -72,9 +81,14 @@ public:
     enum constants
     {
         NUMBER_HALLS = 3,
-        PWN_FREQUENCY = 1000,
+        PWM_FREQUENCY = 100,
         COMMUTATION_STATES = 6,
-        MIN_DUTY = 0
+        MIN_DUTY = 0,
+        AL_HIGH_PORTB = 0x10,
+        BL_HIGH_PORTB = 0x01,
+        CL_HIGH_PORTB = 0x20,
+        CYCLES_PER_REV = 60,
+        RADIUS = 165
     };
 
 private:
@@ -89,6 +103,9 @@ private:
     char data[256];
     int cycleCounter;
     bool started;
+    double velocity;
+    long previousTime;
+    long currentTime;
 
     void StartMotor();
     int  findIndex(commumationStates state);
