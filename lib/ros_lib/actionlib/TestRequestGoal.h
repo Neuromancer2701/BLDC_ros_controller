@@ -13,20 +13,40 @@ namespace actionlib
   class TestRequestGoal : public ros::Msg
   {
     public:
-      int32_t terminate_status;
-      bool ignore_cancel;
-      char * result_text;
-      int32_t the_result;
-      bool is_simple_client;
-      ros::Duration delay_accept;
-      ros::Duration delay_terminate;
-      ros::Duration pause_status;
+      typedef int32_t _terminate_status_type;
+      _terminate_status_type terminate_status;
+      typedef bool _ignore_cancel_type;
+      _ignore_cancel_type ignore_cancel;
+      typedef const char* _result_text_type;
+      _result_text_type result_text;
+      typedef int32_t _the_result_type;
+      _the_result_type the_result;
+      typedef bool _is_simple_client_type;
+      _is_simple_client_type is_simple_client;
+      typedef ros::Duration _delay_accept_type;
+      _delay_accept_type delay_accept;
+      typedef ros::Duration _delay_terminate_type;
+      _delay_terminate_type delay_terminate;
+      typedef ros::Duration _pause_status_type;
+      _pause_status_type pause_status;
       enum { TERMINATE_SUCCESS =  0 };
       enum { TERMINATE_ABORTED =  1 };
       enum { TERMINATE_REJECTED =  2 };
       enum { TERMINATE_LOSE =  3 };
       enum { TERMINATE_DROP =  4 };
       enum { TERMINATE_EXCEPTION =  5 };
+
+    TestRequestGoal():
+      terminate_status(0),
+      ignore_cancel(0),
+      result_text(""),
+      the_result(0),
+      is_simple_client(0),
+      delay_accept(),
+      delay_terminate(),
+      pause_status()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
@@ -48,8 +68,8 @@ namespace actionlib
       u_ignore_cancel.real = this->ignore_cancel;
       *(outbuffer + offset + 0) = (u_ignore_cancel.base >> (8 * 0)) & 0xFF;
       offset += sizeof(this->ignore_cancel);
-      uint32_t length_result_text = strlen( (const char*) this->result_text);
-      memcpy(outbuffer + offset, &length_result_text, sizeof(uint32_t));
+      uint32_t length_result_text = strlen(this->result_text);
+      varToArr(outbuffer + offset, length_result_text);
       offset += 4;
       memcpy(outbuffer + offset, this->result_text, length_result_text);
       offset += length_result_text;
@@ -126,7 +146,7 @@ namespace actionlib
       this->ignore_cancel = u_ignore_cancel.real;
       offset += sizeof(this->ignore_cancel);
       uint32_t length_result_text;
-      memcpy(&length_result_text, (inbuffer + offset), sizeof(uint32_t));
+      arrToVar(length_result_text, (inbuffer + offset));
       offset += 4;
       for(unsigned int k= offset; k< offset+length_result_text; ++k){
           inbuffer[k-1]=inbuffer[k];

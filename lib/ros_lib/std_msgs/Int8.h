@@ -12,7 +12,13 @@ namespace std_msgs
   class Int8 : public ros::Msg
   {
     public:
-      int8_t data;
+      typedef int8_t _data_type;
+      _data_type data;
+
+    Int8():
+      data(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

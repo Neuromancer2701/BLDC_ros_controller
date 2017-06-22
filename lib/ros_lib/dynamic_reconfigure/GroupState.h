@@ -12,16 +12,28 @@ namespace dynamic_reconfigure
   class GroupState : public ros::Msg
   {
     public:
-      char * name;
-      bool state;
-      int32_t id;
-      int32_t parent;
+      typedef const char* _name_type;
+      _name_type name;
+      typedef bool _state_type;
+      _state_type state;
+      typedef int32_t _id_type;
+      _id_type id;
+      typedef int32_t _parent_type;
+      _parent_type parent;
+
+    GroupState():
+      name(""),
+      state(0),
+      id(0),
+      parent(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
-      uint32_t length_name = strlen( (const char*) this->name);
-      memcpy(outbuffer + offset, &length_name, sizeof(uint32_t));
+      uint32_t length_name = strlen(this->name);
+      varToArr(outbuffer + offset, length_name);
       offset += 4;
       memcpy(outbuffer + offset, this->name, length_name);
       offset += length_name;
@@ -59,7 +71,7 @@ namespace dynamic_reconfigure
     {
       int offset = 0;
       uint32_t length_name;
-      memcpy(&length_name, (inbuffer + offset), sizeof(uint32_t));
+      arrToVar(length_name, (inbuffer + offset));
       offset += 4;
       for(unsigned int k= offset; k< offset+length_name; ++k){
           inbuffer[k-1]=inbuffer[k];

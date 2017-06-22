@@ -15,9 +15,19 @@ namespace actionlib_tutorials
   class AveragingAction : public ros::Msg
   {
     public:
-      actionlib_tutorials::AveragingActionGoal action_goal;
-      actionlib_tutorials::AveragingActionResult action_result;
-      actionlib_tutorials::AveragingActionFeedback action_feedback;
+      typedef actionlib_tutorials::AveragingActionGoal _action_goal_type;
+      _action_goal_type action_goal;
+      typedef actionlib_tutorials::AveragingActionResult _action_result_type;
+      _action_result_type action_result;
+      typedef actionlib_tutorials::AveragingActionFeedback _action_feedback_type;
+      _action_feedback_type action_feedback;
+
+    AveragingAction():
+      action_goal(),
+      action_result(),
+      action_feedback()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

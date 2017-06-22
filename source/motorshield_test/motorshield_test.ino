@@ -24,8 +24,9 @@ void loop()
 {
 
     Motor.Control();
-    //Serial.println(Motor.stringData());
-    //delay(10);
 
     //Motor.FullCycleTest();
 }
+
+
+

@@ -12,7 +12,13 @@ namespace std_msgs
   class Int64 : public ros::Msg
   {
     public:
-      int64_t data;
+      typedef int64_t _data_type;
+      _data_type data;
+
+    Int64():
+      data(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

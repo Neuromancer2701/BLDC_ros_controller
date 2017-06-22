@@ -12,11 +12,25 @@ namespace turtlesim
   class Pose : public ros::Msg
   {
     public:
-      float x;
-      float y;
-      float theta;
-      float linear_velocity;
-      float angular_velocity;
+      typedef float _x_type;
+      _x_type x;
+      typedef float _y_type;
+      _y_type y;
+      typedef float _theta_type;
+      _theta_type theta;
+      typedef float _linear_velocity_type;
+      _linear_velocity_type linear_velocity;
+      typedef float _angular_velocity_type;
+      _angular_velocity_type angular_velocity;
+
+    Pose():
+      x(0),
+      y(0),
+      theta(0),
+      linear_velocity(0),
+      angular_velocity(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

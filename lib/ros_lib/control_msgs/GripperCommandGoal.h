@@ -13,7 +13,13 @@ namespace control_msgs
   class GripperCommandGoal : public ros::Msg
   {
     public:
-      control_msgs::GripperCommand command;
+      typedef control_msgs::GripperCommand _command_type;
+      _command_type command;
+
+    GripperCommandGoal():
+      command()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

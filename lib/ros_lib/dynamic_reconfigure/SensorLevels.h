@@ -16,6 +16,10 @@ namespace dynamic_reconfigure
       enum { RECONFIGURE_STOP =  1   };
       enum { RECONFIGURE_RUNNING =  0  };
 
+    SensorLevels()
+    {
+    }
+
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;

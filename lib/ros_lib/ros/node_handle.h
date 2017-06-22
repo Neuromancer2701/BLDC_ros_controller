@@ -35,6 +35,8 @@
 #ifndef ROS_NODE_HANDLE_H_
 #define ROS_NODE_HANDLE_H_
 
+#include <stdint.h>
+
 #include "std_msgs/Time.h"
 #include "rosserial_msgs/TopicInfo.h"
 #include "rosserial_msgs/Log.h"
@@ -55,19 +57,18 @@
 #define PROTOCOL_VER1		0xff // through groovy
 #define PROTOCOL_VER2		0xfe // in hydro
 #define PROTOCOL_VER 		PROTOCOL_VER2
-#define MODE_SIZE_L         2   
+#define MODE_SIZE_L         2
 #define MODE_SIZE_H         3
 #define MODE_SIZE_CHECKSUM  4   // checksum for msg size received from size L and H
 #define MODE_TOPIC_L        5   // waiting for topic id
 #define MODE_TOPIC_H        6
 #define MODE_MESSAGE        7
-#define MODE_MSG_CHECKSUM   8   // checksum for msg and topic id 
-
+#define MODE_MSG_CHECKSUM   8   // checksum for msg and topic id
 
 
 #define MSG_TIMEOUT 20  //20 milliseconds to recieve all of message data
 
-#include "msg.h"
+#include "ros/msg.h"
 
 namespace ros {
 
@@ -79,10 +80,10 @@ namespace ros {
     };
 }
 
-#include "publisher.h"
-#include "subscriber.h"
-#include "service_server.h"
-#include "service_client.h"
+#include "ros/publisher.h"
+#include "ros/subscriber.h"
+#include "ros/service_server.h"
+#include "ros/service_client.h"
 
 namespace ros {
 
@@ -100,13 +101,13 @@ namespace ros {
       Hardware hardware_;
 
       /* time used for syncing */
-      unsigned long rt_time;
+      uint32_t rt_time;
 
       /* used for computing current time */
-      unsigned long sec_offset, nsec_offset;
+      uint32_t sec_offset, nsec_offset;
 
-      unsigned char message_in[INPUT_SIZE];
-      unsigned char message_out[OUTPUT_SIZE];
+      uint8_t message_in[INPUT_SIZE];
+      uint8_t message_out[OUTPUT_SIZE];
 
       Publisher * publishers[MAX_PUBLISHERS];
       Subscriber_ * subscribers[MAX_SUBSCRIBERS];
@@ -117,16 +118,16 @@ namespace ros {
     public:
       NodeHandle_() : configured_(false) {
 
-        for(unsigned int i=0; i< MAX_PUBLISHERS; i++) 
+        for(unsigned int i=0; i< MAX_PUBLISHERS; i++)
 	   publishers[i] = 0;
 
-        for(unsigned int i=0; i< MAX_SUBSCRIBERS; i++) 
+        for(unsigned int i=0; i< MAX_SUBSCRIBERS; i++)
 	   subscribers[i] = 0;
 
-        for(unsigned int i=0; i< INPUT_SIZE; i++) 
+        for(unsigned int i=0; i< INPUT_SIZE; i++)
 	   message_in[i] = 0;
 
-        for(unsigned int i=0; i< OUTPUT_SIZE; i++) 
+        for(unsigned int i=0; i< OUTPUT_SIZE; i++)
 	   message_out[i] = 0;
 
         req_param_resp.ints_length = 0;
@@ -136,7 +137,7 @@ namespace ros {
         req_param_resp.ints_length = 0;
         req_param_resp.ints = NULL;
       }
-      
+
       Hardware* getHardware(){
         return &hardware_;
       }
@@ -170,9 +171,9 @@ namespace ros {
       bool configured_;
 
       /* used for syncing the time */
-      unsigned long last_sync_time;
-      unsigned long last_sync_receive_time;
-      unsigned long last_msg_timeout_time;
+      uint32_t last_sync_time;
+      uint32_t last_sync_receive_time;
+      uint32_t last_msg_timeout_time;
 
     public:
       /* This function goes in your loop() function, it handles
@@ -183,13 +184,13 @@ namespace ros {
       virtual int spinOnce(){
 
         /* restart if timed out */
-        unsigned long c_time = hardware_.time();
+        uint32_t c_time = hardware_.time();
         if( (c_time - last_sync_receive_time) > (SYNC_SECONDS*2200) ){
             configured_ = false;
          }
-         
+
         /* reset if message has timed out */
-        if ( mode_ != MODE_FIRST_FF){ 
+        if ( mode_ != MODE_FIRST_FF){
           if (c_time > last_msg_timeout_time){
             mode_ = MODE_FIRST_FF;
           }
@@ -212,6 +213,11 @@ namespace ros {
               mode_++;
               last_msg_timeout_time = c_time + MSG_TIMEOUT;
             }
+            else if( hardware_.time() - c_time > (SYNC_SECONDS)){
+              /* We have been stuck in spinOnce too long, return error */
+              configured_=false;
+              return -2;
+            }
           }else if( mode_ == MODE_PROTOCOL_VER ){
             if(data == PROTOCOL_VER){
               mode_++;
@@ -228,10 +234,10 @@ namespace ros {
           }else if( mode_ == MODE_SIZE_H ){   /* top half of message size */
             bytes_ += data<<8;
 	    mode_++;
-          }else if( mode_ == MODE_SIZE_CHECKSUM ){  
+          }else if( mode_ == MODE_SIZE_CHECKSUM ){
             if( (checksum_%256) == 255)
 	      mode_++;
-	    else 
+	    else
 	      mode_ = MODE_FIRST_FF;          /* Abandon the frame if the msg len is wrong */
 	  }else if( mode_ == MODE_TOPIC_L ){  /* bottom half of topic id */
             topic_ = data;
@@ -241,7 +247,7 @@ namespace ros {
             topic_ += data<<8;
             mode_ = MODE_MESSAGE;
             if(bytes_ == 0)
-              mode_ = MODE_MSG_CHECKSUM;  
+              mode_ = MODE_MSG_CHECKSUM;
           }else if( mode_ == MODE_MSG_CHECKSUM ){ /* do checksum */
             mode_ = MODE_FIRST_FF;
             if( (checksum_%256) == 255){
@@ -256,6 +262,8 @@ namespace ros {
               }else if (topic_ == TopicInfo::ID_PARAMETER_REQUEST){
                   req_param_resp.deserialize(message_in);
                   param_recieved= true;
+              }else if(topic_ == TopicInfo::ID_TX_STOP){
+                  configured_ = false;
               }else{
                 if(subscribers[topic_-100])
                   subscribers[topic_-100]->callback( message_in );
@@ -290,10 +298,10 @@ namespace ros {
         rt_time = hardware_.time();
       }
 
-      void syncTime( unsigned char * data )
+      void syncTime(uint8_t * data)
       {
         std_msgs::Time t;
-        unsigned long offset = hardware_.time() - rt_time;
+        uint32_t offset = hardware_.time() - rt_time;
 
         t.deserialize(data);
         t.data.sec += offset/1000;
@@ -303,8 +311,9 @@ namespace ros {
         last_sync_receive_time = hardware_.time();
       }
 
-      Time now(){
-        unsigned long ms = hardware_.time();
+      Time now()
+      {
+        uint32_t ms = hardware_.time();
         Time current_time;
         current_time.sec = ms/1000 + sec_offset;
         current_time.nsec = (ms%1000)*1000000UL + nsec_offset;
@@ -314,17 +323,17 @@ namespace ros {
 
       void setNow( Time & new_now )
       {
-        unsigned long ms = hardware_.time();
+        uint32_t ms = hardware_.time();
         sec_offset = new_now.sec - ms/1000 - 1;
         nsec_offset = new_now.nsec - (ms%1000)*1000000UL + 1000000000UL;
         normalizeSecNSec(sec_offset, nsec_offset);
       }
 
       /********************************************************************
-       * Topic Management 
+       * Topic Management
        */
 
-      /* Register a new publisher */    
+      /* Register a new publisher */
       bool advertise(Publisher & p)
       {
         for(int i = 0; i < MAX_PUBLISHERS; i++){
@@ -339,11 +348,11 @@ namespace ros {
       }
 
       /* Register a new subscriber */
-      template<typename MsgT>
-      bool subscribe(Subscriber< MsgT> & s){
+      template<typename SubscriberT>
+      bool subscribe(SubscriberT& s){
         for(int i = 0; i < MAX_SUBSCRIBERS; i++){
           if(subscribers[i] == 0){ // empty slot
-            subscribers[i] = (Subscriber_*) &s;
+            subscribers[i] = static_cast<Subscriber_*>(&s);
             s.id_ = i+100;
             return true;
           }
@@ -357,7 +366,7 @@ namespace ros {
         bool v = advertise(srv.pub);
         for(int i = 0; i < MAX_SUBSCRIBERS; i++){
           if(subscribers[i] == 0){ // empty slot
-            subscribers[i] = (Subscriber_*) &srv;
+            subscribers[i] = static_cast<Subscriber_*>(&srv);
             srv.id_ = i+100;
             return v;
           }
@@ -371,7 +380,7 @@ namespace ros {
         bool v = advertise(srv.pub);
         for(int i = 0; i < MAX_SUBSCRIBERS; i++){
           if(subscribers[i] == 0){ // empty slot
-            subscribers[i] = (Subscriber_*) &srv;
+            subscribers[i] = static_cast<Subscriber_*>(&srv);
             srv.id_ = i+100;
             return v;
           }
@@ -412,20 +421,20 @@ namespace ros {
 
       virtual int publish(int id, const Msg * msg)
       {
-        if(id >= 100 && !configured_) 
+        if(id >= 100 && !configured_)
 	  return 0;
 
         /* serialize message */
-        int l = msg->serialize(message_out+7);
+        uint16_t l = msg->serialize(message_out+7);
 
         /* setup the header */
         message_out[0] = 0xff;
         message_out[1] = PROTOCOL_VER;
-        message_out[2] = (unsigned char) l&255;
-        message_out[3] = (unsigned char) l>>8;
+        message_out[2] = (uint8_t) ((uint16_t)l&255);
+        message_out[3] = (uint8_t) ((uint16_t)l>>8);
 	message_out[4] = 255 - ((message_out[2] + message_out[3])%256);
-        message_out[5] = (unsigned char) id&255;
-        message_out[6] = ((unsigned char) id>>8);
+        message_out[5] = (uint8_t) ((int16_t)id&255);
+        message_out[6] = (uint8_t) ((int16_t)id>>8);
 
         /* calculate checksum */
         int chk = 0;
@@ -485,7 +494,7 @@ namespace ros {
         rosserial_msgs::RequestParamRequest req;
         req.name  = (char*)name;
         publish(TopicInfo::ID_PARAMETER_REQUEST, &req);
-        unsigned int end_time = hardware_.time() + time_out;
+        uint16_t end_time = hardware_.time() + time_out;
         while(!param_recieved ){
           spinOnce();
           if (hardware_.time() > end_time) return false;
@@ -509,7 +518,7 @@ namespace ros {
         if (requestParam(name) ){
           if (length == req_param_resp.floats_length){
             //copy it over
-            for(int i=0; i<length; i++) 
+            for(int i=0; i<length; i++)
               param[i] = req_param_resp.floats[i];
             return true;
           }
@@ -526,7 +535,7 @@ namespace ros {
           }
         }
         return false;
-      }  
+      }
   };
 
 }

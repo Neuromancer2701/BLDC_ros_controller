@@ -12,8 +12,16 @@ namespace turtle_actionlib
   class ShapeGoal : public ros::Msg
   {
     public:
-      int32_t edges;
-      float radius;
+      typedef int32_t _edges_type;
+      _edges_type edges;
+      typedef float _radius_type;
+      _radius_type radius;
+
+    ShapeGoal():
+      edges(0),
+      radius(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

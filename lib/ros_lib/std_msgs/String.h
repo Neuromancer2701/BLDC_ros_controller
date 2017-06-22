@@ -12,13 +12,19 @@ namespace std_msgs
   class String : public ros::Msg
   {
     public:
-      char * data;
+      typedef const char* _data_type;
+      _data_type data;
+
+    String():
+      data("")
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
-      uint32_t length_data = strlen( (const char*) this->data);
-      memcpy(outbuffer + offset, &length_data, sizeof(uint32_t));
+      uint32_t length_data = strlen(this->data);
+      varToArr(outbuffer + offset, length_data);
       offset += 4;
       memcpy(outbuffer + offset, this->data, length_data);
       offset += length_data;
@@ -29,7 +35,7 @@ namespace std_msgs
     {
       int offset = 0;
       uint32_t length_data;
-      memcpy(&length_data, (inbuffer + offset), sizeof(uint32_t));
+      arrToVar(length_data, (inbuffer + offset));
       offset += 4;
       for(unsigned int k= offset; k< offset+length_data; ++k){
           inbuffer[k-1]=inbuffer[k];

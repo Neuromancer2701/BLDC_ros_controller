@@ -15,19 +15,33 @@ namespace control_msgs
   class PointHeadGoal : public ros::Msg
   {
     public:
-      geometry_msgs::PointStamped target;
-      geometry_msgs::Vector3 pointing_axis;
-      char * pointing_frame;
-      ros::Duration min_duration;
-      float max_velocity;
+      typedef geometry_msgs::PointStamped _target_type;
+      _target_type target;
+      typedef geometry_msgs::Vector3 _pointing_axis_type;
+      _pointing_axis_type pointing_axis;
+      typedef const char* _pointing_frame_type;
+      _pointing_frame_type pointing_frame;
+      typedef ros::Duration _min_duration_type;
+      _min_duration_type min_duration;
+      typedef float _max_velocity_type;
+      _max_velocity_type max_velocity;
+
+    PointHeadGoal():
+      target(),
+      pointing_axis(),
+      pointing_frame(""),
+      min_duration(),
+      max_velocity(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
       offset += this->target.serialize(outbuffer + offset);
       offset += this->pointing_axis.serialize(outbuffer + offset);
-      uint32_t length_pointing_frame = strlen( (const char*) this->pointing_frame);
-      memcpy(outbuffer + offset, &length_pointing_frame, sizeof(uint32_t));
+      uint32_t length_pointing_frame = strlen(this->pointing_frame);
+      varToArr(outbuffer + offset, length_pointing_frame);
       offset += 4;
       memcpy(outbuffer + offset, this->pointing_frame, length_pointing_frame);
       offset += length_pointing_frame;
@@ -41,20 +55,7 @@ namespace control_msgs
       *(outbuffer + offset + 2) = (this->min_duration.nsec >> (8 * 2)) & 0xFF;
       *(outbuffer + offset + 3) = (this->min_duration.nsec >> (8 * 3)) & 0xFF;
       offset += sizeof(this->min_duration.nsec);
-      int32_t * val_max_velocity = (int32_t *) &(this->max_velocity);
-      int32_t exp_max_velocity = (((*val_max_velocity)>>23)&255);
-      if(exp_max_velocity != 0)
-        exp_max_velocity += 1023-127;
-      int32_t sig_max_velocity = *val_max_velocity;
-      *(outbuffer + offset++) = 0;
-      *(outbuffer + offset++) = 0;
-      *(outbuffer + offset++) = 0;
-      *(outbuffer + offset++) = (sig_max_velocity<<5) & 0xff;
-      *(outbuffer + offset++) = (sig_max_velocity>>3) & 0xff;
-      *(outbuffer + offset++) = (sig_max_velocity>>11) & 0xff;
-      *(outbuffer + offset++) = ((exp_max_velocity<<4) & 0xF0) | ((sig_max_velocity>>19)&0x0F);
-      *(outbuffer + offset++) = (exp_max_velocity>>4) & 0x7F;
-      if(this->max_velocity < 0) *(outbuffer + offset -1) |= 0x80;
+      offset += serializeAvrFloat64(outbuffer + offset, this->max_velocity);
       return offset;
     }
 
@@ -64,7 +65,7 @@ namespace control_msgs
       offset += this->target.deserialize(inbuffer + offset);
       offset += this->pointing_axis.deserialize(inbuffer + offset);
       uint32_t length_pointing_frame;
-      memcpy(&length_pointing_frame, (inbuffer + offset), sizeof(uint32_t));
+      arrToVar(length_pointing_frame, (inbuffer + offset));
       offset += 4;
       for(unsigned int k= offset; k< offset+length_pointing_frame; ++k){
           inbuffer[k-1]=inbuffer[k];
@@ -82,17 +83,7 @@ namespace control_msgs
       this->min_duration.nsec |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
       this->min_duration.nsec |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
       offset += sizeof(this->min_duration.nsec);
-      uint32_t * val_max_velocity = (uint32_t*) &(this->max_velocity);
-      offset += 3;
-      *val_max_velocity = ((uint32_t)(*(inbuffer + offset++))>>5 & 0x07);
-      *val_max_velocity |= ((uint32_t)(*(inbuffer + offset++)) & 0xff)<<3;
-      *val_max_velocity |= ((uint32_t)(*(inbuffer + offset++)) & 0xff)<<11;
-      *val_max_velocity |= ((uint32_t)(*(inbuffer + offset)) & 0x0f)<<19;
-      uint32_t exp_max_velocity = ((uint32_t)(*(inbuffer + offset++))&0xf0)>>4;
-      exp_max_velocity |= ((uint32_t)(*(inbuffer + offset)) & 0x7f)<<4;
-      if(exp_max_velocity !=0)
-        *val_max_velocity |= ((exp_max_velocity)-1023+127)<<23;
-      if( ((*(inbuffer+offset++)) & 0x80) > 0) this->max_velocity = -this->max_velocity;
+      offset += deserializeAvrFloat64(inbuffer + offset, &(this->max_velocity));
      return offset;
     }
 

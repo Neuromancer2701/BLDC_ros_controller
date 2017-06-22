@@ -12,6 +12,8 @@ set(SOURCE_FILES
     lib/arduino-softpwm/src/SoftPWM.h
         )
 
-include_directories(lib/arduino-softpwm/src source/bldc /opt/arduino/hardware/arduino/avr/cores/arduino /opt/arduino/hardware/arduino/avr/variants/standard)
+include_directories(lib/arduino-softpwm/src source/bldc /opt/arduino/hardware/arduino/avr/cores/arduino /opt/arduino/hardware/arduino/avr/variants/standard
+        lib/ros_lib/ lib/ros_lib/std_msgs lib/ros_lib/ros/
+        )
 
 add_executable(BLDC_ros_controller ${SOURCE_FILES})

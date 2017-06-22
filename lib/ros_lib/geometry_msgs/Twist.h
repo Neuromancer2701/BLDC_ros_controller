@@ -13,8 +13,16 @@ namespace geometry_msgs
   class Twist : public ros::Msg
   {
     public:
-      geometry_msgs::Vector3 linear;
-      geometry_msgs::Vector3 angular;
+      typedef geometry_msgs::Vector3 _linear_type;
+      _linear_type linear;
+      typedef geometry_msgs::Vector3 _angular_type;
+      _angular_type angular;
+
+    Twist():
+      linear(),
+      angular()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

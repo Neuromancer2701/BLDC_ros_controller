@@ -14,7 +14,13 @@ static const char SETCAMERAINFO[] = "sensor_msgs/SetCameraInfo";
   class SetCameraInfoRequest : public ros::Msg
   {
     public:
-      sensor_msgs::CameraInfo camera_info;
+      typedef sensor_msgs::CameraInfo _camera_info_type;
+      _camera_info_type camera_info;
+
+    SetCameraInfoRequest():
+      camera_info()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
@@ -38,8 +44,16 @@ static const char SETCAMERAINFO[] = "sensor_msgs/SetCameraInfo";
   class SetCameraInfoResponse : public ros::Msg
   {
     public:
-      bool success;
-      char * status_message;
+      typedef bool _success_type;
+      _success_type success;
+      typedef const char* _status_message_type;
+      _status_message_type status_message;
+
+    SetCameraInfoResponse():
+      success(0),
+      status_message("")
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
@@ -51,8 +65,8 @@ static const char SETCAMERAINFO[] = "sensor_msgs/SetCameraInfo";
       u_success.real = this->success;
       *(outbuffer + offset + 0) = (u_success.base >> (8 * 0)) & 0xFF;
       offset += sizeof(this->success);
-      uint32_t length_status_message = strlen( (const char*) this->status_message);
-      memcpy(outbuffer + offset, &length_status_message, sizeof(uint32_t));
+      uint32_t length_status_message = strlen(this->status_message);
+      varToArr(outbuffer + offset, length_status_message);
       offset += 4;
       memcpy(outbuffer + offset, this->status_message, length_status_message);
       offset += length_status_message;
@@ -71,7 +85,7 @@ static const char SETCAMERAINFO[] = "sensor_msgs/SetCameraInfo";
       this->success = u_success.real;
       offset += sizeof(this->success);
       uint32_t length_status_message;
-      memcpy(&length_status_message, (inbuffer + offset), sizeof(uint32_t));
+      arrToVar(length_status_message, (inbuffer + offset));
       offset += 4;
       for(unsigned int k= offset; k< offset+length_status_message; ++k){
           inbuffer[k-1]=inbuffer[k];

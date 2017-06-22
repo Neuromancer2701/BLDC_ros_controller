@@ -13,6 +13,10 @@ namespace nav_msgs
   {
     public:
 
+    GetMapFeedback()
+    {
+    }
+
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;

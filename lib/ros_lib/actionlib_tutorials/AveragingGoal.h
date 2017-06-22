@@ -12,7 +12,13 @@ namespace actionlib_tutorials
   class AveragingGoal : public ros::Msg
   {
     public:
-      int32_t samples;
+      typedef int32_t _samples_type;
+      _samples_type samples;
+
+    AveragingGoal():
+      samples(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

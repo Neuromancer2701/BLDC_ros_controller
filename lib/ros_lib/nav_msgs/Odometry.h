@@ -15,17 +15,29 @@ namespace nav_msgs
   class Odometry : public ros::Msg
   {
     public:
-      std_msgs::Header header;
-      char * child_frame_id;
-      geometry_msgs::PoseWithCovariance pose;
-      geometry_msgs::TwistWithCovariance twist;
+      typedef std_msgs::Header _header_type;
+      _header_type header;
+      typedef const char* _child_frame_id_type;
+      _child_frame_id_type child_frame_id;
+      typedef geometry_msgs::PoseWithCovariance _pose_type;
+      _pose_type pose;
+      typedef geometry_msgs::TwistWithCovariance _twist_type;
+      _twist_type twist;
+
+    Odometry():
+      header(),
+      child_frame_id(""),
+      pose(),
+      twist()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
       offset += this->header.serialize(outbuffer + offset);
-      uint32_t length_child_frame_id = strlen( (const char*) this->child_frame_id);
-      memcpy(outbuffer + offset, &length_child_frame_id, sizeof(uint32_t));
+      uint32_t length_child_frame_id = strlen(this->child_frame_id);
+      varToArr(outbuffer + offset, length_child_frame_id);
       offset += 4;
       memcpy(outbuffer + offset, this->child_frame_id, length_child_frame_id);
       offset += length_child_frame_id;
@@ -39,7 +51,7 @@ namespace nav_msgs
       int offset = 0;
       offset += this->header.deserialize(inbuffer + offset);
       uint32_t length_child_frame_id;
-      memcpy(&length_child_frame_id, (inbuffer + offset), sizeof(uint32_t));
+      arrToVar(length_child_frame_id, (inbuffer + offset));
       offset += 4;
       for(unsigned int k= offset; k< offset+length_child_frame_id; ++k){
           inbuffer[k-1]=inbuffer[k];

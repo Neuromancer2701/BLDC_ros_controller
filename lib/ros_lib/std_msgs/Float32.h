@@ -12,7 +12,13 @@ namespace std_msgs
   class Float32 : public ros::Msg
   {
     public:
-      float data;
+      typedef float _data_type;
+      _data_type data;
+
+    Float32():
+      data(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

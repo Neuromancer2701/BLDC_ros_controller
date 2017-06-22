@@ -14,8 +14,16 @@ namespace geometry_msgs
   class PolygonStamped : public ros::Msg
   {
     public:
-      std_msgs::Header header;
-      geometry_msgs::Polygon polygon;
+      typedef std_msgs::Header _header_type;
+      _header_type header;
+      typedef geometry_msgs::Polygon _polygon_type;
+      _polygon_type polygon;
+
+    PolygonStamped():
+      header(),
+      polygon()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

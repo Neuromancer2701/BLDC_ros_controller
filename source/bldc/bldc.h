@@ -5,6 +5,10 @@
 #define __BLDC_H__
 
 #include <stdint.h>
+#include <ros.h>
+#include <std_msgs/Bool.h>
+#include <std_msgs/Float32.h>
+#include <std_msgs/UInt8.h>
 
 enum commumationStates
 {
@@ -69,14 +73,12 @@ public:
     }
 
     int* getRawHallData();
-
-    char * stringData() {return &data[0];}
-
 	void FullCycleTest();
-
     void Reverse(){forward = false;}
     void Forward(){forward = true;}
     void ReadHalls();
+
+    void ProcessRosMessages();
 
     enum constants
     {
@@ -88,31 +90,35 @@ public:
         BL_HIGH_PORTB = 0x01,
         CL_HIGH_PORTB = 0x20,
         CYCLES_PER_REV = 60,
-        RADIUS = 165
+        RADIUS = 165,
+        ROS_UPDATE_PERIOD = 100
     };
 
 private:
+
 	unsigned char targetSpeed;
     unsigned char currentSpeed;
     bool accelerate;
-
 	bool forward;
+    bool started;
+
     volatile int RawHallData[NUMBER_HALLS];
     commumationStates currentCommunationState;
     commumationStates newCommunationState;
-    char data[256];
     int cycleCounter;
-    bool started;
+
     double velocity;
     long previousTime;
     long currentTime;
-
-    void StartMotor();
+    long rosUpdateTime;
+    ros::NodeHandle nodeHandle;
+    std_msgs::Float32 velocity_msg;
+    ros::Publisher pub_velocity;
+	ros::Subscriber<std_msgs::Bool, BLDC> sub_start;
+	ros::Subscriber<std_msgs::UInt8, BLDC> sub_pwm;
+	void ros_setSpeed( const std_msgs::UInt8& cmd_msg);
+    void StartMotor( const std_msgs::Bool& cmd_msg);
     int  findIndex(commumationStates state);
-
-
-
-
 
 };
 

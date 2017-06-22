@@ -13,6 +13,10 @@ namespace std_msgs
   {
     public:
 
+    Empty()
+    {
+    }
+
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;

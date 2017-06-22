@@ -12,9 +12,19 @@ namespace turtlesim
   class Color : public ros::Msg
   {
     public:
-      uint8_t r;
-      uint8_t g;
-      uint8_t b;
+      typedef uint8_t _r_type;
+      _r_type r;
+      typedef uint8_t _g_type;
+      _g_type g;
+      typedef uint8_t _b_type;
+      _b_type b;
+
+    Color():
+      r(0),
+      g(0),
+      b(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

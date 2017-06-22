@@ -12,8 +12,10 @@ namespace sensor_msgs
   class NavSatStatus : public ros::Msg
   {
     public:
-      int8_t status;
-      uint16_t service;
+      typedef int8_t _status_type;
+      _status_type status;
+      typedef uint16_t _service_type;
+      _service_type service;
       enum { STATUS_NO_FIX =   -1         };
       enum { STATUS_FIX =       0         };
       enum { STATUS_SBAS_FIX =  1         };
@@ -22,6 +24,12 @@ namespace sensor_msgs
       enum { SERVICE_GLONASS =  2 };
       enum { SERVICE_COMPASS =  4       };
       enum { SERVICE_GALILEO =  8 };
+
+    NavSatStatus():
+      status(0),
+      service(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

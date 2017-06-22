@@ -13,7 +13,13 @@ namespace rosgraph_msgs
   class Clock : public ros::Msg
   {
     public:
-      ros::Time clock;
+      typedef ros::Time _clock_type;
+      _clock_type clock;
+
+    Clock():
+      clock()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

@@ -15,9 +15,19 @@ namespace control_msgs
   class FollowJointTrajectoryActionResult : public ros::Msg
   {
     public:
-      std_msgs::Header header;
-      actionlib_msgs::GoalStatus status;
-      control_msgs::FollowJointTrajectoryResult result;
+      typedef std_msgs::Header _header_type;
+      _header_type header;
+      typedef actionlib_msgs::GoalStatus _status_type;
+      _status_type status;
+      typedef control_msgs::FollowJointTrajectoryResult _result_type;
+      _result_type result;
+
+    FollowJointTrajectoryActionResult():
+      header(),
+      status(),
+      result()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
@@ -38,7 +48,7 @@ namespace control_msgs
     }
 
     const char * getType(){ return "control_msgs/FollowJointTrajectoryActionResult"; };
-    const char * getMD5(){ return "bce83d50f7bb28226801436caf0e2043"; };
+    const char * getMD5(){ return "c4fb3b000dc9da4fd99699380efcc5d9"; };
 
   };
 

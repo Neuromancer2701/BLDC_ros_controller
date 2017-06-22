@@ -14,6 +14,10 @@ static const char QUERYCALIBRATIONSTATE[] = "control_msgs/QueryCalibrationState"
   {
     public:
 
+    QueryCalibrationStateRequest()
+    {
+    }
+
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
@@ -34,7 +38,13 @@ static const char QUERYCALIBRATIONSTATE[] = "control_msgs/QueryCalibrationState"
   class QueryCalibrationStateResponse : public ros::Msg
   {
     public:
-      bool is_calibrated;
+      typedef bool _is_calibrated_type;
+      _is_calibrated_type is_calibrated;
+
+    QueryCalibrationStateResponse():
+      is_calibrated(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

@@ -12,21 +12,24 @@ SOFTPWM_DEFINE_EXTERN_OBJECT_WITH_PWM_LEVELS(3, 100);
 
 commumationStates startSeqeunce[BLDC::COMMUTATION_STATES] = {State1, State2, State3, State4, State5, State6};
 
-BLDC::BLDC()
+BLDC::BLDC():
+        pub_velocity("velocity",&velocity_msg),
+        sub_start("start", &BLDC::StartMotor, this ),
+        sub_pwm("pwm", &BLDC::ros_setSpeed, this )
 {
     targetSpeed = 0;
     currentSpeed = 0;
     accelerate = true;
     cycleCounter = 0;
     forward = true;
-    started = true;
+    started = false;
     currentCommunationState = State6;
     newCommunationState =  State6;
     velocity = 0.0;
     previousTime = 0;
     currentTime = 0;
+    rosUpdateTime = millis() + ROS_UPDATE_PERIOD;
 
-    sprintf(data,"nothing \0");
 
     pinMode(HALL1, INPUT);
     pinMode(HALL2, INPUT);
@@ -38,6 +41,10 @@ BLDC::BLDC()
     digitalWrite(AL, 0);
     digitalWrite(BL, 0);
     digitalWrite(CL, 0);
+
+    nodeHandle.initNode();
+    nodeHandle.subscribe(sub_start);
+    nodeHandle.subscribe(sub_pwm);
 
 }
 
@@ -68,27 +75,20 @@ void BLDC::ReadHalls()
 
 void BLDC::Control()
 {
-    setSpeed(50);
-
-    Palatis::SoftPWM.set(CH_INDEX, targetSpeed);
-    PORTB = AL_HIGH_PORTB;
-
-    return;
-
-    StartMotor();
-
-    if(!started)
-        return;
 
     ReadHalls();
-    CalculateCommutationState();
+    if(started)
+    {
+        CalculateCommutationState();
+    }
 
+    ProcessRosMessages();
 }
 
 void BLDC::FullCycleTest()
 {
     setSpeed(50);
-    int Delay = 1000;
+    unsigned long Delay = 1000;
 
     newCommunationState = State1;
     CalculateCommutationState();
@@ -115,8 +115,6 @@ void BLDC::FullCycleTest()
     CalculateCommutationState();
     delay(Delay);
 
-
-
 }
 
 
@@ -125,8 +123,6 @@ void BLDC::CalculateCommutationState()
 
     int highSideIndex = 0;
     unsigned short lowSide = 0;
-
-
 
     if(newCommunationState == currentCommunationState)
     {
@@ -141,8 +137,8 @@ void BLDC::CalculateCommutationState()
         currentTime = millis();
         velocity = TWO_PI * (RADIUS/(double)1000) * ((1/(double)CYCLES_PER_REV)/((currentTime - previousTime)/(double)1000));
 
-        //Serial.print("velocity: ");
-        //Serial.println(velocity);
+        Serial.print("velocity: ");
+        Serial.println(velocity);
 
 #if 0
         if(accelerate)
@@ -247,9 +243,9 @@ void BLDC::CalculateCommutationState()
 		}
 
     //sprintf(data,"state: %d cycle count: %d velocity: %05d", currentCommunationState, cycleCounter,(int)(velocity * 1000));
-    sprintf(data,"hideIndex: %d PORTB: %02x Forward: %s", highSideIndex, lowSide, forward ? "true" : "false");
+    //sprintf(data,"hideIndex: %d PORTB: %02x Forward: %s", highSideIndex, lowSide, forward ? "true" : "false");
 
-    Serial.println(data);
+    //Serial.println(data);
 
     Palatis::SoftPWM.set(highSideIndex, targetSpeed);
     PORTB = lowSide;
@@ -261,41 +257,69 @@ int *BLDC::getRawHallData()
     return (int *)RawHallData;
 }
 
-void BLDC::StartMotor()
+void BLDC::ros_setSpeed(const std_msgs::UInt8 &cmd_msg)
 {
-    ReadHalls();
-    commumationStates startState = newCommunationState;
-    int stateIndex = findIndex(startState);
-    currentCommunationState = startSeqeunce[(stateIndex + 1) % COMMUTATION_STATES]; // make sure the two starting states are different.
+    setSpeed(cmd_msg.data);
+}
 
+void BLDC::StartMotor(const std_msgs::Bool& cmd_msg)
+{
+
+    if(cmd_msg.data)
+    {
+        started = true;
+        ReadHalls();
+        currentCommunationState = startSeqeunce[(findIndex(newCommunationState) + 1) % COMMUTATION_STATES]; // make sure the two starting states are different.
+    }
+    else
+    {
+        currentCommunationState = newCommunationState = State1;
+        started = false;
+    }
+
+
+#if 0
+
+    CalculateCommutationState();
+
+
+
+    delay(100);
+    ReadHalls();
+    if(newCommunationState != startState)
+    {
+        Serial.println("SUCCESS");
+        started = true;
+        return;
+    }
+
+
+    newCommunationState = startSeqeunce[(currentStateIndex - 1) % COMMUTATION_STATES];
+    Serial.print("Try  before current state:");
+    Serial.println(newCommunationState);
     CalculateCommutationState();
     delay(100);
     ReadHalls();
     if(newCommunationState != startState)
     {
+        Serial.println("SUCCESS");
         started = true;
         return;
     }
 
-    newCommunationState = startSeqeunce[(stateIndex - 1) % COMMUTATION_STATES];
+    newCommunationState = startSeqeunce[(currentStateIndex + 1) % COMMUTATION_STATES];
+    Serial.print("Try after current state:");
+    Serial.println(newCommunationState);
     CalculateCommutationState();
     delay(100);
     ReadHalls();
     if(newCommunationState != startState)
     {
+        Serial.println("SUCCESS");
         started = true;
         return;
     }
-
-    newCommunationState = startSeqeunce[(stateIndex + 1) % COMMUTATION_STATES];
-    CalculateCommutationState();
-    delay(100);
-    ReadHalls();
-    if(newCommunationState != startState)
-    {
-        started = true;
-        return;
-    }
+#endif
 }
 
 int BLDC::findIndex(commumationStates state)
@@ -307,7 +331,19 @@ int BLDC::findIndex(commumationStates state)
     }
 }
 
+void BLDC::ProcessRosMessages()
+{
 
+    if(rosUpdateTime > millis())
+    {
+        velocity_msg.data = (float)velocity;
+        pub_velocity.publish(&velocity_msg);
+
+        rosUpdateTime = millis() + ROS_UPDATE_PERIOD;
+    }
+
+    nodeHandle.spinOnce();
+}
 
 
 
