@@ -57,11 +57,6 @@ public:
 	BLDC();
 	virtual ~BLDC();
 
-	void setSpeed(uint8_t _speed)
-    {
-        targetSpeed = _speed;
-        currentSpeed = 10;
-    }
 	void Control();
 	void CalculateCommutationState();
     void initPWM();
@@ -78,7 +73,7 @@ public:
     void Forward(){forward = true;}
     void ReadHalls();
 
-    void ProcessRosMessages();
+    void ProcessMessages();
 
     enum constants
     {
@@ -91,14 +86,10 @@ public:
         CL_HIGH_PORTB = 0x20,
         CYCLES_PER_REV = 60,
         RADIUS = 165,
-        ROS_UPDATE_PERIOD = 100
     };
 
-private:
 
-	unsigned char targetSpeed;
-    unsigned char currentSpeed;
-    bool accelerate;
+private:
 	bool forward;
     bool started;
 
@@ -110,15 +101,61 @@ private:
     double velocity;
     long previousTime;
     long currentTime;
-    long rosUpdateTime;
-    ros::NodeHandle nodeHandle;
-    std_msgs::Float32 velocity_msg;
-    ros::Publisher pub_velocity;
-	ros::Subscriber<std_msgs::Bool, BLDC> sub_start;
-	ros::Subscriber<std_msgs::UInt8, BLDC> sub_pwm;
-	void ros_setSpeed( const std_msgs::UInt8& cmd_msg);
-    void StartMotor( const std_msgs::Bool& cmd_msg);
+
+
+	double P_gain;
+	double I_gain;
+	double targetVelocity;
+	double error;
+	double previousError;
+	unsigned char controlPWM;
+	double current;
+
+
+    void StartMotor(bool start);
     int  findIndex(commumationStates state);
+
+	void Parse();
+	void parseVelocity(int index);
+	void parsePWM();
+	void parseGains(int index);
+	void parseCurrent();
+	void parseStart(int index);
+	void parseDirection(int index);
+	void Send(int data);
+	int findStart(int size);
+	void CalculatePWM();
+
+
+	enum serialConstants
+	{
+		BEGINNING = 'B',
+		VELOCITY  = 'V',
+		PWM       = 'P',
+		GAINS     = 'G',
+		CURRENT   = 'C',
+		START     = 'S',
+		DIRECTION = 'D',
+		READ      = 'R',
+		WRITE     = 'W',
+		END       = '\n',
+		MIN_SIZE  = 3,
+		SERIAL_BUFFER_SIZE = 16,
+		GAIN_SIZE = 4
+
+	};
+
+	enum velocityConstants
+	{
+		DIVISOR = 10,
+		MAX_VELOCITY = 50,     	// divide by 10 m/sec
+		MIN_VELOCITY = 5,		// divide by 10 m/sec
+		MULTIPLIER = 100,
+		MAX_PWM = 85,
+		MIN_PWM = 15
+	};
+
+	unsigned char serialBuffer[SERIAL_BUFFER_SIZE];
 
 };
 

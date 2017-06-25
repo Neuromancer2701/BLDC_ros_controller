@@ -12,14 +12,8 @@ SOFTPWM_DEFINE_EXTERN_OBJECT_WITH_PWM_LEVELS(3, 100);
 
 commumationStates startSeqeunce[BLDC::COMMUTATION_STATES] = {State1, State2, State3, State4, State5, State6};
 
-BLDC::BLDC():
-        pub_velocity("velocity",&velocity_msg),
-        sub_start("start", &BLDC::StartMotor, this ),
-        sub_pwm("pwm", &BLDC::ros_setSpeed, this )
+BLDC::BLDC()
 {
-    targetSpeed = 0;
-    currentSpeed = 0;
-    accelerate = true;
     cycleCounter = 0;
     forward = true;
     started = false;
@@ -28,8 +22,12 @@ BLDC::BLDC():
     velocity = 0.0;
     previousTime = 0;
     currentTime = 0;
-    rosUpdateTime = millis() + ROS_UPDATE_PERIOD;
 
+    P_gain = 1.0;
+    I_gain = 1.0;
+    targetVelocity = 0.0;
+    error = previousError = 0.0;
+    controlPWM = 0;
 
     pinMode(HALL1, INPUT);
     pinMode(HALL2, INPUT);
@@ -41,10 +39,6 @@ BLDC::BLDC():
     digitalWrite(AL, 0);
     digitalWrite(BL, 0);
     digitalWrite(CL, 0);
-
-    nodeHandle.initNode();
-    nodeHandle.subscribe(sub_start);
-    nodeHandle.subscribe(sub_pwm);
 
 }
 
@@ -82,12 +76,12 @@ void BLDC::Control()
         CalculateCommutationState();
     }
 
-    ProcessRosMessages();
+    ProcessMessages();
 }
 
 void BLDC::FullCycleTest()
 {
-    setSpeed(50);
+    controlPWM = 50;
     unsigned long Delay = 1000;
 
     newCommunationState = State1;
@@ -137,22 +131,8 @@ void BLDC::CalculateCommutationState()
         currentTime = millis();
         velocity = TWO_PI * (RADIUS/(double)1000) * ((1/(double)CYCLES_PER_REV)/((currentTime - previousTime)/(double)1000));
 
-        Serial.print("velocity: ");
-        Serial.println(velocity);
+        CalculatePWM();
 
-#if 0
-        if(accelerate)
-        {
-            if(currentSpeed < targetSpeed)
-                currentSpeed++;
-        }
-        else
-        {
-            if(currentSpeed > MIN_DUTY)
-                currentSpeed--;
-        }
-
-#endif
         PORTB = 0x00; //clear io to give a bit of rest time between states. To prevent shoot through.
         Palatis::SoftPWM.allOff();
     }
@@ -247,7 +227,7 @@ void BLDC::CalculateCommutationState()
 
     //Serial.println(data);
 
-    Palatis::SoftPWM.set(highSideIndex, targetSpeed);
+    Palatis::SoftPWM.set(highSideIndex, controlPWM);
     PORTB = lowSide;
 
 }
@@ -257,15 +237,11 @@ int *BLDC::getRawHallData()
     return (int *)RawHallData;
 }
 
-void BLDC::ros_setSpeed(const std_msgs::UInt8 &cmd_msg)
-{
-    setSpeed(cmd_msg.data);
-}
 
-void BLDC::StartMotor(const std_msgs::Bool& cmd_msg)
+void BLDC::StartMotor(bool start)
 {
 
-    if(cmd_msg.data)
+    if(start)
     {
         started = true;
         ReadHalls();
@@ -274,6 +250,7 @@ void BLDC::StartMotor(const std_msgs::Bool& cmd_msg)
     else
     {
         currentCommunationState = newCommunationState = State1;
+        controlPWM = MAX_PWM;
         started = false;
     }
 
@@ -331,20 +308,175 @@ int BLDC::findIndex(commumationStates state)
     }
 }
 
-void BLDC::ProcessRosMessages()
+void BLDC::ProcessMessages()
 {
 
-    if(rosUpdateTime > millis())
-    {
-        velocity_msg.data = (float)velocity;
-        pub_velocity.publish(&velocity_msg);
 
-        rosUpdateTime = millis() + ROS_UPDATE_PERIOD;
-    }
-
-    nodeHandle.spinOnce();
 }
 
 
+void BLDC::Parse()
+{
+    int readBytes = 0;
+    if(readBytes = Serial.available() > MIN_SIZE)
+    {
+        if(readBytes > SERIAL_BUFFER_SIZE)
+            readBytes = SERIAL_BUFFER_SIZE;
+        if(Serial.readBytesUntil(END, serialBuffer, readBytes) > 0)
+        {
+            if(int index = findStart(readBytes) >= 0)
+            {
+                index++;  //move to comamand character
+                unsigned char command = serialBuffer[index];
+                switch(command)
+                {
+                    case VELOCITY:
+                        parseVelocity(index);
+                         break;
+                    case PWM:
+                         parsePWM();
+                         break;
+                    case GAINS:
+                         parseGains(index);
+                         break;
+                    case CURRENT:
+                         parseCurrent();
+                         break;
+                    case START:
+                         parseStart(index);
+                         break;
+                    case DIRECTION:
+                         parseDirection(index);
+                         break;
+                    default:
+                        break;
+                }
 
+            }
+        }
+    }
 
+}
+
+int BLDC::findStart(int size)
+{
+    for(int i = 0; i < size;i++)
+    {
+        if(serialBuffer[i] == BEGINNING)
+            return i;
+    }
+
+    return -1;
+}
+
+void BLDC::parseVelocity(int index)
+{
+    index++;  // moved to read/write character
+    if(serialBuffer[index] == READ)
+    {
+        Send((int)(velocity * MULTIPLIER));
+    }
+
+    else if(serialBuffer[index] == WRITE)
+    {
+        char velocity[2];
+        index++;
+        velocity[0] = serialBuffer[index];
+        index++;
+        velocity[1] = serialBuffer[index];
+        targetVelocity = atof(velocity)/DIVISOR;
+
+        if(targetVelocity > MAX_VELOCITY/(double)DIVISOR)
+        {
+            targetVelocity = MAX_VELOCITY/(double)DIVISOR;
+        }
+
+        Send((int)(targetVelocity * DIVISOR));
+    }
+}
+
+void BLDC::parsePWM()
+{
+    Send(controlPWM);
+}
+
+void BLDC::parseGains(int index)
+{
+    index++;  // moved to read/write character
+    if(serialBuffer[index] == READ)
+    {
+        Send((int)(P_gain * MULTIPLIER));
+        Send((int)(I_gain * MULTIPLIER));
+    }
+    else if(serialBuffer[index] == WRITE)
+    {
+        index++;
+        char p_string[4];
+        char i_string[4];
+
+        strncpy(p_string,(const char *)&serialBuffer[index], GAIN_SIZE);
+        index += GAIN_SIZE;
+        strncpy(i_string,(const char *)&serialBuffer[index], GAIN_SIZE);
+        P_gain = atof(p_string)/MULTIPLIER;
+        I_gain = atof(i_string)/MULTIPLIER;
+
+        Send((int)(P_gain * MULTIPLIER));
+        Send((int)(I_gain * MULTIPLIER));
+    }
+}
+
+void BLDC::parseCurrent()
+{
+    Send((int)(current * MULTIPLIER));
+}
+
+void BLDC::Send(int data)
+{
+    char sendBuffer[SERIAL_BUFFER_SIZE];
+    snprintf(sendBuffer,SERIAL_BUFFER_SIZE,"B%d\n",data);
+    Serial.print(sendBuffer);
+}
+
+void BLDC::parseStart(int index)
+{
+    index++;  // moved to read/write character
+    if(serialBuffer[index] == READ)
+    {
+        Send((int)started);
+    }
+    else if(serialBuffer[index] == WRITE)
+    {
+        index++; // moved to started value
+        StartMotor((serialBuffer[index]== '1'));
+        Send((int)started);
+    }
+}
+
+void BLDC::parseDirection(int index)
+{
+    index++;  // moved to read/write character
+    if(serialBuffer[index] == READ)
+    {
+        Send((int)forward);
+    }
+    else if(serialBuffer[index] == WRITE)
+    {
+        index++; // moved to started value
+        forward = (serialBuffer[index]== '1');
+        Send((int)forward);
+    }
+}
+
+void BLDC::CalculatePWM()
+{
+    previousError = error;
+    error = targetVelocity - velocity;
+    controlPWM = (unsigned char)(P_gain * error) + (I_gain * (previousError+error/2));
+
+    if( controlPWM > MAX_PWM )
+        controlPWM = MAX_PWM;
+
+    if( controlPWM < MIN_PWM )
+        controlPWM = MIN_PWM;
+
+}

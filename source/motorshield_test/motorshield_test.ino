@@ -23,9 +23,9 @@ void setup()
 void loop() 
 {
 
-    Motor.Control();
+    //Motor.Control();
 
-    //Motor.FullCycleTest();
+    Motor.FullCycleTest();
 }
 
 
