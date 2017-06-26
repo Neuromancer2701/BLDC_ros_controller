@@ -16,6 +16,7 @@ BLDC::BLDC()
 {
     cycleCounter = 0;
     forward = true;
+    directionState = FORWARD;
     started = false;
     currentCommunationState = State6;
     newCommunationState =  State6;
@@ -238,7 +239,7 @@ int *BLDC::getRawHallData()
 }
 
 
-void BLDC::StartMotor(bool start)
+void BLDC::startMotor(bool start)
 {
 
     if(start)
@@ -310,21 +311,24 @@ int BLDC::findIndex(commumationStates state)
 
 void BLDC::ProcessMessages()
 {
-
-
+    Parse();
 }
 
 
 void BLDC::Parse()
 {
-    int readBytes = 0;
-    if(readBytes = Serial.available() > MIN_SIZE)
+    int readBytes = Serial.available();
+    if(readBytes >= MIN_SIZE)
     {
-        if(readBytes > SERIAL_BUFFER_SIZE)
-            readBytes = SERIAL_BUFFER_SIZE;
+        Serial.print("readBytes: ");
+        Serial.println(readBytes);
+
+        if(readBytes > BUFFER_SIZE)
+            readBytes = BUFFER_SIZE;
         if(Serial.readBytesUntil(END, serialBuffer, readBytes) > 0)
         {
-            if(int index = findStart(readBytes) >= 0)
+            int index = findStart(readBytes);
+            if(index >= 0)
             {
                 index++;  //move to comamand character
                 unsigned char command = serialBuffer[index];
@@ -391,6 +395,11 @@ void BLDC::parseVelocity(int index)
             targetVelocity = MAX_VELOCITY/(double)DIVISOR;
         }
 
+        if(targetVelocity < MIN_VELOCITY/(double)DIVISOR)
+        {
+            targetVelocity = MIN_VELOCITY/(double)DIVISOR;
+        }
+
         Send((int)(targetVelocity * DIVISOR));
     }
 }
@@ -432,8 +441,8 @@ void BLDC::parseCurrent()
 
 void BLDC::Send(int data)
 {
-    char sendBuffer[SERIAL_BUFFER_SIZE];
-    snprintf(sendBuffer,SERIAL_BUFFER_SIZE,"B%d\n",data);
+    char sendBuffer[BUFFER_SIZE];
+    snprintf(sendBuffer,BUFFER_SIZE,"B%d\n",data);
     Serial.print(sendBuffer);
 }
 
@@ -447,7 +456,7 @@ void BLDC::parseStart(int index)
     else if(serialBuffer[index] == WRITE)
     {
         index++; // moved to started value
-        StartMotor((serialBuffer[index]== '1'));
+        startMotor((serialBuffer[index] == '1'));
         Send((int)started);
     }
 }
@@ -480,3 +489,23 @@ void BLDC::CalculatePWM()
         controlPWM = MIN_PWM;
 
 }
+
+void BLDC::ChangeDirection(bool _forward)
+{
+    if(_forward == forward)
+        return;
+
+    controlPWM = DUTY_STOP;
+    directionState  = CHANGING;
+
+    switch(directionState)
+    {
+        case REVERSE:
+        case FORWARD:
+        case CHANGING:
+    }
+
+
+
+}
+

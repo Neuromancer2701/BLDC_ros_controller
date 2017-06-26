@@ -80,7 +80,7 @@ public:
         NUMBER_HALLS = 3,
         PWM_FREQUENCY = 100,
         COMMUTATION_STATES = 6,
-        MIN_DUTY = 0,
+        DUTY_STOP = 0,
         AL_HIGH_PORTB = 0x10,
         BL_HIGH_PORTB = 0x01,
         CL_HIGH_PORTB = 0x20,
@@ -112,7 +112,8 @@ private:
 	double current;
 
 
-    void StartMotor(bool start);
+    void startMotor(bool start);
+	void ChangeDirection(bool forward);
     int  findIndex(commumationStates state);
 
 	void Parse();
@@ -140,7 +141,7 @@ private:
 		WRITE     = 'W',
 		END       = '\n',
 		MIN_SIZE  = 3,
-		SERIAL_BUFFER_SIZE = 16,
+		BUFFER_SIZE = 16,
 		GAIN_SIZE = 4
 
 	};
@@ -155,7 +156,15 @@ private:
 		MIN_PWM = 15
 	};
 
-	unsigned char serialBuffer[SERIAL_BUFFER_SIZE];
+	enum changeDirection
+	{
+		REVERSE  = 0,
+		FORWARD  = 1,
+		CHANGING = 2
+	};
+
+	unsigned char serialBuffer[BUFFER_SIZE];
+	changeDirection directionState;
 
 };
 

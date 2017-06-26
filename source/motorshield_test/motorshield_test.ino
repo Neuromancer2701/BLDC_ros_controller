@@ -8,24 +8,24 @@ char* format = "Communation State: %d\n";
 
 char* Halls_format = "Halls: %02x %02x %02x";
 unsigned short state = 0;
-char buffer[256];
-
 void setup() 
 {
   Serial.begin(57600);
+  delay(2000);
   Serial.println("After Motor init");
   //Motor.Forward();   ///Reverse
+delay(2000);
 
-  delay(5000);
-  Motor.initPWM();
+  //Motor.initPWM();
 }
 
 void loop() 
 {
-
     //Motor.Control();
+    //Motor.FullCycleTest();
+  Motor.ProcessMessages();
 
-    Motor.FullCycleTest();
+  delay(100);
 }
 
 
