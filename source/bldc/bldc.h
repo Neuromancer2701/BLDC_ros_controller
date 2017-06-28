@@ -86,6 +86,7 @@ public:
         CL_HIGH_PORTB = 0x20,
         CYCLES_PER_REV = 60,
         RADIUS = 165,
+		SAMPLE_WINDOW_MS = 100
     };
 
 

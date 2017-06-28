@@ -121,6 +121,11 @@ void BLDC::CalculateCommutationState()
 
     if(newCommunationState == currentCommunationState)
     {
+        previousTime = currentTime;
+        currentTime = millis();
+
+        if((directionState == CHANGING) && (currentTime - previousTime) > SAMPLE_WINDOW_MS)
+            directionState  = forward ? FORWARD : REVERSE;
         return;
     }
     else
@@ -132,10 +137,17 @@ void BLDC::CalculateCommutationState()
         currentTime = millis();
         velocity = TWO_PI * (RADIUS/(double)1000) * ((1/(double)CYCLES_PER_REV)/((currentTime - previousTime)/(double)1000));
 
-        CalculatePWM();
-
         PORTB = 0x00; //clear io to give a bit of rest time between states. To prevent shoot through.
         Palatis::SoftPWM.allOff();
+
+        if(directionState != CHANGING)  // changing direction do not calculate PWM
+        {
+            CalculatePWM();
+        }
+        else
+        {
+            return;
+        }
     }
 
 		switch(currentCommunationState)
@@ -497,15 +509,7 @@ void BLDC::ChangeDirection(bool _forward)
 
     controlPWM = DUTY_STOP;
     directionState  = CHANGING;
-
-    switch(directionState)
-    {
-        case REVERSE:
-        case FORWARD:
-        case CHANGING:
-    }
-
-
+    forward = _forward;
 
 }
 
