@@ -15,9 +15,19 @@ namespace actionlib_tutorials
   class FibonacciActionResult : public ros::Msg
   {
     public:
-      std_msgs::Header header;
-      actionlib_msgs::GoalStatus status;
-      actionlib_tutorials::FibonacciResult result;
+      typedef std_msgs::Header _header_type;
+      _header_type header;
+      typedef actionlib_msgs::GoalStatus _status_type;
+      _status_type status;
+      typedef actionlib_tutorials::FibonacciResult _result_type;
+      _result_type result;
+
+    FibonacciActionResult():
+      header(),
+      status(),
+      result()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

@@ -14,6 +14,10 @@ static const char FRAMEGRAPH[] = "tf2_msgs/FrameGraph";
   {
     public:
 
+    FrameGraphRequest()
+    {
+    }
+
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
@@ -34,13 +38,19 @@ static const char FRAMEGRAPH[] = "tf2_msgs/FrameGraph";
   class FrameGraphResponse : public ros::Msg
   {
     public:
-      char * frame_yaml;
+      typedef const char* _frame_yaml_type;
+      _frame_yaml_type frame_yaml;
+
+    FrameGraphResponse():
+      frame_yaml("")
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
-      uint32_t length_frame_yaml = strlen( (const char*) this->frame_yaml);
-      memcpy(outbuffer + offset, &length_frame_yaml, sizeof(uint32_t));
+      uint32_t length_frame_yaml = strlen(this->frame_yaml);
+      varToArr(outbuffer + offset, length_frame_yaml);
       offset += 4;
       memcpy(outbuffer + offset, this->frame_yaml, length_frame_yaml);
       offset += length_frame_yaml;
@@ -51,7 +61,7 @@ static const char FRAMEGRAPH[] = "tf2_msgs/FrameGraph";
     {
       int offset = 0;
       uint32_t length_frame_yaml;
-      memcpy(&length_frame_yaml, (inbuffer + offset), sizeof(uint32_t));
+      arrToVar(length_frame_yaml, (inbuffer + offset));
       offset += 4;
       for(unsigned int k= offset; k< offset+length_frame_yaml; ++k){
           inbuffer[k-1]=inbuffer[k];

@@ -12,7 +12,13 @@ namespace actionlib_tutorials
   class FibonacciGoal : public ros::Msg
   {
     public:
-      int32_t order;
+      typedef int32_t _order_type;
+      _order_type order;
+
+    FibonacciGoal():
+      order(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

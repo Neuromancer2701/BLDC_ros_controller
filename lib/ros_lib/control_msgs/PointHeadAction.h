@@ -15,9 +15,19 @@ namespace control_msgs
   class PointHeadAction : public ros::Msg
   {
     public:
-      control_msgs::PointHeadActionGoal action_goal;
-      control_msgs::PointHeadActionResult action_result;
-      control_msgs::PointHeadActionFeedback action_feedback;
+      typedef control_msgs::PointHeadActionGoal _action_goal_type;
+      _action_goal_type action_goal;
+      typedef control_msgs::PointHeadActionResult _action_result_type;
+      _action_result_type action_result;
+      typedef control_msgs::PointHeadActionFeedback _action_feedback_type;
+      _action_feedback_type action_feedback;
+
+    PointHeadAction():
+      action_goal(),
+      action_result(),
+      action_feedback()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

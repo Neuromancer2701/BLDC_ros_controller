@@ -12,7 +12,13 @@ namespace actionlib
   class TestFeedback : public ros::Msg
   {
     public:
-      int32_t feedback;
+      typedef int32_t _feedback_type;
+      _feedback_type feedback;
+
+    TestFeedback():
+      feedback(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

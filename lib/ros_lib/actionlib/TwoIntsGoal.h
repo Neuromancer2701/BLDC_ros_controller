@@ -12,8 +12,16 @@ namespace actionlib
   class TwoIntsGoal : public ros::Msg
   {
     public:
-      int64_t a;
-      int64_t b;
+      typedef int64_t _a_type;
+      _a_type a;
+      typedef int64_t _b_type;
+      _b_type b;
+
+    TwoIntsGoal():
+      a(0),
+      b(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

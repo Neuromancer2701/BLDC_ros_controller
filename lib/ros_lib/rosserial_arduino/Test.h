@@ -13,13 +13,19 @@ static const char TEST[] = "rosserial_arduino/Test";
   class TestRequest : public ros::Msg
   {
     public:
-      char * input;
+      typedef const char* _input_type;
+      _input_type input;
+
+    TestRequest():
+      input("")
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
-      uint32_t length_input = strlen( (const char*) this->input);
-      memcpy(outbuffer + offset, &length_input, sizeof(uint32_t));
+      uint32_t length_input = strlen(this->input);
+      varToArr(outbuffer + offset, length_input);
       offset += 4;
       memcpy(outbuffer + offset, this->input, length_input);
       offset += length_input;
@@ -30,7 +36,7 @@ static const char TEST[] = "rosserial_arduino/Test";
     {
       int offset = 0;
       uint32_t length_input;
-      memcpy(&length_input, (inbuffer + offset), sizeof(uint32_t));
+      arrToVar(length_input, (inbuffer + offset));
       offset += 4;
       for(unsigned int k= offset; k< offset+length_input; ++k){
           inbuffer[k-1]=inbuffer[k];
@@ -49,13 +55,19 @@ static const char TEST[] = "rosserial_arduino/Test";
   class TestResponse : public ros::Msg
   {
     public:
-      char * output;
+      typedef const char* _output_type;
+      _output_type output;
+
+    TestResponse():
+      output("")
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
-      uint32_t length_output = strlen( (const char*) this->output);
-      memcpy(outbuffer + offset, &length_output, sizeof(uint32_t));
+      uint32_t length_output = strlen(this->output);
+      varToArr(outbuffer + offset, length_output);
       offset += 4;
       memcpy(outbuffer + offset, this->output, length_output);
       offset += length_output;
@@ -66,7 +78,7 @@ static const char TEST[] = "rosserial_arduino/Test";
     {
       int offset = 0;
       uint32_t length_output;
-      memcpy(&length_output, (inbuffer + offset), sizeof(uint32_t));
+      arrToVar(length_output, (inbuffer + offset));
       offset += 4;
       for(unsigned int k= offset; k< offset+length_output; ++k){
           inbuffer[k-1]=inbuffer[k];

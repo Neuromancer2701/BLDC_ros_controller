@@ -2,9 +2,10 @@
 #include "bldc.h"
 #include "SoftPWM.h"
 
-SOFTPWM_DEFINE_CHANNEL(AH, DDRD, PORTD, PORTD4);  //Arduino pin 4
-SOFTPWM_DEFINE_CHANNEL(BH, DDRB, PORTB, PORTB1);  //Arduino pin 9
-SOFTPWM_DEFINE_CHANNEL(CH, DDRD, PORTD, PORTD5);  //Arduino pin 5
+
+SOFTPWM_DEFINE_CHANNEL(AH_INDEX, DDRD, PORTD, PORTD4);  //Arduino pin 4
+SOFTPWM_DEFINE_CHANNEL(BH_INDEX, DDRB, PORTB, PORTB1);  //Arduino pin 9
+SOFTPWM_DEFINE_CHANNEL(CH_INDEX, DDRD, PORTD, PORTD5);  //Arduino pin 5
 
 SOFTPWM_DEFINE_OBJECT_WITH_PWM_LEVELS(3, 100);
 SOFTPWM_DEFINE_EXTERN_OBJECT_WITH_PWM_LEVELS(3, 100);
@@ -13,44 +14,49 @@ commumationStates startSeqeunce[BLDC::COMMUTATION_STATES] = {State1, State2, Sta
 
 BLDC::BLDC()
 {
-    targetSpeed = 0;
-    currentSpeed = 0;
-    accelerate = true;
     cycleCounter = 0;
     forward = true;
+    directionState = FORWARD;
     started = false;
     currentCommunationState = State6;
     newCommunationState =  State6;
-    sprintf(data,"nothing \0");
+    velocity = 0.0;
+    previousTime = 0;
+    currentTime = 0;
+
+    P_gain = 1.0;
+    I_gain = 1.0;
+    targetVelocity = 0.0;
+    error = previousError = 0.0;
+    controlPWM = 0;
 
     pinMode(HALL1, INPUT);
     pinMode(HALL2, INPUT);
     pinMode(HALL3, INPUT);
 
-    //pinMode(AH, OUTPUT);
-    //pinMode(BH, OUTPUT);
-    //pinMode(CH, OUTPUT);
     pinMode(AL, OUTPUT);
     pinMode(BL, OUTPUT);
     pinMode(CL, OUTPUT);
-    //digitalWrite(AH, 0);
-    //digitalWrite(BH, 0);
-    //digitalWrite(CH, 0);
     digitalWrite(AL, 0);
     digitalWrite(BL, 0);
     digitalWrite(CL, 0);
 
-
-    // begin with 60hz pwm frequency
-    Palatis::SoftPWM.begin(PWN_FREQUENCY);
-
-    // print interrupt load for diagnostic purposes
-    Palatis::SoftPWM.printInterruptLoad();
 }
 
 BLDC::~BLDC()
 {
 
+}
+
+void BLDC::initPWM()
+{
+    // begin with 500 pwm frequency
+    Palatis::SoftPWM.begin(500);
+
+    // print interrupt load for diagnostic purposes
+    Palatis::SoftPWM.printInterruptLoad();
+
+    Palatis::SoftPWM.allOff();
 }
 
 void BLDC::ReadHalls()
@@ -64,57 +70,62 @@ void BLDC::ReadHalls()
 
 void BLDC::Control()
 {
-    setSpeed(50);
-    StartMotor();
+
     ReadHalls();
-    CalculateCommutationState();
+    if(started)
+    {
+        CalculateCommutationState();
+    }
+
+    ProcessMessages();
 }
 
 void BLDC::FullCycleTest()
 {
+    controlPWM = 50;
+    unsigned long Delay = 1000;
+
     newCommunationState = State1;
     CalculateCommutationState();
-    delay(1000);
+    delay(Delay);
 
     newCommunationState = State2;
     CalculateCommutationState();
-    delay(1000);
+    delay(Delay);
 
     newCommunationState = State3;
     CalculateCommutationState();
-    delay(1000);
+    delay(Delay);
+
 
     newCommunationState = State4;
     CalculateCommutationState();
-    delay(1000);
+    delay(Delay);
 
     newCommunationState = State5;
     CalculateCommutationState();
-    delay(1000);
+    delay(Delay);
 
     newCommunationState = State6;
     CalculateCommutationState();
-    delay(1000);
+    delay(Delay);
 
 }
 
 
 void BLDC::CalculateCommutationState()
 {
-    uint8_t AH_duty = 0;
-	uint8_t AL_duty = 0;
 
-    uint8_t BH_duty = 0;
-    uint8_t BL_duty = 0;
-
-    uint8_t CH_duty = 0;
-    uint8_t CL_duty = 0;
-
-    if(!started)
-        return;
+    int highSideIndex = 0;
+    unsigned short lowSide = 0;
 
     if(newCommunationState == currentCommunationState)
     {
+        previousTime = currentTime;
+        currentTime = millis();
+
+        if((directionState == CHANGING) && (currentTime - previousTime) > SAMPLE_WINDOW_MS)
+            directionState  = forward ? FORWARD : REVERSE;
         return;
     }
     else
@@ -122,19 +133,21 @@ void BLDC::CalculateCommutationState()
         currentCommunationState = newCommunationState;
         cycleCounter++;
 
-        if(accelerate)
+        previousTime = currentTime;
+        currentTime = millis();
+        velocity = TWO_PI * (RADIUS/(double)1000) * ((1/(double)CYCLES_PER_REV)/((currentTime - previousTime)/(double)1000));
+
+        PORTB = 0x00; //clear io to give a bit of rest time between states. To prevent shoot through.
+        Palatis::SoftPWM.allOff();
+
+        if(directionState != CHANGING)  // changing direction do not calculate PWM
         {
-            if(currentSpeed < targetSpeed)
-                currentSpeed++;
+            CalculatePWM();
         }
         else
         {
-            if(currentSpeed > MIN_DUTY)
-                currentSpeed--;
+            return;
         }
-
-        PORTD = 0x00; //clear io to give a bit of rest time between states. To prevent shoot through.
-        PORTB = 0x00;
     }
 
 		switch(currentCommunationState)
@@ -143,125 +156,93 @@ void BLDC::CalculateCommutationState()
 			case State1:
                  if(forward)
                  {
-                     PORTD = 0x10;
-                     PORTB = 0x20;
-                    //AH_duty = speed;
-                    //CL_duty = 1;
+                     highSideIndex = AH_INDEX;
+                     lowSide = CL_HIGH_PORTB;
                  }
                  else
                  {
-                     PORTD = 0x20;
-                     PORTB = 0x10;
-                     //CH_duty = speed;
-                     //AL_duty = 1;
+                     highSideIndex = CH_INDEX;
+                     lowSide = AL_HIGH_PORTB;
                  }
 				 break;
+
 			case State2:
                  if(forward)
                  {
-                     PORTD = 0x00;
-                     PORTB = 0x22;
-                    //BH_duty = speed;
-                    //CL_duty = 1;
+                     highSideIndex = BH_INDEX;
+                     lowSide = CL_HIGH_PORTB;
                  }
                  else
                  {
-                     PORTD = 0x20;
-                     PORTB = 0x01;
-                     //CH_duty = speed;
-                    //BL_duty = 1;
+                     highSideIndex = CH_INDEX;
+                     lowSide = BL_HIGH_PORTB;
                  }
                  break;
+
 			case State3:
                  if(forward)
                  {
-                     PORTD = 0x00;
-                     PORTB = 0x12;
+                     highSideIndex = BH_INDEX;
+                     lowSide = AL_HIGH_PORTB;
                  }
                  else
                  {
-                     PORTD = 0x10;
-                     PORTB = 0x01;
-                    //AH_duty = speed;
-                    //BL_duty = 1;
+                     highSideIndex = AH_INDEX;
+                     lowSide = BL_HIGH_PORTB;
                  }
                  break;
 			case State4:
                  if(forward)
                  {
-                     PORTD = 0x20;
-                     PORTB = 0x10;
+                     highSideIndex = CH_INDEX;
+                     lowSide = AL_HIGH_PORTB;
                  }
                  else
                  {
-                     PORTD = 0x10;
-                     PORTB = 0x20;
-                    //AH_duty = speed;
-                    //CL_duty = 1;
+                     highSideIndex = AH_INDEX;
+                     lowSide = CL_HIGH_PORTB;
                  }
                  break;
 			case State5:
                  if(forward)
                  {
-                     PORTD = 0x20;
-                     PORTB = 0x01;
-                    //CH_duty = speed;
-                    //BL_duty = 1;
+                     highSideIndex = CH_INDEX;
+                     lowSide = BL_HIGH_PORTB;;
                  }
                  else
                  {
-                     PORTD = 0x00;
-                     PORTB = 0x22;
-
-                     //BH_duty = speed;
-                    //CL_duty = 1;
+                     highSideIndex = BH_INDEX;
+                     lowSide = CL_HIGH_PORTB;
                  }
                  break;
 			case State6:
                 if(forward)
                 {
-                    PORTD = 0x10;
-                    PORTB = 0x01;
-                    //AH_duty = speed;
-                    //BL_duty = 1;
+                    highSideIndex = AH_INDEX;
+                    lowSide = BL_HIGH_PORTB;
                 }
                 else
                 {
-                    PORTD = 0x00;
-                    PORTB = 0x12;
-                    //BH_duty = speed;
-                    //AL_duty = 1;
+                    highSideIndex = BH_INDEX;
+                    lowSide = AL_HIGH_PORTB;
                 }
                 break;
 
             default:
-                PORTD = 0x00;
                 PORTB = 0x00;
+                Palatis::SoftPWM.allOff();
                 break;
 		
 		}
 
+    //sprintf(data,"state: %d cycle count: %d velocity: %05d", currentCommunationState, cycleCounter,(int)(velocity * 1000));
+    //sprintf(data,"hideIndex: %d PORTB: %02x Forward: %s", highSideIndex, lowSide, forward ? "true" : "false");
 
-    sprintf(data,"PORTB: %02x PORTD: %02x Forward: %s", PORTB, PORTD, forward ? "true" : "false");
+    //Serial.println(data);
 
-#if 0
-    sprintf(data,"AH:%d BH:%d CH:%d AL:%d BL:%d Cl:%d Halls: %d %d %d",
-    AH_duty, BH_duty, CH_duty, AL_duty, BL_duty, CL_duty, RawHallData[HALL1_INDEX], RawHallData[HALL2_INDEX], RawHallData[HALL3_INDEX]);
+    Palatis::SoftPWM.set(highSideIndex, controlPWM);
+    PORTB = lowSide;
 
-    digitalWrite(AL, 0);
-    digitalWrite(BL, 0);
-    digitalWrite(CL, 0);
-    SoftPWMSetPercent(AH, 0);
-    SoftPWMSetPercent(BH, 0);
-    SoftPWMSetPercent(CH, 0);
-
-	SoftPWMSetPercent(AH, AH_duty);
-	SoftPWMSetPercent(BH, BH_duty);
-	SoftPWMSetPercent(CH, CH_duty);
-    digitalWrite(AL, AL_duty);
-    digitalWrite(BL, BL_duty);
-    digitalWrite(CL, CL_duty);
-#endif
 }
 
 int *BLDC::getRawHallData()
@@ -269,44 +250,66 @@ int *BLDC::getRawHallData()
     return (int *)RawHallData;
 }
 
-void BLDC::StartMotor()
+
+void BLDC::startMotor(bool start)
 {
-    ReadHalls();
-    commumationStates startState = newCommunationState;
-    int stateIndex = findIndex(startState);
-    currentCommunationState = startSeqeunce[(stateIndex + 1) % COMMUTATION_STATES]; // make sure the two starting states are different.
+
+    if(start)
+    {
+        started = true;
+        ReadHalls();
+        currentCommunationState = startSeqeunce[(findIndex(newCommunationState) + 1) % COMMUTATION_STATES]; // make sure the two starting states are different.
+    }
+    else
+    {
+        currentCommunationState = newCommunationState = State1;
+        controlPWM = MAX_PWM;
+        started = false;
+    }
+
+
+#if 0
 
     CalculateCommutationState();
+
+
+
     delay(100);
     ReadHalls();
-
     if(newCommunationState != startState)
     {
+        Serial.println("SUCCESS");
         started = true;
         return;
     }
 
-    newCommunationState = startSeqeunce[(stateIndex - 1) % COMMUTATION_STATES];
+
+    newCommunationState = startSeqeunce[(currentStateIndex - 1) % COMMUTATION_STATES];
+    Serial.print("Try  before current state:");
+    Serial.println(newCommunationState);
     CalculateCommutationState();
     delay(100);
     ReadHalls();
-
     if(newCommunationState != startState)
     {
+        Serial.println("SUCCESS");
         started = true;
         return;
     }
 
-    newCommunationState = startSeqeunce[(stateIndex + 1) % COMMUTATION_STATES];
+    newCommunationState = startSeqeunce[(currentStateIndex + 1) % COMMUTATION_STATES];
+    Serial.print("Try after current state:");
+    Serial.println(newCommunationState);
     CalculateCommutationState();
     delay(100);
     ReadHalls();
-
     if(newCommunationState != startState)
     {
+        Serial.println("SUCCESS");
         started = true;
         return;
     }
+#endif
 }
 
 int BLDC::findIndex(commumationStates state)
@@ -318,8 +321,195 @@ int BLDC::findIndex(commumationStates state)
     }
 }
 
+void BLDC::ProcessMessages()
+{
+    Parse();
+}
 
 
+void BLDC::Parse()
+{
+    int readBytes = Serial.available();
+    if(readBytes >= MIN_SIZE)
+    {
+        Serial.print("readBytes: ");
+        Serial.println(readBytes);
 
+        if(readBytes > BUFFER_SIZE)
+            readBytes = BUFFER_SIZE;
+        if(Serial.readBytesUntil(END, serialBuffer, readBytes) > 0)
+        {
+            int index = findStart(readBytes);
+            if(index >= 0)
+            {
+                index++;  //move to comamand character
+                unsigned char command = serialBuffer[index];
+                switch(command)
+                {
+                    case VELOCITY:
+                        parseVelocity(index);
+                         break;
+                    case PWM:
+                         parsePWM();
+                         break;
+                    case GAINS:
+                         parseGains(index);
+                         break;
+                    case CURRENT:
+                         parseCurrent();
+                         break;
+                    case START:
+                         parseStart(index);
+                         break;
+                    case DIRECTION:
+                         parseDirection(index);
+                         break;
+                    default:
+                        break;
+                }
 
+            }
+        }
+    }
+
+}
+
+int BLDC::findStart(int size)
+{
+    for(int i = 0; i < size;i++)
+    {
+        if(serialBuffer[i] == BEGINNING)
+            return i;
+    }
+
+    return -1;
+}
+
+void BLDC::parseVelocity(int index)
+{
+    index++;  // moved to read/write character
+    if(serialBuffer[index] == READ)
+    {
+        Send((int)(velocity * MULTIPLIER));
+    }
+
+    else if(serialBuffer[index] == WRITE)
+    {
+        char velocity[2];
+        index++;
+        velocity[0] = serialBuffer[index];
+        index++;
+        velocity[1] = serialBuffer[index];
+        targetVelocity = atof(velocity)/DIVISOR;
+
+        if(targetVelocity > MAX_VELOCITY/(double)DIVISOR)
+        {
+            targetVelocity = MAX_VELOCITY/(double)DIVISOR;
+        }
+
+        if(targetVelocity < MIN_VELOCITY/(double)DIVISOR)
+        {
+            targetVelocity = MIN_VELOCITY/(double)DIVISOR;
+        }
+
+        Send((int)(targetVelocity * DIVISOR));
+    }
+}
+
+void BLDC::parsePWM()
+{
+    Send(controlPWM);
+}
+
+void BLDC::parseGains(int index)
+{
+    index++;  // moved to read/write character
+    if(serialBuffer[index] == READ)
+    {
+        Send((int)(P_gain * MULTIPLIER));
+        Send((int)(I_gain * MULTIPLIER));
+    }
+    else if(serialBuffer[index] == WRITE)
+    {
+        index++;
+        char p_string[4];
+        char i_string[4];
+
+        strncpy(p_string,(const char *)&serialBuffer[index], GAIN_SIZE);
+        index += GAIN_SIZE;
+        strncpy(i_string,(const char *)&serialBuffer[index], GAIN_SIZE);
+        P_gain = atof(p_string)/MULTIPLIER;
+        I_gain = atof(i_string)/MULTIPLIER;
+
+        Send((int)(P_gain * MULTIPLIER));
+        Send((int)(I_gain * MULTIPLIER));
+    }
+}
+
+void BLDC::parseCurrent()
+{
+    Send((int)(current * MULTIPLIER));
+}
+
+void BLDC::Send(int data)
+{
+    char sendBuffer[BUFFER_SIZE];
+    snprintf(sendBuffer,BUFFER_SIZE,"B%d\n",data);
+    Serial.print(sendBuffer);
+}
+
+void BLDC::parseStart(int index)
+{
+    index++;  // moved to read/write character
+    if(serialBuffer[index] == READ)
+    {
+        Send((int)started);
+    }
+    else if(serialBuffer[index] == WRITE)
+    {
+        index++; // moved to started value
+        startMotor((serialBuffer[index] == '1'));
+        Send((int)started);
+    }
+}
+
+void BLDC::parseDirection(int index)
+{
+    index++;  // moved to read/write character
+    if(serialBuffer[index] == READ)
+    {
+        Send((int)forward);
+    }
+    else if(serialBuffer[index] == WRITE)
+    {
+        index++; // moved to started value
+        forward = (serialBuffer[index]== '1');
+        Send((int)forward);
+    }
+}
+
+void BLDC::CalculatePWM()
+{
+    previousError = error;
+    error = targetVelocity - velocity;
+    controlPWM = (unsigned char)(P_gain * error) + (I_gain * (previousError+error/2));
+
+    if( controlPWM > MAX_PWM )
+        controlPWM = MAX_PWM;
+
+    if( controlPWM < MIN_PWM )
+        controlPWM = MIN_PWM;
+
+}
+
+void BLDC::ChangeDirection(bool _forward)
+{
+    if(_forward == forward)
+        return;
+
+    controlPWM = DUTY_STOP;
+    directionState  = CHANGING;
+    forward = _forward;
+
+}
 

@@ -13,7 +13,13 @@ namespace control_msgs
   class JointTrajectoryGoal : public ros::Msg
   {
     public:
-      trajectory_msgs::JointTrajectory trajectory;
+      typedef trajectory_msgs::JointTrajectory _trajectory_type;
+      _trajectory_type trajectory;
+
+    JointTrajectoryGoal():
+      trajectory()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

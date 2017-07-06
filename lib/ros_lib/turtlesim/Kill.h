@@ -13,13 +13,19 @@ static const char KILL[] = "turtlesim/Kill";
   class KillRequest : public ros::Msg
   {
     public:
-      char * name;
+      typedef const char* _name_type;
+      _name_type name;
+
+    KillRequest():
+      name("")
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
-      uint32_t length_name = strlen( (const char*) this->name);
-      memcpy(outbuffer + offset, &length_name, sizeof(uint32_t));
+      uint32_t length_name = strlen(this->name);
+      varToArr(outbuffer + offset, length_name);
       offset += 4;
       memcpy(outbuffer + offset, this->name, length_name);
       offset += length_name;
@@ -30,7 +36,7 @@ static const char KILL[] = "turtlesim/Kill";
     {
       int offset = 0;
       uint32_t length_name;
-      memcpy(&length_name, (inbuffer + offset), sizeof(uint32_t));
+      arrToVar(length_name, (inbuffer + offset));
       offset += 4;
       for(unsigned int k= offset; k< offset+length_name; ++k){
           inbuffer[k-1]=inbuffer[k];
@@ -49,6 +55,10 @@ static const char KILL[] = "turtlesim/Kill";
   class KillResponse : public ros::Msg
   {
     public:
+
+    KillResponse()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

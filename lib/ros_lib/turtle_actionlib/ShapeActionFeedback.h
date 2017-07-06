@@ -15,9 +15,19 @@ namespace turtle_actionlib
   class ShapeActionFeedback : public ros::Msg
   {
     public:
-      std_msgs::Header header;
-      actionlib_msgs::GoalStatus status;
-      turtle_actionlib::ShapeFeedback feedback;
+      typedef std_msgs::Header _header_type;
+      _header_type header;
+      typedef actionlib_msgs::GoalStatus _status_type;
+      _status_type status;
+      typedef turtle_actionlib::ShapeFeedback _feedback_type;
+      _feedback_type feedback;
+
+    ShapeActionFeedback():
+      header(),
+      status(),
+      feedback()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

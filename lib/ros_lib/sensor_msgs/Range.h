@@ -13,14 +13,30 @@ namespace sensor_msgs
   class Range : public ros::Msg
   {
     public:
-      std_msgs::Header header;
-      uint8_t radiation_type;
-      float field_of_view;
-      float min_range;
-      float max_range;
-      float range;
+      typedef std_msgs::Header _header_type;
+      _header_type header;
+      typedef uint8_t _radiation_type_type;
+      _radiation_type_type radiation_type;
+      typedef float _field_of_view_type;
+      _field_of_view_type field_of_view;
+      typedef float _min_range_type;
+      _min_range_type min_range;
+      typedef float _max_range_type;
+      _max_range_type max_range;
+      typedef float _range_type;
+      _range_type range;
       enum { ULTRASOUND = 0 };
       enum { INFRARED = 1 };
+
+    Range():
+      header(),
+      radiation_type(0),
+      field_of_view(0),
+      min_range(0),
+      max_range(0),
+      range(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

@@ -13,8 +13,16 @@ static const char TWOINTS[] = "roscpp_tutorials/TwoInts";
   class TwoIntsRequest : public ros::Msg
   {
     public:
-      int64_t a;
-      int64_t b;
+      typedef int64_t _a_type;
+      _a_type a;
+      typedef int64_t _b_type;
+      _b_type b;
+
+    TwoIntsRequest():
+      a(0),
+      b(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
@@ -94,7 +102,13 @@ static const char TWOINTS[] = "roscpp_tutorials/TwoInts";
   class TwoIntsResponse : public ros::Msg
   {
     public:
-      int64_t sum;
+      typedef int64_t _sum_type;
+      _sum_type sum;
+
+    TwoIntsResponse():
+      sum(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

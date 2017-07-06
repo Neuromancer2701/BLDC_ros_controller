@@ -5,6 +5,10 @@
 #define __BLDC_H__
 
 #include <stdint.h>
+#include <ros.h>
+#include <std_msgs/Bool.h>
+#include <std_msgs/Float32.h>
+#include <std_msgs/UInt8.h>
 
 enum commumationStates
 {
@@ -25,7 +29,11 @@ enum FET_PINS
     BL = 8,	 //! Port pin connected to phase B, low side enable switch. Arduino Pin 8
 
     CH = 5,	 //! Port pin connected to phase C, high side enable switch. Arduino Pin 5
-    CL = 13	 //! Port pin connected to phase C, low side enable switch.	Arduino Pin 13
+    CL = 13, //! Port pin connected to phase C, low side enable switch.	Arduino Pin 13
+
+    AH_INDEX = 0x00,
+    BH_INDEX = 0x01,
+    CH_INDEX = 0x02
 };
 
 enum HALL_PINS
@@ -49,9 +57,9 @@ public:
 	BLDC();
 	virtual ~BLDC();
 
-	void setSpeed(uint8_t _speed) {targetSpeed = _speed;}
 	void Control();
 	void CalculateCommutationState();
+    void initPWM();
 
     commumationStates getCommunationState() { return currentCommunationState; }
     void setCurrentCommunationState(commumationStates CurrentCommunationState) {  currentCommunationState = CurrentCommunationState; }
@@ -60,42 +68,104 @@ public:
     }
 
     int* getRawHallData();
-
-    char * stringData() {return &data[0];}
-
 	void FullCycleTest();
-
     void Reverse(){forward = false;}
     void Forward(){forward = true;}
     void ReadHalls();
 
+    void ProcessMessages();
+
     enum constants
     {
         NUMBER_HALLS = 3,
-        PWN_FREQUENCY = 1000,
+        PWM_FREQUENCY = 100,
         COMMUTATION_STATES = 6,
-        MIN_DUTY = 0
+        DUTY_STOP = 0,
+        AL_HIGH_PORTB = 0x10,
+        BL_HIGH_PORTB = 0x01,
+        CL_HIGH_PORTB = 0x20,
+        CYCLES_PER_REV = 60,
+        RADIUS = 165,
+		SAMPLE_WINDOW_MS = 100
     };
 
-private:
-	unsigned char targetSpeed;
-    unsigned char currentSpeed;
-    bool accelerate;
 
+private:
 	bool forward;
+    bool started;
+
     volatile int RawHallData[NUMBER_HALLS];
     commumationStates currentCommunationState;
     commumationStates newCommunationState;
-    char data[256];
     int cycleCounter;
-    bool started;
 
-    void StartMotor();
+    double velocity;
+    long previousTime;
+    long currentTime;
+
+
+	double P_gain;
+	double I_gain;
+	double targetVelocity;
+	double error;
+	double previousError;
+	unsigned char controlPWM;
+	double current;
+
+
+    void startMotor(bool start);
+	void ChangeDirection(bool forward);
     int  findIndex(commumationStates state);
 
+	void Parse();
+	void parseVelocity(int index);
+	void parsePWM();
+	void parseGains(int index);
+	void parseCurrent();
+	void parseStart(int index);
+	void parseDirection(int index);
+	void Send(int data);
+	int findStart(int size);
+	void CalculatePWM();
 
 
+	enum serialConstants
+	{
+		BEGINNING = 'B',
+		VELOCITY  = 'V',
+		PWM       = 'P',
+		GAINS     = 'G',
+		CURRENT   = 'C',
+		START     = 'S',
+		DIRECTION = 'D',
+		READ      = 'R',
+		WRITE     = 'W',
+		END       = '\n',
+		MIN_SIZE  = 3,
+		BUFFER_SIZE = 16,
+		GAIN_SIZE = 4
 
+	};
+
+	enum velocityConstants
+	{
+		DIVISOR = 10,
+		MAX_VELOCITY = 50,     	// divide by 10 m/sec
+		MIN_VELOCITY = 5,		// divide by 10 m/sec
+		MULTIPLIER = 100,
+		MAX_PWM = 85,
+		MIN_PWM = 15
+	};
+
+	enum changeDirection
+	{
+		REVERSE  = 0,
+		FORWARD  = 1,
+		CHANGING = 2
+	};
+
+	unsigned char serialBuffer[BUFFER_SIZE];
+	changeDirection directionState;
 
 };
 

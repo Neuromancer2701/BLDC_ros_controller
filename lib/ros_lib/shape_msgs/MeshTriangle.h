@@ -14,11 +14,15 @@ namespace shape_msgs
     public:
       uint32_t vertex_indices[3];
 
+    MeshTriangle():
+      vertex_indices()
+    {
+    }
+
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
-      unsigned char * vertex_indices_val = (unsigned char *) this->vertex_indices;
-      for( uint8_t i = 0; i < 3; i++){
+      for( uint32_t i = 0; i < 3; i++){
       *(outbuffer + offset + 0) = (this->vertex_indices[i] >> (8 * 0)) & 0xFF;
       *(outbuffer + offset + 1) = (this->vertex_indices[i] >> (8 * 1)) & 0xFF;
       *(outbuffer + offset + 2) = (this->vertex_indices[i] >> (8 * 2)) & 0xFF;
@@ -31,8 +35,7 @@ namespace shape_msgs
     virtual int deserialize(unsigned char *inbuffer)
     {
       int offset = 0;
-      uint8_t * vertex_indices_val = (uint8_t*) this->vertex_indices;
-      for( uint8_t i = 0; i < 3; i++){
+      for( uint32_t i = 0; i < 3; i++){
       this->vertex_indices[i] =  ((uint32_t) (*(inbuffer + offset)));
       this->vertex_indices[i] |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
       this->vertex_indices[i] |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);

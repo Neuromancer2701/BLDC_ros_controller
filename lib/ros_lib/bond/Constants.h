@@ -19,6 +19,10 @@ namespace bond
       enum { DEFAULT_HEARTBEAT_PERIOD =  1.0 };
       enum { DISABLE_HEARTBEAT_TIMEOUT_PARAM = /bond_disable_heartbeat_timeout };
 
+    Constants()
+    {
+    }
+
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;

@@ -14,6 +14,10 @@ static const char EMPTY[] = "roscpp/Empty";
   {
     public:
 
+    EmptyRequest()
+    {
+    }
+
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
@@ -34,6 +38,10 @@ static const char EMPTY[] = "roscpp/Empty";
   class EmptyResponse : public ros::Msg
   {
     public:
+
+    EmptyResponse()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

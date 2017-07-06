@@ -13,6 +13,10 @@ namespace tf2_msgs
   {
     public:
 
+    LookupTransformFeedback()
+    {
+    }
+
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;

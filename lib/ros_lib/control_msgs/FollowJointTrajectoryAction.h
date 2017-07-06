@@ -15,9 +15,19 @@ namespace control_msgs
   class FollowJointTrajectoryAction : public ros::Msg
   {
     public:
-      control_msgs::FollowJointTrajectoryActionGoal action_goal;
-      control_msgs::FollowJointTrajectoryActionResult action_result;
-      control_msgs::FollowJointTrajectoryActionFeedback action_feedback;
+      typedef control_msgs::FollowJointTrajectoryActionGoal _action_goal_type;
+      _action_goal_type action_goal;
+      typedef control_msgs::FollowJointTrajectoryActionResult _action_result_type;
+      _action_result_type action_result;
+      typedef control_msgs::FollowJointTrajectoryActionFeedback _action_feedback_type;
+      _action_feedback_type action_feedback;
+
+    FollowJointTrajectoryAction():
+      action_goal(),
+      action_result(),
+      action_feedback()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
@@ -38,7 +48,7 @@ namespace control_msgs
     }
 
     const char * getType(){ return "control_msgs/FollowJointTrajectoryAction"; };
-    const char * getMD5(){ return "a187484b9b42d27963c3e43098e345c9"; };
+    const char * getMD5(){ return "bc4f9b743838566551c0390c65f1a248"; };
 
   };
 

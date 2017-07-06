@@ -13,13 +13,19 @@ static const char REQUESTMESSAGEINFO[] = "rosserial_msgs/RequestMessageInfo";
   class RequestMessageInfoRequest : public ros::Msg
   {
     public:
-      char * type;
+      typedef const char* _type_type;
+      _type_type type;
+
+    RequestMessageInfoRequest():
+      type("")
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
-      uint32_t length_type = strlen( (const char*) this->type);
-      memcpy(outbuffer + offset, &length_type, sizeof(uint32_t));
+      uint32_t length_type = strlen(this->type);
+      varToArr(outbuffer + offset, length_type);
       offset += 4;
       memcpy(outbuffer + offset, this->type, length_type);
       offset += length_type;
@@ -30,7 +36,7 @@ static const char REQUESTMESSAGEINFO[] = "rosserial_msgs/RequestMessageInfo";
     {
       int offset = 0;
       uint32_t length_type;
-      memcpy(&length_type, (inbuffer + offset), sizeof(uint32_t));
+      arrToVar(length_type, (inbuffer + offset));
       offset += 4;
       for(unsigned int k= offset; k< offset+length_type; ++k){
           inbuffer[k-1]=inbuffer[k];
@@ -49,19 +55,27 @@ static const char REQUESTMESSAGEINFO[] = "rosserial_msgs/RequestMessageInfo";
   class RequestMessageInfoResponse : public ros::Msg
   {
     public:
-      char * md5;
-      char * definition;
+      typedef const char* _md5_type;
+      _md5_type md5;
+      typedef const char* _definition_type;
+      _definition_type definition;
+
+    RequestMessageInfoResponse():
+      md5(""),
+      definition("")
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
-      uint32_t length_md5 = strlen( (const char*) this->md5);
-      memcpy(outbuffer + offset, &length_md5, sizeof(uint32_t));
+      uint32_t length_md5 = strlen(this->md5);
+      varToArr(outbuffer + offset, length_md5);
       offset += 4;
       memcpy(outbuffer + offset, this->md5, length_md5);
       offset += length_md5;
-      uint32_t length_definition = strlen( (const char*) this->definition);
-      memcpy(outbuffer + offset, &length_definition, sizeof(uint32_t));
+      uint32_t length_definition = strlen(this->definition);
+      varToArr(outbuffer + offset, length_definition);
       offset += 4;
       memcpy(outbuffer + offset, this->definition, length_definition);
       offset += length_definition;
@@ -72,7 +86,7 @@ static const char REQUESTMESSAGEINFO[] = "rosserial_msgs/RequestMessageInfo";
     {
       int offset = 0;
       uint32_t length_md5;
-      memcpy(&length_md5, (inbuffer + offset), sizeof(uint32_t));
+      arrToVar(length_md5, (inbuffer + offset));
       offset += 4;
       for(unsigned int k= offset; k< offset+length_md5; ++k){
           inbuffer[k-1]=inbuffer[k];
@@ -81,7 +95,7 @@ static const char REQUESTMESSAGEINFO[] = "rosserial_msgs/RequestMessageInfo";
       this->md5 = (char *)(inbuffer + offset-1);
       offset += length_md5;
       uint32_t length_definition;
-      memcpy(&length_definition, (inbuffer + offset), sizeof(uint32_t));
+      arrToVar(length_definition, (inbuffer + offset));
       offset += 4;
       for(unsigned int k= offset; k< offset+length_definition; ++k){
           inbuffer[k-1]=inbuffer[k];

@@ -12,7 +12,13 @@ namespace std_msgs
   class Char : public ros::Msg
   {
     public:
-      uint8_t data;
+      typedef uint8_t _data_type;
+      _data_type data;
+
+    Char():
+      data(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

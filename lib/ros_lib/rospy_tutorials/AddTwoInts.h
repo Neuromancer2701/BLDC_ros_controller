@@ -13,8 +13,16 @@ static const char ADDTWOINTS[] = "rospy_tutorials/AddTwoInts";
   class AddTwoIntsRequest : public ros::Msg
   {
     public:
-      int64_t a;
-      int64_t b;
+      typedef int64_t _a_type;
+      _a_type a;
+      typedef int64_t _b_type;
+      _b_type b;
+
+    AddTwoIntsRequest():
+      a(0),
+      b(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
@@ -94,7 +102,13 @@ static const char ADDTWOINTS[] = "rospy_tutorials/AddTwoInts";
   class AddTwoIntsResponse : public ros::Msg
   {
     public:
-      int64_t sum;
+      typedef int64_t _sum_type;
+      _sum_type sum;
+
+    AddTwoIntsResponse():
+      sum(0)
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

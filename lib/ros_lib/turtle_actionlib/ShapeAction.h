@@ -15,9 +15,19 @@ namespace turtle_actionlib
   class ShapeAction : public ros::Msg
   {
     public:
-      turtle_actionlib::ShapeActionGoal action_goal;
-      turtle_actionlib::ShapeActionResult action_result;
-      turtle_actionlib::ShapeActionFeedback action_feedback;
+      typedef turtle_actionlib::ShapeActionGoal _action_goal_type;
+      _action_goal_type action_goal;
+      typedef turtle_actionlib::ShapeActionResult _action_result_type;
+      _action_result_type action_result;
+      typedef turtle_actionlib::ShapeActionFeedback _action_feedback_type;
+      _action_feedback_type action_feedback;
+
+    ShapeAction():
+      action_goal(),
+      action_result(),
+      action_feedback()
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {

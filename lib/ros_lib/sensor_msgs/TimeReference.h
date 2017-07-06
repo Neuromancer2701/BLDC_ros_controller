@@ -14,9 +14,19 @@ namespace sensor_msgs
   class TimeReference : public ros::Msg
   {
     public:
-      std_msgs::Header header;
-      ros::Time time_ref;
-      char * source;
+      typedef std_msgs::Header _header_type;
+      _header_type header;
+      typedef ros::Time _time_ref_type;
+      _time_ref_type time_ref;
+      typedef const char* _source_type;
+      _source_type source;
+
+    TimeReference():
+      header(),
+      time_ref(),
+      source("")
+    {
+    }
 
     virtual int serialize(unsigned char *outbuffer) const
     {
@@ -32,8 +42,8 @@ namespace sensor_msgs
       *(outbuffer + offset + 2) = (this->time_ref.nsec >> (8 * 2)) & 0xFF;
       *(outbuffer + offset + 3) = (this->time_ref.nsec >> (8 * 3)) & 0xFF;
       offset += sizeof(this->time_ref.nsec);
-      uint32_t length_source = strlen( (const char*) this->source);
-      memcpy(outbuffer + offset, &length_source, sizeof(uint32_t));
+      uint32_t length_source = strlen(this->source);
+      varToArr(outbuffer + offset, length_source);
       offset += 4;
       memcpy(outbuffer + offset, this->source, length_source);
       offset += length_source;
@@ -55,7 +65,7 @@ namespace sensor_msgs
       this->time_ref.nsec |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
       offset += sizeof(this->time_ref.nsec);
       uint32_t length_source;
-      memcpy(&length_source, (inbuffer + offset), sizeof(uint32_t));
+      arrToVar(length_source, (inbuffer + offset));
       offset += 4;
       for(unsigned int k= offset; k< offset+length_source; ++k){
           inbuffer[k-1]=inbuffer[k];
