@@ -13,19 +13,18 @@ void setup()
   Serial.begin(57600);
   delay(2000);
   Serial.println("After Motor init");
-  //Motor.Forward();   ///Reverse
-delay(2000);
+  Motor.Forward();   ///Reverse
+  delay(2000);
 
-  //Motor.initPWM();
+  Motor.initPWM();
 }
 
 void loop() 
 {
     //Motor.Control();
-    //Motor.FullCycleTest();
+  Motor.FullCycleTest();
   Motor.ProcessMessages();
 
-  delay(100);
 }
 
 
