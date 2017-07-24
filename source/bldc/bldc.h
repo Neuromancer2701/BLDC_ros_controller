@@ -5,10 +5,6 @@
 #define __BLDC_H__
 
 #include <stdint.h>
-#include <ros.h>
-#include <std_msgs/Bool.h>
-#include <std_msgs/Float32.h>
-#include <std_msgs/UInt8.h>
 
 enum commumationStates
 {
@@ -127,7 +123,7 @@ private:
 	void Send(int data);
 	int findStart(int size);
 	void CalculatePWM();
-
+    void SetStateIO();
 
 	enum serialConstants
 	{
@@ -154,7 +150,8 @@ private:
 		MIN_VELOCITY = 5,		// divide by 10 m/sec
 		MULTIPLIER = 100,
 		MAX_PWM = 85,
-		MIN_PWM = 15
+		MIN_PWM = 15,
+        MAX_PWM_STEP = 4
 	};
 
 	enum changeDirection
@@ -166,6 +163,7 @@ private:
 
 	unsigned char serialBuffer[BUFFER_SIZE];
 	changeDirection directionState;
+
 
 };
 

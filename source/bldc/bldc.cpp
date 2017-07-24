@@ -83,41 +83,41 @@ void BLDC::Control()
 void BLDC::FullCycleTest()
 {
     controlPWM = 50;
-    unsigned long Delay = 1000;
+    unsigned long Delay = 2000;
 
-    newCommunationState = State1;
-    CalculateCommutationState();
+    forward = true;
+
+    currentCommunationState = State1;
+    SetStateIO();
     delay(Delay);
 
-    newCommunationState = State2;
-    CalculateCommutationState();
+    currentCommunationState = State2;
+    SetStateIO();
+    delay(Delay);
+#if 0
+    currentCommunationState = State3;
+    SetStateIO();
     delay(Delay);
 
-    newCommunationState = State3;
-    CalculateCommutationState();
+    currentCommunationState = State4;
+    SetStateIO();
     delay(Delay);
 
-
-    newCommunationState = State4;
-    CalculateCommutationState();
+    currentCommunationState = State5;
+    SetStateIO();
     delay(Delay);
 
-    newCommunationState = State5;
-    CalculateCommutationState();
+    currentCommunationState = State6;
+    SetStateIO();
     delay(Delay);
-
-    newCommunationState = State6;
-    CalculateCommutationState();
-    delay(Delay);
-
+#endif
 }
 
 
 void BLDC::CalculateCommutationState()
 {
 
-    int highSideIndex = 0;
-    unsigned short lowSide = 0;
+
 
     if(newCommunationState == currentCommunationState)
     {
@@ -150,7 +150,20 @@ void BLDC::CalculateCommutationState()
         }
     }
 
-		switch(currentCommunationState)
+    //sprintf(data,"state: %d cycle count: %d velocity: %05d", currentCommunationState, cycleCounter,(int)(velocity * 1000));
+    SetStateIO();
+
+}
+
+void BLDC::SetStateIO()
+{
+
+    PORTB = 0x00; //clear io to give a bit of rest time between states. To prevent shoot through.
+    Palatis::SoftPWM.allOff();
+
+    int highSideIndex = 0;
+    unsigned short lowSide = 0;
+    switch(currentCommunationState)
 		{
 
 			case State1:
@@ -232,17 +245,15 @@ void BLDC::CalculateCommutationState()
                 PORTB = 0x00;
                 Palatis::SoftPWM.allOff();
                 break;
-		
+
 		}
 
-    //sprintf(data,"state: %d cycle count: %d velocity: %05d", currentCommunationState, cycleCounter,(int)(velocity * 1000));
-    //sprintf(data,"hideIndex: %d PORTB: %02x Forward: %s", highSideIndex, lowSide, forward ? "true" : "false");
-
-    //Serial.println(data);
+    char data[256];
+    sprintf(data,"hideIndex: %d PORTB: %02x Forward: %s", highSideIndex, lowSide, forward ? "true" : "false");
+    Serial.println(data);
 
     Palatis::SoftPWM.set(highSideIndex, controlPWM);
     PORTB = lowSide;
-
 }
 
 int *BLDC::getRawHallData()
@@ -263,53 +274,10 @@ void BLDC::startMotor(bool start)
     else
     {
         currentCommunationState = newCommunationState = State1;
-        controlPWM = MAX_PWM;
+        controlPWM = DUTY_STOP;
         started = false;
     }
 
-
-#if 0
-
-    CalculateCommutationState();
-
-
-
-    delay(100);
-    ReadHalls();
-    if(newCommunationState != startState)
-    {
-        Serial.println("SUCCESS");
-        started = true;
-        return;
-    }
-
-
-    newCommunationState = startSeqeunce[(currentStateIndex - 1) % COMMUTATION_STATES];
-    Serial.print("Try  before current state:");
-    Serial.println(newCommunationState);
-    CalculateCommutationState();
-    delay(100);
-    ReadHalls();
-    if(newCommunationState != startState)
-    {
-        Serial.println("SUCCESS");
-        started = true;
-        return;
-    }
-
-    newCommunationState = startSeqeunce[(currentStateIndex + 1) % COMMUTATION_STATES];
-    Serial.print("Try after current state:");
-    Serial.println(newCommunationState);
-    CalculateCommutationState();
-    delay(100);
-    ReadHalls();
-    if(newCommunationState != startState)
-    {
-        Serial.println("SUCCESS");
-        started = true;
-        return;
-    }
-#endif
 }
 
 int BLDC::findIndex(commumationStates state)
@@ -332,8 +300,8 @@ void BLDC::Parse()
     int readBytes = Serial.available();
     if(readBytes >= MIN_SIZE)
     {
-        Serial.print("readBytes: ");
-        Serial.println(readBytes);
+        //Serial.print("readBytes: ");
+        //Serial.println(readBytes);
 
         if(readBytes > BUFFER_SIZE)
             readBytes = BUFFER_SIZE;
@@ -483,7 +451,7 @@ void BLDC::parseDirection(int index)
     else if(serialBuffer[index] == WRITE)
     {
         index++; // moved to started value
-        forward = (serialBuffer[index]== '1');
+        ChangeDirection((serialBuffer[index]== '1'));
         Send((int)forward);
     }
 }
@@ -492,7 +460,13 @@ void BLDC::CalculatePWM()
 {
     previousError = error;
     error = targetVelocity - velocity;
-    controlPWM = (unsigned char)(P_gain * error) + (I_gain * (previousError+error/2));
+
+    double controlPWMStep = (P_gain * error) + (I_gain * ((previousError + error)/2));
+
+    if(controlPWMStep > MAX_PWM_STEP)
+        controlPWMStep = MAX_PWM_STEP;
+
+    controlPWM += controlPWMStep;
 
     if( controlPWM > MAX_PWM )
         controlPWM = MAX_PWM;
