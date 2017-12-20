@@ -65,6 +65,7 @@ public:
 
     int* getRawHallData();
 	void FullCycleTest();
+	void InputTest();
     void Reverse(){forward = false;}
     void Forward(){forward = true;}
     void ReadHalls();
@@ -98,6 +99,7 @@ private:
     double velocity;
     long previousTime;
     long currentTime;
+    long directionWindow;
 
 
 	double P_gain;
@@ -161,7 +163,7 @@ private:
 		CHANGING = 2
 	};
 
-	unsigned char serialBuffer[BUFFER_SIZE];
+	char serialBuffer[BUFFER_SIZE];
 	changeDirection directionState;
 
 

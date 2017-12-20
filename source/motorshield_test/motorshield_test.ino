@@ -21,10 +21,8 @@ void setup()
 
 void loop() 
 {
-    //Motor.Control();
-  Motor.FullCycleTest();
-  Motor.ProcessMessages();
-
+   Motor.Control();
+   //Motor.FullCycleTest();
 }
 
 

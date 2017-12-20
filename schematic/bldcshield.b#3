@@ -172,7 +172,7 @@
 <wire x1="103.866" y1="79.934" x2="21.082" y2="80.01" width="0" layer="20"/>
 <wire x1="21.082" y1="80.01" x2="21.082" y2="26.67" width="0" layer="20"/>
 <text x="30.226" y="28.448" size="1.778" layer="21">Open BLDC 0.5</text>
-<text x="117.602" y="64.008" size="1.778" layer="22" rot="MR270">www.OpenRover.com</text>
+<text x="116.84" y="63.754" size="1.778" layer="22" rot="MR270">www.OpenRover.com</text>
 <text x="23.876" y="62.484" size="1.778" layer="22" rot="MR270">www.OpenRover.com</text>
 <polygon width="0.4064" layer="30">
 <vertex x="25.654" y="39.624"/>
@@ -2145,14 +2145,26 @@ grid 2.54 mm</description>
 <polygon width="0.4064" layer="1" thermals="no" rank="3">
 <vertex x="21.082" y="80.01"/>
 <vertex x="21.082" y="26.67"/>
-<vertex x="115.316" y="26.67"/>
+<vertex x="115.57" y="26.67"/>
+<vertex x="115.57" y="29.21"/>
+<vertex x="118.11" y="31.75"/>
+<vertex x="118.11" y="64.262"/>
+<vertex x="115.57" y="66.802"/>
+<vertex x="115.57" y="78.232"/>
 <vertex x="115.316" y="78.232"/>
 <vertex x="113.538" y="80.01"/>
 </polygon>
 <polygon width="0.4064" layer="16" thermals="no" rank="6">
 <vertex x="21.082" y="80.01"/>
 <vertex x="113.538" y="80.01"/>
-<vertex x="113.792" y="26.67"/>
+<vertex x="115.57" y="78.232"/>
+<vertex x="115.57" y="66.548"/>
+<vertex x="116.078" y="66.294"/>
+<vertex x="117.602" y="65.024"/>
+<vertex x="118.11" y="64.516"/>
+<vertex x="118.11" y="31.496"/>
+<vertex x="115.57" y="29.21"/>
+<vertex x="115.57" y="26.67"/>
 <vertex x="21.082" y="26.67"/>
 </polygon>
 <contactref element="C3" pad="2"/>
