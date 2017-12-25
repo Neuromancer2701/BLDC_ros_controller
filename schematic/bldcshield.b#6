@@ -171,8 +171,8 @@
 <wire x1="113.792" y1="80.01" x2="103.866" y2="79.934" width="0" layer="20"/>
 <wire x1="103.866" y1="79.934" x2="21.082" y2="80.01" width="0" layer="20"/>
 <wire x1="21.082" y1="80.01" x2="21.082" y2="26.67" width="0" layer="20"/>
-<text x="36.322" y="28.194" size="1.778" layer="21">Open BLDC 0.5</text>
-<text x="117.602" y="64.008" size="1.778" layer="22" rot="MR270">www.OpenRover.com</text>
+<text x="30.226" y="28.448" size="1.778" layer="21">Open BLDC 0.5</text>
+<text x="116.84" y="63.754" size="1.778" layer="22" rot="MR270">www.OpenRover.com</text>
 <text x="23.876" y="62.484" size="1.778" layer="22" rot="MR270">www.OpenRover.com</text>
 <polygon width="0.4064" layer="30">
 <vertex x="25.654" y="39.624"/>
@@ -1735,11 +1735,11 @@ grid 2.54 mm</description>
 <element name="C25" library="SmartPrj" package="C1206" value="0.1u" x="25.654" y="54.356"/>
 <element name="R33" library="SmartPrj" package="R1206" value="2.2k" x="27.686" y="71.628"/>
 <element name="U1" library="SparkFun-PowerIC" package="TO220-ADJ" value="V_REG_317SINK" x="27.178" y="60.96" rot="R270"/>
-<element name="PAD1" library="wirepad" package="3,81/1,4" value="" x="32.512" y="41.91"/>
-<element name="PAD2" library="wirepad" package="3,81/1,4" value="" x="55.88" y="41.91"/>
-<element name="PAD3" library="wirepad" package="3,81/1,4" value="" x="78.994" y="41.91"/>
-<element name="PAD4" library="wirepad" package="3,81/1,4" value="Vcc" x="109.982" y="33.274"/>
-<element name="PAD5" library="wirepad" package="3,81/1,4" value="" x="109.728" y="41.148"/>
+<element name="BLDC1" library="wirepad" package="3,81/1,4" value="" x="32.512" y="41.91"/>
+<element name="BLDC2" library="wirepad" package="3,81/1,4" value="" x="55.88" y="41.91"/>
+<element name="BLDC3" library="wirepad" package="3,81/1,4" value="" x="78.994" y="41.91"/>
+<element name="+" library="wirepad" package="3,81/1,4" value="Vcc" x="109.982" y="33.274"/>
+<element name="-" library="wirepad" package="3,81/1,4" value="" x="109.728" y="41.148"/>
 <element name="Q1" library="transistor-power" package="TO220BV" value="BUZ11BV" x="26.924" y="39.878"/>
 <element name="Q2" library="transistor-power" package="TO220BV" value="BUZ11BV" x="38.1" y="39.878"/>
 <element name="Q3" library="transistor-power" package="TO220BV" value="BUZ11BV" x="50.292" y="39.878"/>
@@ -1782,7 +1782,7 @@ grid 2.54 mm</description>
 <wire x1="46.212" y1="65.236" x2="42.926" y2="66.802" width="0.4064" layer="1"/>
 <wire x1="39.37" y1="66.802" x2="42.926" y2="66.802" width="0.4064" layer="1"/>
 <wire x1="39.37" y1="66.802" x2="39.417" y2="64.706" width="0.4064" layer="1"/>
-<contactref element="PAD1" pad="1"/>
+<contactref element="BLDC1" pad="1"/>
 <contactref element="Q1" pad="S"/>
 <contactref element="Q2" pad="D"/>
 <polygon width="0.4064" layer="16" thermals="no" rank="2">
@@ -1799,7 +1799,7 @@ grid 2.54 mm</description>
 <signal name="BLDC2">
 <contactref element="IC2" pad="6"/>
 <contactref element="C4" pad="1"/>
-<contactref element="PAD2" pad="1"/>
+<contactref element="BLDC2" pad="1"/>
 <wire x1="60.296" y1="65.48" x2="60.296" y2="65.688" width="0.4064" layer="1"/>
 <wire x1="60.296" y1="65.688" x2="58.928" y2="67.056" width="0.4064" layer="1"/>
 <wire x1="58.928" y1="67.056" x2="54.356" y2="67.056" width="0.4064" layer="1"/>
@@ -1829,7 +1829,7 @@ grid 2.54 mm</description>
 <wire x1="67.056" y1="67.31" x2="66.802" y2="67.056" width="0.4064" layer="1"/>
 <wire x1="66.802" y1="67.056" x2="66.802" y2="65.251" width="0.4064" layer="1"/>
 <wire x1="66.802" y1="65.251" x2="66.829" y2="65.224" width="0.4064" layer="1"/>
-<contactref element="PAD3" pad="1"/>
+<contactref element="BLDC3" pad="1"/>
 <wire x1="66.8909" y1="65.0748" x2="66.829" y2="65.224" width="0.254" layer="1"/>
 <contactref element="Q5" pad="S"/>
 <contactref element="Q6" pad="D"/>
@@ -1859,7 +1859,7 @@ grid 2.54 mm</description>
 <contactref element="C3" pad="1"/>
 <contactref element="C25" pad="2"/>
 <contactref element="U1" pad="IN"/>
-<contactref element="PAD4" pad="1"/>
+<contactref element="+" pad="1"/>
 <contactref element="Q1" pad="D"/>
 <contactref element="Q3" pad="D"/>
 <contactref element="Q5" pad="D"/>
@@ -2145,21 +2145,33 @@ grid 2.54 mm</description>
 <polygon width="0.4064" layer="1" thermals="no" rank="3">
 <vertex x="21.082" y="80.01"/>
 <vertex x="21.082" y="26.67"/>
-<vertex x="115.316" y="26.67"/>
+<vertex x="115.57" y="26.67"/>
+<vertex x="115.57" y="29.21"/>
+<vertex x="118.11" y="31.75"/>
+<vertex x="118.11" y="64.262"/>
+<vertex x="115.57" y="66.802"/>
+<vertex x="115.57" y="78.232"/>
 <vertex x="115.316" y="78.232"/>
 <vertex x="113.538" y="80.01"/>
 </polygon>
 <polygon width="0.4064" layer="16" thermals="no" rank="6">
 <vertex x="21.082" y="80.01"/>
 <vertex x="113.538" y="80.01"/>
-<vertex x="113.792" y="26.67"/>
+<vertex x="115.57" y="78.232"/>
+<vertex x="115.57" y="66.548"/>
+<vertex x="116.078" y="66.294"/>
+<vertex x="117.602" y="65.024"/>
+<vertex x="118.11" y="64.516"/>
+<vertex x="118.11" y="31.496"/>
+<vertex x="115.57" y="29.21"/>
+<vertex x="115.57" y="26.67"/>
 <vertex x="21.082" y="26.67"/>
 </polygon>
 <contactref element="C3" pad="2"/>
 <contactref element="C25" pad="1"/>
 <contactref element="R33" pad="2"/>
 <contactref element="C24" pad="1"/>
-<contactref element="PAD5" pad="1"/>
+<contactref element="-" pad="1"/>
 <wire x1="63.6651" y1="29.2608" x2="63.6651" y2="29.2568" width="0.254" layer="1"/>
 </signal>
 <signal name="N$3">
