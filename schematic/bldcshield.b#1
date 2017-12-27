@@ -172,7 +172,7 @@
 <wire x1="113.792" y1="80.01" x2="103.866" y2="79.934" width="0" layer="20"/>
 <wire x1="103.866" y1="79.934" x2="21.082" y2="80.01" width="0" layer="20"/>
 <wire x1="21.082" y1="80.01" x2="21.082" y2="26.67" width="0" layer="20"/>
-<text x="30.226" y="28.448" size="1.778" layer="21">Open BLDC 0.53</text>
+<text x="30.226" y="28.448" size="1.778" layer="21">Open BLDC 0.70</text>
 <text x="116.84" y="63.754" size="1.778" layer="22" rot="MR270">www.OpenRover.com</text>
 <text x="23.876" y="62.484" size="1.778" layer="22" rot="MR270">www.OpenRover.com</text>
 <polygon width="0.4064" layer="30">

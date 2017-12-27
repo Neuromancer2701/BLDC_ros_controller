@@ -176,7 +176,8 @@
 <text x="116.84" y="63.754" size="1.778" layer="22" rot="MR270">www.OpenRover.com</text>
 <text x="23.876" y="62.484" size="1.778" layer="22" rot="MR270">www.OpenRover.com</text>
 <polygon width="0.4064" layer="30">
-<vertex x="23.622" y="50.8"/>
+<vertex x="26.67" y="50.546"/>
+<vertex x="23.876" y="47.752"/>
 <vertex x="23.622" y="36.322"/>
 <vertex x="37.592" y="36.322"/>
 <vertex x="37.592" y="30.734"/>
@@ -191,7 +192,6 @@
 <vertex x="79.502" y="46.736"/>
 <vertex x="89.154" y="46.736"/>
 <vertex x="89.154" y="50.546"/>
-<vertex x="23.622" y="50.546"/>
 </polygon>
 </plain>
 <libraries>

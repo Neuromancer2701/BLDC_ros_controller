@@ -175,7 +175,7 @@
 <text x="30.226" y="28.448" size="1.778" layer="21">Open BLDC 0.53</text>
 <text x="116.84" y="63.754" size="1.778" layer="22" rot="MR270">www.OpenRover.com</text>
 <text x="23.876" y="62.484" size="1.778" layer="22" rot="MR270">www.OpenRover.com</text>
-<polygon width="0.4064" layer="40">
+<polygon width="0.4064" layer="30">
 <vertex x="23.622" y="50.8"/>
 <vertex x="23.622" y="36.322"/>
 <vertex x="37.592" y="36.322"/>

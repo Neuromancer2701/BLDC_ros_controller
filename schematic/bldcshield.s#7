@@ -11234,12 +11234,12 @@ grid 2.54 mm</description>
 <part name="U1" library="SparkFun-PowerIC" deviceset="V_REG_317" device="SINK"/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
-<part name="PAD1" library="wirepad" deviceset="3,81/1,4" device=""/>
-<part name="PAD2" library="wirepad" deviceset="3,81/1,4" device=""/>
-<part name="PAD3" library="wirepad" deviceset="3,81/1,4" device=""/>
+<part name="BLDC1" library="wirepad" deviceset="3,81/1,4" device=""/>
+<part name="BLDC2" library="wirepad" deviceset="3,81/1,4" device=""/>
+<part name="BLDC3" library="wirepad" deviceset="3,81/1,4" device=""/>
 <part name="U$1" library="MyPOW" deviceset="+5V" device=""/>
-<part name="PAD4" library="wirepad" deviceset="3,81/1,4" device="" value="Vcc"/>
-<part name="PAD5" library="wirepad" deviceset="3,81/1,4" device=""/>
+<part name="+" library="wirepad" deviceset="3,81/1,4" device="" value="Vcc"/>
+<part name="-" library="wirepad" deviceset="3,81/1,4" device=""/>
 <part name="Q1" library="transistor-power" deviceset="BUZ11" device="BV"/>
 <part name="Q2" library="transistor-power" deviceset="BUZ11" device="BV"/>
 <part name="Q3" library="transistor-power" deviceset="BUZ11" device="BV"/>
@@ -11316,12 +11316,12 @@ grid 2.54 mm</description>
 <instance part="U1" gate="G$1" x="0" y="215.9"/>
 <instance part="GND5" gate="1" x="-30.48" y="193.04"/>
 <instance part="GND6" gate="1" x="38.1" y="195.58"/>
-<instance part="PAD1" gate="1" x="111.76" y="60.96" rot="MR0"/>
-<instance part="PAD2" gate="1" x="111.76" y="55.88" rot="MR0"/>
-<instance part="PAD3" gate="1" x="111.76" y="50.8" rot="MR0"/>
+<instance part="BLDC1" gate="1" x="111.76" y="60.96" rot="MR0"/>
+<instance part="BLDC2" gate="1" x="111.76" y="55.88" rot="MR0"/>
+<instance part="BLDC3" gate="1" x="111.76" y="50.8" rot="MR0"/>
 <instance part="U$1" gate="G$1" x="-147.32" y="106.68"/>
-<instance part="PAD4" gate="1" x="-124.46" y="157.48" rot="MR0"/>
-<instance part="PAD5" gate="1" x="-124.46" y="152.4" rot="MR0"/>
+<instance part="+" gate="1" x="-124.46" y="157.48" rot="MR0"/>
+<instance part="-" gate="1" x="-124.46" y="152.4" rot="MR0"/>
 <instance part="Q1" gate="1" x="22.86" y="119.38"/>
 <instance part="Q2" gate="1" x="22.86" y="104.14"/>
 <instance part="Q3" gate="1" x="22.86" y="63.5"/>
@@ -11366,7 +11366,7 @@ grid 2.54 mm</description>
 <junction x="-7.62" y="111.76"/>
 <junction x="25.4" y="111.76"/>
 <wire x1="25.4" y1="109.22" x2="25.4" y2="111.76" width="0.1524" layer="91"/>
-<pinref part="PAD1" gate="1" pin="P"/>
+<pinref part="BLDC1" gate="1" pin="P"/>
 <pinref part="Q1" gate="1" pin="S"/>
 <pinref part="Q2" gate="1" pin="D"/>
 </segment>
@@ -11383,7 +11383,7 @@ grid 2.54 mm</description>
 <wire x1="-7.62" y1="76.2" x2="-7.62" y2="55.88" width="0.1524" layer="91"/>
 <junction x="-7.62" y="55.88"/>
 <junction x="25.4" y="55.88"/>
-<pinref part="PAD2" gate="1" pin="P"/>
+<pinref part="BLDC2" gate="1" pin="P"/>
 <pinref part="Q3" gate="1" pin="S"/>
 <pinref part="Q4" gate="1" pin="D"/>
 </segment>
@@ -11402,7 +11402,7 @@ grid 2.54 mm</description>
 <wire x1="25.4" y1="0" x2="73.66" y2="0" width="0.1524" layer="91"/>
 <wire x1="73.66" y1="0" x2="73.66" y2="50.8" width="0.1524" layer="91"/>
 <wire x1="73.66" y1="50.8" x2="109.22" y2="50.8" width="0.1524" layer="91"/>
-<pinref part="PAD3" gate="1" pin="P"/>
+<pinref part="BLDC3" gate="1" pin="P"/>
 <pinref part="Q5" gate="1" pin="S"/>
 <pinref part="Q6" gate="1" pin="D"/>
 </segment>
@@ -11443,7 +11443,7 @@ grid 2.54 mm</description>
 <wire x1="-154.94" y1="160.02" x2="-154.94" y2="162.56" width="0.1524" layer="91"/>
 <wire x1="-154.94" y1="162.56" x2="-134.62" y2="162.56" width="0.1524" layer="91"/>
 <junction x="-134.62" y="162.56"/>
-<pinref part="PAD4" gate="1" pin="P"/>
+<pinref part="+" gate="1" pin="P"/>
 <wire x1="-134.62" y1="157.48" x2="-127" y2="157.48" width="0.1524" layer="91"/>
 </segment>
 <segment>
@@ -11750,7 +11750,7 @@ grid 2.54 mm</description>
 <wire x1="-154.94" y1="149.86" x2="-154.94" y2="152.4" width="0.1524" layer="91"/>
 <pinref part="C3" gate="G$1" pin="-"/>
 <junction x="-134.62" y="149.86"/>
-<pinref part="PAD5" gate="1" pin="P"/>
+<pinref part="-" gate="1" pin="P"/>
 <wire x1="-127" y1="152.4" x2="-134.62" y2="152.4" width="0.1524" layer="91"/>
 </segment>
 <segment>

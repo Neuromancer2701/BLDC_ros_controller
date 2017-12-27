@@ -14477,9 +14477,9 @@ packages&lt;p&gt;&lt;author&gt;AAL Eindhoven MK&lt;/author&gt;&lt;hr&gt;&lt;p&gt
 </device>
 <device name="DPAK" package="DPAK229P990X238-3N">
 <connects>
-<connect gate="G$1" pin="A1" pad="4"/>
+<connect gate="G$1" pin="A1" pad="1"/>
 <connect gate="G$1" pin="A2" pad="3"/>
-<connect gate="G$1" pin="K1K2" pad="1"/>
+<connect gate="G$1" pin="K1K2" pad="4"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -14586,7 +14586,7 @@ packages&lt;p&gt;&lt;author&gt;AAL Eindhoven MK&lt;/author&gt;&lt;hr&gt;&lt;p&gt
 <part name="C10" library="SmartPrj" deviceset="C-EU" device="C1206" value="100nF"/>
 <part name="C11" library="SmartPrj" deviceset="C-EU" device="C1206" value="100nF"/>
 <part name="C12" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="22UF-POLAR" device="-PANASONIC_C-35V-20%" package3d_urn="urn:adsk.eagle:package:37430/1" value="33uF"/>
-<part name="D4" library="SCHOTTKY" deviceset="BAS70-05" device="DPAK" value=""/>
+<part name="D4" library="SCHOTTKY" deviceset="BAS70-05" device="DPAK"/>
 </parts>
 <sheets>
 <sheet>
@@ -14819,7 +14819,9 @@ packages&lt;p&gt;&lt;author&gt;AAL Eindhoven MK&lt;/author&gt;&lt;hr&gt;&lt;p&gt
 <junction x="-30.48" y="223.52"/>
 <wire x1="-30.48" y1="213.36" x2="-22.86" y2="213.36" width="0.1524" layer="91"/>
 <pinref part="D4" gate="G$1" pin="A1"/>
+<junction x="-22.86" y="223.52"/>
 <pinref part="D4" gate="G$1" pin="A2"/>
+<junction x="-22.86" y="213.36"/>
 </segment>
 </net>
 <net name="N$13" class="0">
@@ -15180,11 +15182,11 @@ packages&lt;p&gt;&lt;author&gt;AAL Eindhoven MK&lt;/author&gt;&lt;hr&gt;&lt;p&gt
 </net>
 <net name="N$4" class="0">
 <segment>
-<wire x1="-73.66" y1="111.76" x2="-43.18" y2="111.76" width="0.1524" layer="91"/>
+<wire x1="-149.86" y1="111.76" x2="-43.18" y2="111.76" width="0.1524" layer="91"/>
 <pinref part="U2" gate="G$1" pin="HIN"/>
 <pinref part="Q8" gate="G$1" pin="D11"/>
-<wire x1="-73.66" y1="111.76" x2="-73.66" y2="109.22" width="0.1524" layer="91"/>
-<wire x1="-73.66" y1="109.22" x2="-175.26" y2="109.22" width="0.1524" layer="91"/>
+<wire x1="-149.86" y1="111.76" x2="-149.86" y2="109.22" width="0.1524" layer="91"/>
+<wire x1="-149.86" y1="109.22" x2="-175.26" y2="109.22" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$8" class="0">
@@ -15192,8 +15194,10 @@ packages&lt;p&gt;&lt;author&gt;AAL Eindhoven MK&lt;/author&gt;&lt;hr&gt;&lt;p&gt
 <pinref part="U2" gate="G$1" pin="LIN"/>
 <pinref part="Q8" gate="G$1" pin="D7"/>
 <wire x1="-175.26" y1="96.52" x2="-144.78" y2="96.52" width="0.1524" layer="91"/>
-<wire x1="-144.78" y1="96.52" x2="-144.78" y2="106.68" width="0.1524" layer="91"/>
-<wire x1="-144.78" y1="106.68" x2="-43.18" y2="106.68" width="0.1524" layer="91"/>
+<wire x1="-144.78" y1="96.52" x2="-144.78" y2="109.22" width="0.1524" layer="91"/>
+<wire x1="-144.78" y1="109.22" x2="-48.26" y2="109.22" width="0.1524" layer="91"/>
+<wire x1="-48.26" y1="109.22" x2="-48.26" y2="106.68" width="0.1524" layer="91"/>
+<wire x1="-48.26" y1="106.68" x2="-43.18" y2="106.68" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="VB1" class="3">
@@ -15357,11 +15361,27 @@ packages&lt;p&gt;&lt;author&gt;AAL Eindhoven MK&lt;/author&gt;&lt;hr&gt;&lt;p&gt
 </sheet>
 </sheets>
 <errors>
+<approved hash="102,1,-43.18,101.6,COM,GND,,,,"/>
+<approved hash="102,1,-43.18,116.84,VCC,+12V,,,,"/>
+<approved hash="102,1,-17.78,116.84,VB,VB1,,,,"/>
+<approved hash="102,1,-45.72,45.72,COM,GND,,,,"/>
+<approved hash="102,1,-45.72,60.96,VCC,+12V,,,,"/>
+<approved hash="102,1,-20.32,60.96,VB,VB2,,,,"/>
+<approved hash="102,1,-43.18,-10.16,COM,GND,,,,"/>
+<approved hash="102,1,-43.18,5.08,VCC,+12V,,,,"/>
+<approved hash="102,1,-17.78,5.08,VB,VB3,,,,"/>
+<approved hash="201,1,-17.78,5.08,VB,VB1\, VB2\, VB3,,,,"/>
+<approved hash="201,1,-20.32,60.96,VB,VB1\, VB2\, VB3,,,,"/>
+<approved hash="201,1,-17.78,116.84,VB,VB1\, VB2\, VB3,,,,"/>
+<approved hash="201,1,-43.18,5.08,VCC,VCC\, +12V,,,,"/>
+<approved hash="201,1,-45.72,60.96,VCC,VCC\, +12V,,,,"/>
+<approved hash="201,1,-43.18,116.84,VCC,VCC\, +12V,,,,"/>
 <approved hash="204,1,-236.22,93.98,Q8,VIN,,,,"/>
 <approved hash="104,1,-236.22,96.52,Q8,GND1,GND,,,"/>
 <approved hash="104,1,-236.22,99.06,Q8,GND2,GND,,,"/>
 <approved hash="104,1,-236.22,101.6,Q8,5V,+5V,,,"/>
 <approved hash="204,1,-236.22,104.14,Q8,3V,,,,"/>
+<approved hash="113,1,-147.997,134.91,J1,,,,,"/>
 </errors>
 </schematic>
 </drawing>

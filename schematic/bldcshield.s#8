@@ -11238,7 +11238,7 @@ grid 2.54 mm</description>
 <part name="PAD2" library="wirepad" deviceset="3,81/1,4" device=""/>
 <part name="PAD3" library="wirepad" deviceset="3,81/1,4" device=""/>
 <part name="U$1" library="MyPOW" deviceset="+5V" device=""/>
-<part name="PAD4" library="wirepad" deviceset="3,81/1,4" device=""/>
+<part name="PAD4" library="wirepad" deviceset="3,81/1,4" device="" value="Vcc"/>
 <part name="PAD5" library="wirepad" deviceset="3,81/1,4" device=""/>
 <part name="Q1" library="transistor-power" deviceset="BUZ11" device="BV"/>
 <part name="Q2" library="transistor-power" deviceset="BUZ11" device="BV"/>
@@ -11870,8 +11870,11 @@ grid 2.54 mm</description>
 </sheet>
 </sheets>
 <errors>
-<approved hash="204,1,-236.22,93.98,Q3,VIN,,,,"/>
-<approved hash="204,1,-236.22,104.14,Q3,3V,,,,"/>
+<approved hash="204,1,-236.22,93.98,Q8,VIN,,,,"/>
+<approved hash="104,1,-236.22,96.52,Q8,GND1,GND,,,"/>
+<approved hash="104,1,-236.22,99.06,Q8,GND2,GND,,,"/>
+<approved hash="104,1,-236.22,101.6,Q8,5V,+5V,,,"/>
+<approved hash="204,1,-236.22,104.14,Q8,3V,,,,"/>
 <approved hash="208,1,-40.64,134.62,+12V,sup,,,,"/>
 <approved hash="208,1,-40.64,78.74,+12V,sup,,,,"/>
 <approved hash="208,1,-40.64,22.86,+12V,sup,,,,"/>
@@ -11880,7 +11883,6 @@ grid 2.54 mm</description>
 <approved hash="113,1,109.499,62.1326,PAD1,,,,,"/>
 <approved hash="113,1,109.499,57.0526,PAD2,,,,,"/>
 <approved hash="113,1,109.499,51.9726,PAD3,,,,,"/>
-<approved hash="113,1,-126.721,158.653,PAD4,,,,,"/>
 <approved hash="113,1,-126.721,153.573,PAD5,,,,,"/>
 </errors>
 </schematic>
